@@ -1,0 +1,275 @@
+.admin-login-content {
+  --background: linear-gradient(135deg, #F5FF78 0%, #f1f5f9 100%);
+  
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 40px;
+
+    .logo-container {
+      .logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #000000;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.5px;
+      }
+
+      p {
+        font-size: 16px;
+        color: #64748b;
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .login-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .login-card {
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      border: 2px solid #000000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+
+      ion-card-header {
+        text-align: center;
+        padding: 24px 24px 16px 24px;
+
+        ion-card-title {
+          font-size: 22px;
+          font-weight: 700;
+          color: #000000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 8px;
+
+          .login-icon {
+            font-size: 28px;
+            color: #F5FF78;
+            background: #000000;
+            padding: 8px;
+            border-radius: 12px;
+          }
+        }
+
+        ion-card-subtitle {
+          color: #64748b;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+
+      ion-card-content {
+        padding: 0 24px 24px 24px;
+
+        .login-item {
+          --background: rgba(245, 255, 120, 0.1);
+          --border-radius: 12px;
+          --padding-start: 16px;
+          --padding-end: 16px;
+          --inner-padding-end: 8px;
+          margin-bottom: 16px;
+          border: 2px solid rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+
+          &.item-has-focus {
+            --border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3);
+          }
+
+          ion-label {
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 8px;
+          }
+
+          ion-input {
+            --color: #000000;
+            --placeholder-color: #64748b;
+            font-weight: 500;
+          }
+
+          ion-icon {
+            color: #64748b;
+            margin-right: 8px;
+          }
+
+          ion-button {
+            --color: #64748b;
+            --padding-start: 8px;
+            --padding-end: 8px;
+
+            &:hover {
+              --color: #000000;
+            }
+          }
+        }
+
+        .login-buttons {
+          margin-top: 24px;
+
+          .login-btn {
+            --background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            --color: #F5FF78;
+            --border-radius: 12px;
+            height: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            
+            &:not(.button-disabled):hover {
+              --background: linear-gradient(135deg, #333333 0%, #000000 100%);
+              transform: translateY(-1px);
+              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            }
+
+            &.button-disabled {
+              opacity: 0.6;
+            }
+          }
+
+          .dev-btn {
+            --color: #64748b;
+            --border-color: #d1d5db;
+            --border-radius: 12px;
+            height: 44px;
+            font-weight: 600;
+            
+            &:hover {
+              --color: #000000;
+              --border-color: #000000;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .login-info {
+    margin-top: 24px;
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+
+      ion-card-content {
+        padding: 16px;
+
+        .info-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+
+          ion-icon {
+            font-size: 20px;
+            margin-top: 2px;
+            flex-shrink: 0;
+          }
+
+          div {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #475569;
+
+            strong {
+              color: #1e293b;
+              font-weight: 600;
+            }
+
+            code {
+              background: rgba(245, 255, 120, 0.3);
+              color: #000000;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .admin-login-content {
+    .login-container {
+      padding: 16px;
+      
+      .login-header {
+        padding-top: 20px;
+        margin-bottom: 20px;
+
+        .logo-container {
+          .logo {
+            width: 60px;
+            height: 60px;
+          }
+
+          h1 {
+            font-size: 24px;
+          }
+
+          p {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .login-form .login-card {
+        ion-card-header {
+          padding: 20px 20px 12px 20px;
+
+          ion-card-title {
+            font-size: 20px;
+            
+            .login-icon {
+              font-size: 24px;
+              padding: 6px;
+            }
+          }
+        }
+
+        ion-card-content {
+          padding: 0 20px 20px 20px;
+        }
+      }
+    }
+  }
+}
+
+// Animation pour le chargement
+.login-btn ion-spinner {
+  width: 20px;
+  height: 20px;
+}

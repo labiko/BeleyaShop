@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AdminAuthGuard } from './guards/admin-auth.guard';
 
 const routes: Routes = [
   {
@@ -21,6 +22,31 @@ const routes: Routes = [
   {
     path: 'delivery',
     loadChildren: () => import('./delivery/delivery.module').then( m => m.DeliveryPageModule)
+  },
+  // Routes admin
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./admin/login/admin-login.page').then(m => m.AdminLoginPage)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/admin-tabs/admin-tabs.page').then(m => m.AdminTabsPage),
+    canActivate: [AdminAuthGuard],
+    children: [
+      {
+        path: '',
+        redirectTo: 'products',
+        pathMatch: 'full'
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./admin/products/admin-products.page').then(m => m.AdminProductsPage)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./admin/orders/admin-orders.page').then(m => m.AdminOrdersPage)
+      }
+    ]
   }
 ];
 @NgModule({

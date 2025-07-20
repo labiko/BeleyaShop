@@ -1,0 +1,229 @@
+.modal-toolbar {
+  --background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+  --color: #000000;
+  --border-color: #000000;
+  border-bottom: 2px solid #000000;
+
+  ion-title {
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+  }
+
+  ion-buttons ion-button {
+    --color: #000000;
+    --background: rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+
+    &:hover {
+      --background: rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.modal-content {
+  --background: #f8fafc;
+
+  .form-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+
+    .form-section {
+      margin-bottom: 20px;
+
+      .form-item {
+        --background: white;
+        --border-radius: 12px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --inner-padding-end: 8px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        margin-bottom: 8px;
+
+        &.item-has-focus {
+          --border-color: #000000;
+          box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3);
+        }
+
+        ion-label {
+          font-weight: 600;
+          color: #000000;
+          margin-bottom: 8px;
+
+          .required {
+            color: #ef4444;
+          }
+
+          span.required::after {
+            content: ' *';
+            color: #ef4444;
+          }
+        }
+
+        ion-input,
+        ion-textarea,
+        ion-select {
+          --color: #000000;
+          --placeholder-color: #64748b;
+          font-weight: 500;
+        }
+
+        ion-select {
+          --placeholder-color: #64748b;
+        }
+
+        ion-toggle {
+          --background: #e2e8f0;
+          --background-checked: #F5FF78;
+          --handle-background: white;
+          --handle-background-checked: #000000;
+        }
+      }
+
+      .toggle-info {
+        padding: 8px 16px;
+
+        ion-note {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 500;
+
+          ion-icon {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .image-preview {
+        margin-top: 12px;
+        text-align: center;
+
+        img {
+          max-width: 200px;
+          max-height: 150px;
+          border-radius: 12px;
+          border: 2px solid rgba(0, 0, 0, 0.1);
+          object-fit: cover;
+        }
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+
+      .form-col {
+        .form-item {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+.footer-toolbar {
+  --background: white;
+  --border-color: #e2e8f0;
+  border-top: 2px solid #e2e8f0;
+
+  .footer-buttons {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    justify-content: flex-end;
+
+    .cancel-btn {
+      --color: #64748b;
+      --border-color: #d1d5db;
+      font-weight: 600;
+      
+      &:hover:not(.button-disabled) {
+        --color: #000000;
+        --border-color: #000000;
+      }
+    }
+
+    .submit-btn {
+      --background: linear-gradient(135deg, #000000 0%, #333333 100%);
+      --color: #F5FF78;
+      font-weight: 700;
+      min-width: 120px;
+      
+      &:hover:not(.button-disabled) {
+        --background: linear-gradient(135deg, #333333 0%, #000000 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      &.button-disabled {
+        opacity: 0.6;
+      }
+
+      ion-spinner {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+// Styles pour les options de catégorie
+.category-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ion-icon {
+    font-size: 16px;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .modal-content .form-container {
+    padding: 16px;
+
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+
+      .form-col .form-item {
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+  .footer-toolbar .footer-buttons {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 8px;
+
+    .cancel-btn,
+    .submit-btn {
+      width: 100%;
+    }
+  }
+}
+
+// Animation pour l'aperçu d'image
+.image-preview {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

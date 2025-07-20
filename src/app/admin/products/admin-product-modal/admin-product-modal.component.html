@@ -1,0 +1,177 @@
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>{{ modalTitle }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="cancel()" [disabled]="isSubmitting">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+    
+    <div class="form-container">
+      
+      <!-- Nom du produit -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label position="stacked">
+            <span class="required">Nom du produit *</span>
+          </ion-label>
+          <ion-input
+            type="text"
+            [(ngModel)]="formData.name"
+            name="name"
+            placeholder="Ex: Crème Nivea Soft"
+            required
+            maxlength="100"
+            [disabled]="isSubmitting"
+            clearInput="true">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Description -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label position="stacked">
+            <span class="required">Description *</span>
+          </ion-label>
+          <ion-textarea
+            [(ngModel)]="formData.description"
+            name="description"
+            placeholder="Décrivez les caractéristiques du produit..."
+            required
+            rows="3"
+            maxlength="500"
+            [disabled]="isSubmitting">
+          </ion-textarea>
+        </ion-item>
+      </div>
+
+      <!-- Catégorie -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label position="stacked">Catégorie *</ion-label>
+          <ion-select
+            [(ngModel)]="formData.category"
+            name="category"
+            placeholder="Sélectionnez une catégorie"
+            (ionChange)="onCategoryChange()"
+            [disabled]="isSubmitting">
+            <ion-select-option 
+              *ngFor="let cat of categories" 
+              [value]="cat.value">
+              <div class="category-option">
+                <ion-icon [name]="cat.icon"></ion-icon>
+                {{ cat.label }}
+              </div>
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <!-- Prix et Stock -->
+      <div class="form-row">
+        <div class="form-col">
+          <ion-item class="form-item">
+            <ion-label position="stacked">
+              <span class="required">Prix (GNF) *</span>
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="formData.price"
+              name="price"
+              placeholder="100000"
+              required
+              min="1"
+              step="1000"
+              [disabled]="isSubmitting">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-col">
+          <ion-item class="form-item">
+            <ion-label position="stacked">Stock (unités)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="formData.stock_quantity"
+              name="stock_quantity"
+              placeholder="50"
+              min="0"
+              step="1"
+              (ionInput)="onStockChange()"
+              [disabled]="isSubmitting">
+            </ion-input>
+          </ion-item>
+        </div>
+      </div>
+
+      <!-- URL de l'image -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label position="stacked">URL de l'image</ion-label>
+          <ion-input
+            type="url"
+            [(ngModel)]="formData.image"
+            name="image"
+            placeholder="https://example.com/image.jpg"
+            [disabled]="isSubmitting"
+            clearInput="true">
+          </ion-input>
+        </ion-item>
+        
+        <!-- Aperçu de l'image -->
+        <div class="image-preview" *ngIf="formData.image && previewImage(formData.image)">
+          <img [src]="formData.image" [alt]="formData.name" />
+        </div>
+      </div>
+
+      <!-- Statut en stock -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label>Produit en stock</ion-label>
+          <ion-toggle
+            [(ngModel)]="formData.in_stock"
+            name="in_stock"
+            [disabled]="isSubmitting || formData.stock_quantity <= 0"
+            slot="end">
+          </ion-toggle>
+        </ion-item>
+        <div class="toggle-info" *ngIf="formData.stock_quantity <= 0">
+          <ion-note color="warning">
+            <ion-icon name="warning"></ion-icon>
+            Le stock doit être supérieur à 0 pour activer ce produit
+          </ion-note>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer-toolbar">
+    <div class="footer-buttons">
+      <ion-button 
+        fill="outline" 
+        (click)="cancel()" 
+        [disabled]="isSubmitting"
+        class="cancel-btn">
+        Annuler
+      </ion-button>
+      
+      <ion-button 
+        (click)="onSubmit()" 
+        [disabled]="isSubmitting || !productForm.form.valid"
+        class="submit-btn">
+        <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
+        <span *ngIf="!isSubmitting">{{ submitButtonText }}</span>
+        <span *ngIf="isSubmitting">{{ mode === 'add' ? 'Ajout...' : 'Modification...' }}</span>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>
