@@ -1,0 +1,199 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+
+// BeleyaShop - Thème jaune lime et noir
+:root {
+  // Couleurs principales - jaune lime #F5FF78 et noir
+  --ion-color-primary: #F5FF78;
+  --ion-color-primary-rgb: 245, 255, 120;
+  --ion-color-primary-contrast: #000000;
+  --ion-color-primary-contrast-rgb: 0, 0, 0;
+  --ion-color-primary-shade: #d8e56b;
+  --ion-color-primary-tint: #f6ff86;
+
+  // Couleur secondaire - noir
+  --ion-color-secondary: #000000;
+  --ion-color-secondary-rgb: 0, 0, 0;
+  --ion-color-secondary-contrast: #F5FF78;
+  --ion-color-secondary-contrast-rgb: 245, 255, 120;
+  --ion-color-secondary-shade: #000000;
+  --ion-color-secondary-tint: #1a1a1a;
+
+  // Couleur tertiaire - jaune lime plus doux
+  --ion-color-tertiary: #F5FF78;
+  --ion-color-tertiary-rgb: 245, 255, 120;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #d8e56b;
+  --ion-color-tertiary-tint: #f6ff86;
+
+  // Couleur de succès - vert doux
+  --ion-color-success: #28a745;
+  --ion-color-success-rgb: 40, 167, 69;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #24963e;
+  --ion-color-success-tint: #3eb058;
+
+  // Couleur d'avertissement - jaune lime
+  --ion-color-warning: #F5FF78;
+  --ion-color-warning-rgb: 245, 255, 120;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #d8e56b;
+  --ion-color-warning-tint: #f6ff86;
+
+  // Couleur de danger - noir
+  --ion-color-danger: #000000;
+  --ion-color-danger-rgb: 0, 0, 0;
+  --ion-color-danger-contrast: #F5FF78;
+  --ion-color-danger-contrast-rgb: 245, 255, 120;
+  --ion-color-danger-shade: #000000;
+  --ion-color-danger-tint: #1a1a1a;
+
+  // Couleur light - jaune lime très clair
+  --ion-color-light: #fdfff0;
+  --ion-color-light-rgb: 253, 255, 240;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #f5ff78;
+  --ion-color-light-tint: #fefff5;
+
+  // Couleur medium - noir atténué
+  --ion-color-medium: #333333;
+  --ion-color-medium-rgb: 51, 51, 51;
+  --ion-color-medium-contrast: #F5FF78;
+  --ion-color-medium-contrast-rgb: 245, 255, 120;
+  --ion-color-medium-shade: #2d2d2d;
+  --ion-color-medium-tint: #474747;
+
+  // Couleur dark - noir pur
+  --ion-color-dark: #000000;
+  --ion-color-dark-rgb: 0, 0, 0;
+  --ion-color-dark-contrast: #F5FF78;
+  --ion-color-dark-contrast-rgb: 245, 255, 120;
+  --ion-color-dark-shade: #000000;
+  --ion-color-dark-tint: #1a1a1a;
+
+  // Background et surfaces - thème jaune lime et noir
+  --ion-background-color: #F5FF78;
+  --ion-background-color-rgb: 245, 255, 120;
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0, 0, 0;
+  --ion-backdrop-color: rgba(0, 0, 0, 0.5);
+  --ion-overlay-background-color: rgba(245, 255, 120, 0.95);
+  --ion-border-color: rgba(0, 0, 0, 0.2);
+  --ion-box-shadow-color: rgba(0, 0, 0, 0.1);
+
+  // Toolbar - jaune lime avec texte noir gras
+  --ion-toolbar-background: #F5FF78;
+  --ion-toolbar-border-color: rgba(0, 0, 0, 0.2);
+  --ion-toolbar-color: #000000;
+
+  // Tab bar - noir
+  --ion-tab-bar-background: #000000;
+  --ion-tab-bar-color: #F5FF78;
+  --ion-tab-bar-color-selected: #F5FF78;
+  --ion-tab-bar-border-color: rgba(245, 255, 120, 0.3);
+
+  // Item - fond jaune lime clair avec texte noir gras
+  --ion-item-background: rgba(245, 255, 120, 0.3);
+  --ion-item-color: #000000;
+  --ion-item-border-color: rgba(0, 0, 0, 0.1);
+
+  // Card - fond jaune lime très clair avec texte noir gras
+  --ion-card-background: rgba(253, 255, 240, 0.9);
+  --ion-card-color: #000000;
+
+  // Input - fond jaune lime clair avec bordure et texte noir
+  --ion-input-background: rgba(245, 255, 120, 0.2);
+  --ion-input-color: #000000;
+  --ion-input-border-color: rgba(0, 0, 0, 0.3);
+
+  // Button - jaune lime par défaut avec texte noir gras
+  --ion-button-background: #F5FF78;
+  --ion-button-color: #000000;
+}
+
+// Mode iOS spécifique - thème jaune lime et noir
+.ios {
+  --ion-background-color: #F5FF78;
+  --ion-background-color-rgb: 245, 255, 120;
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0, 0, 0;
+  --ion-color-step-50: #fdfff0;
+  --ion-color-step-100: #fbffdd;
+  --ion-color-step-150: #f9ffca;
+  --ion-color-step-200: #f7ffb7;
+  --ion-color-step-250: #f6ffa4;
+  --ion-color-step-300: #f5ff91;
+  --ion-color-step-350: #f3ff7e;
+  --ion-color-step-400: #f2ff6b;
+  --ion-color-step-450: #f0ff58;
+  --ion-color-step-500: #efff45;
+  --ion-color-step-550: #ddeb3e;
+  --ion-color-step-600: #cbd637;
+  --ion-color-step-650: #b9c230;
+  --ion-color-step-700: #a7ad29;
+  --ion-color-step-750: #959922;
+  --ion-color-step-800: #83851b;
+  --ion-color-step-850: #717014;
+  --ion-color-step-900: #5f5c0d;
+  --ion-color-step-950: #4d4706;
+  --ion-item-background: rgba(253, 255, 240, 0.9);
+  --ion-card-background: rgba(253, 255, 240, 0.9);
+}
+
+// Mode MD (Material Design) spécifique - thème jaune lime et noir
+.md {
+  --ion-background-color: #F5FF78;
+  --ion-background-color-rgb: 245, 255, 120;
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0, 0, 0;
+  --ion-border-color: rgba(0, 0, 0, 0.2);
+  --ion-color-step-50: #fdfff0;
+  --ion-color-step-100: #fbffdd;
+  --ion-color-step-150: #f9ffca;
+  --ion-color-step-200: #f7ffb7;
+  --ion-color-step-250: #f6ffa4;
+  --ion-color-step-300: #f5ff91;
+  --ion-color-step-350: #f3ff7e;
+  --ion-color-step-400: #f2ff6b;
+  --ion-color-step-450: #f0ff58;
+  --ion-color-step-500: #efff45;
+  --ion-color-step-550: #ddeb3e;
+  --ion-color-step-600: #cbd637;
+  --ion-color-step-650: #b9c230;
+  --ion-color-step-700: #a7ad29;
+  --ion-color-step-750: #959922;
+  --ion-color-step-800: #83851b;
+  --ion-color-step-850: #717014;
+  --ion-color-step-900: #5f5c0d;
+  --ion-color-step-950: #4d4706;
+  --ion-item-background: rgba(253, 255, 240, 0.9);
+  --ion-toolbar-background: #F5FF78;
+  --ion-tab-bar-background: #000000;
+  --ion-card-background: rgba(253, 255, 240, 0.9);
+}
+
+// Règles globales pour forcer le texte noir gras
+* {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+// Exceptions pour le bouton WhatsApp
+.whatsapp-fab, .modern-whatsapp-btn {
+  * {
+    color: white !important;
+  }
+}
+
+// Exception pour les icônes qui doivent garder leur couleur
+ion-icon {
+  color: #000000 !important;
+}
+
+.whatsapp-fab ion-icon, .modern-whatsapp-btn ion-icon {
+  color: white !important;
+}

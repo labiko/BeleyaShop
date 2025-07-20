@@ -1,0 +1,127 @@
+<!-- Mobile Button - Full Width -->
+<div class="mobile-whatsapp-button" *ngIf="cartItemCount > 0">
+  <div class="modern-whatsapp-btn" (click)="goToCart()" [class.disabled]="gettingLocation">
+    <div class="btn-content">
+      <div class="btn-icon">
+        <ion-icon name="logo-whatsapp" *ngIf="!gettingLocation"></ion-icon>
+        <ion-spinner name="crescent" *ngIf="gettingLocation"></ion-spinner>
+      </div>
+      <div class="btn-text">
+        <div class="main-text">
+          {{ gettingLocation ? 'Préparation en cours...' : 'Commander via WhatsApp' }}
+        </div>
+        <div class="sub-text" *ngIf="!gettingLocation">
+          {{ cartItemCount }} article{{ cartItemCount > 1 ? 's' : '' }} • {{ formatPrice(getTotalPrice()) }}
+        </div>
+      </div>
+      <div class="btn-arrow" *ngIf="!gettingLocation">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </div>
+    </div>
+    <div class="btn-gradient"></div>
+  </div>
+</div>
+
+<!-- Desktop FAB -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" class="whatsapp-fab desktop-only">
+  <ion-fab-button 
+    color="success" 
+    (click)="goToCart()"
+    [disabled]="cartItemCount === 0 || gettingLocation">
+    <ion-icon name="logo-whatsapp" *ngIf="!gettingLocation"></ion-icon>
+    <ion-spinner name="crescent" *ngIf="gettingLocation"></ion-spinner>
+    <div class="cart-counter" *ngIf="cartItemCount > 0 && !gettingLocation">
+      {{ cartItemCount }}
+    </div>
+  </ion-fab-button>
+  
+  <div class="fab-label" *ngIf="cartItemCount > 0 && !gettingLocation">
+    Commander ({{ cartItemCount }} article{{ cartItemCount > 1 ? 's' : '' }})
+  </div>
+</ion-fab>
+
+<!-- Barre de progression moderne pour géolocalisation -->
+<div class="modern-progress-overlay" *ngIf="gettingLocation">
+  <div class="progress-container">
+    <div class="progress-card">
+      <div class="progress-header">
+        <div class="location-icon">
+          <div class="icon-pulse">
+            <ion-icon name="location"></ion-icon>
+          </div>
+        </div>
+        <div class="progress-title">
+          <h3>Recherche de votre position</h3>
+          <p>Optimisation de la précision en cours...</p>
+        </div>
+      </div>
+      
+      <div class="progress-content">
+        <div class="circular-progress">
+          <svg class="progress-ring" width="120" height="120">
+            <circle
+              class="progress-ring-circle-bg"
+              stroke="#e5e7eb"
+              stroke-width="8"
+              fill="transparent"
+              r="52"
+              cx="60"
+              cy="60"/>
+            <circle
+              class="progress-ring-circle"
+              stroke="url(#gradient)"
+              stroke-width="8"
+              fill="transparent"
+              r="52"
+              cx="60"
+              cy="60"
+              [style.stroke-dasharray]="circumference"
+              [style.stroke-dashoffset]="strokeDashoffset"/>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="progress-percentage">
+            <span class="percentage">{{ Math.round(locationProgress) }}%</span>
+          </div>
+        </div>
+        
+        <div class="progress-details">
+          <div class="progress-message">
+            <ion-icon name="pulse"></ion-icon>
+            {{ getProgressMessage() }}
+          </div>
+          
+          <div class="accuracy-info" *ngIf="bestAccuracy">
+            <div class="accuracy-badge">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              <span>Précision : {{ bestAccuracy }}m</span>
+            </div>
+          </div>
+          
+          <div class="progress-steps">
+            <div class="step" [class.active]="locationProgress >= 0" [class.completed]="locationProgress > 25">
+              <div class="step-indicator"></div>
+              <span>Initialisation</span>
+            </div>
+            <div class="step" [class.active]="locationProgress >= 25" [class.completed]="locationProgress > 50">
+              <div class="step-indicator"></div>
+              <span>Satellites</span>
+            </div>
+            <div class="step" [class.active]="locationProgress >= 50" [class.completed]="locationProgress > 75">
+              <div class="step-indicator"></div>
+              <span>Optimisation</span>
+            </div>
+            <div class="step" [class.active]="locationProgress >= 75" [class.completed]="locationProgress >= 100">
+              <div class="step-indicator"></div>
+              <span>Finalisation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

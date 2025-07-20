@@ -1,0 +1,148 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-title color="dark">BeleyaShop - Catalogue</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="catalog-container">
+    <div class="filters-section">
+      <ion-segment [(ngModel)]="selectedCategory" (ionChange)="filterByCategory($event)">
+        <ion-segment-button value="all">
+          <ion-label>Tout</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="cremes">
+          <ion-label>Crèmes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="gels">
+          <ion-label>Gels</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="parfums">
+          <ion-label>Parfums</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <div class="products-grid" *ngIf="filteredProducts.length > 0">
+      <ion-card *ngFor="let product of filteredProducts" class="product-card">
+        <div class="product-image">
+          <img [src]="product.image" [alt]="product.name" class="product-image"
+               appImageFallback fallbackType="product">
+          <div class="price-badge">
+            {{ formatPrice(product.price) }}
+          </div>
+          <div class="quantity-badge" *ngIf="getProductQuantityInCart(product.id) > 0">
+            {{ getProductQuantityInCart(product.id) }}
+          </div>
+        </div>
+        
+        <ion-card-content>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+          
+          <div class="product-actions">
+            <div class="quantity-controls" *ngIf="getProductQuantityInCart(product.id) > 0">
+              <ion-button 
+                fill="outline" 
+                size="small"
+                color="primary"
+                (click)="removeFromCart(product)">
+                <ion-icon name="remove"></ion-icon>
+              </ion-button>
+              
+              <span class="quantity-display">{{ getProductQuantityInCart(product.id) }}</span>
+              
+              <ion-button 
+                fill="outline" 
+                size="small"
+                color="primary"
+                (click)="addToCart(product)">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
+            </div>
+            
+            <ion-button 
+              *ngIf="getProductQuantityInCart(product.id) === 0"
+              expand="block" 
+              color="primary"
+              [disabled]="!product.inStock"
+              (click)="addToCart(product)">
+              <ion-icon name="bag-add" slot="start"></ion-icon>
+              {{ product.inStock ? 'J\'ai envie' : 'Rupture de stock' }}
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredProducts.length === 0">
+      <ion-icon name="bag-outline" size="large" color="medium"></ion-icon>
+      <h3>Aucun produit trouvé</h3>
+      <p>Essayez de changer de catégorie</p>
+    </div>
+  </div>
+
+  <!-- Bouton WhatsApp avec le composant -->
+  <app-whatsapp-fab></app-whatsapp-fab>
+
+  <!-- Barre de progression pour géolocalisation -->
+  <div class="location-progress-overlay" *ngIf="isGettingLocation">
+    <ion-card class="progress-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="location" color="primary"></ion-icon>
+          Localisation en cours...
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-progress-bar [value]="locationProgress / 100" color="primary"></ion-progress-bar>
+        <p class="progress-text">{{ locationProgress }}% - Recherche de votre position...</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Formulaire d'adresse -->
+  <div class="address-overlay" *ngIf="showAddressInput">
+    <ion-card class="address-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          Position trouvée !
+        </ion-card-title>
+        <ion-card-subtitle>
+          Précision: {{ currentLocation?.accuracy | number:'1.0-0' }}m
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Complétez votre adresse de livraison *</ion-label>
+          <ion-textarea
+            [(ngModel)]="customerAddress"
+            placeholder="Ex: Immeuble Bella Vista, 3ème étage, porte à droite..."
+            rows="3"
+            required>
+          </ion-textarea>
+        </ion-item>
+        
+        <div class="address-actions">
+          <ion-button 
+            expand="block" 
+            color="success" 
+            (click)="sendWhatsAppOrder()"
+            [disabled]="!customerAddress.trim()">
+            <ion-icon name="logo-whatsapp" slot="start"></ion-icon>
+            Envoyer la commande
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            fill="clear" 
+            color="medium"
+            (click)="resetOrderProcess()">
+            Annuler
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

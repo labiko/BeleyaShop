@@ -1,0 +1,223 @@
+.cart-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.cart-items {
+  margin-bottom: 20px;
+  
+  .cart-item {
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    
+    ion-card-content {
+      padding: 16px;
+    }
+    
+    .item-layout {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      
+      .item-image {
+        flex-shrink: 0;
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          background: var(--ion-color-light);
+        }
+      }
+      
+      .item-details {
+        flex: 1;
+        min-width: 0;
+        
+        .item-name {
+          margin: 0 0 4px 0;
+          font-size: 1em;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          line-height: 1.3;
+        }
+        
+        .item-price {
+          margin: 0 0 12px 0;
+          color: var(--ion-color-medium);
+          font-size: 0.9em;
+        }
+        
+        .quantity-controls {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          ion-button {
+            --border-radius: 6px;
+            --padding-start: 8px;
+            --padding-end: 8px;
+            width: 32px;
+            height: 32px;
+          }
+          
+          .quantity {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1em;
+          }
+        }
+      }
+      
+      .item-actions {
+        flex-shrink: 0;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        
+        .item-total {
+          font-weight: 600;
+          color: var(--ion-color-primary);
+          font-size: 1em;
+        }
+        
+        ion-button {
+          --padding-start: 8px;
+          --padding-end: 8px;
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+}
+
+.cart-summary {
+  position: sticky;
+  bottom: 16px;
+  z-index: 100;
+  
+  ion-card {
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    
+    ion-card-content {
+      padding: 20px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 1em;
+      
+      &.total {
+        margin-bottom: 20px;
+        padding-top: 12px;
+        border-top: 1px solid var(--ion-color-light);
+        font-weight: 600;
+        font-size: 1.1em;
+        
+        .total-price {
+          color: var(--ion-color-primary);
+          font-size: 1.2em;
+        }
+      }
+    }
+    
+    .checkout-btn {
+      --border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1em;
+      margin-top: 8px;
+    }
+  }
+}
+
+.empty-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 20px;
+  
+  .empty-state {
+    text-align: center;
+    max-width: 300px;
+    
+    ion-icon {
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      margin: 0 0 12px 0;
+      color: var(--ion-color-dark);
+      font-size: 1.4em;
+    }
+    
+    p {
+      margin: 0 0 24px 0;
+      color: var(--ion-color-medium);
+      line-height: 1.4;
+    }
+    
+    ion-button {
+      --border-radius: 12px;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-items .cart-item .item-layout {
+    .item-image {
+      width: 70px;
+      height: 70px;
+    }
+    
+    .item-details {
+      .item-name {
+        font-size: 0.95em;
+      }
+      
+      .quantity-controls {
+        ion-button {
+          width: 28px;
+          height: 28px;
+        }
+        
+        .quantity {
+          font-size: 0.9em;
+        }
+      }
+    }
+    
+    .item-actions {
+      .item-total {
+        font-size: 0.9em;
+      }
+    }
+  }
+  
+  .cart-summary ion-card ion-card-content {
+    padding: 16px;
+    
+    .summary-row {
+      font-size: 0.95em;
+      
+      &.total .total-price {
+        font-size: 1.1em;
+      }
+    }
+  }
+}
