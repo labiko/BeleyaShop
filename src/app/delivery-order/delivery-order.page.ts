@@ -44,22 +44,15 @@ export class DeliveryOrderPage implements OnInit {
       this.isLoading = true;
       this.error = '';
 
-      // Récupérer la commande par numéro
-      const { data: orderData, error: orderError } = await this.orderService['supabase']
-        .from('orders')
-        .select('*')
-        .eq('order_number', orderNumber)
-        .eq('status', 'confirmed') // Seules les commandes confirmées peuvent être livrées
-        .single();
+      // Récupérer la commande par numéro en utilisant le service
+      this.order = await this.orderService.getOrderByNumber(orderNumber);
 
-      if (orderError) {
+      if (!this.order) {
         throw new Error('Commande non trouvée ou non confirmée');
       }
 
-      this.order = orderData;
-
       // Récupérer les articles de la commande
-      if (this.order && this.order.id) {
+      if (this.order.id) {
         this.orderItems = await this.orderService.getOrderItems(this.order.id);
       }
 
@@ -118,25 +111,20 @@ Cette action est irréversible.`,
         throw new Error('ID de commande non disponible');
       }
 
-      const { error } = await this.orderService['supabase']
-        .from('orders')
-        .update({ 
-          status: 'delivered',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', this.order.id);
+      const success = await this.orderService.markOrderAsDelivered(this.order.id);
 
       await loading.dismiss();
 
-      if (error) {
-        throw error;
+      if (!success) {
+        throw new Error('Erreur lors de la mise à jour du statut');
       }
 
       await this.showToast('Commande marquée comme livrée !', 'success');
       
-      // Rediriger vers une page de succès ou recharger
+      // Mettre à jour l'objet local
       if (this.order) {
         this.order.status = 'delivered';
+        this.order.delivered_at = new Date().toISOString();
       }
       
     } catch (error) {
@@ -162,7 +150,7 @@ Cette action est irréversible.`,
 
   openGoogleMaps() {
     if (this.order?.customer_location_lat && this.order?.customer_location_lng) {
-      const url = `https://maps.google.com/?q=${this.order.customer_location_lat},${this.order.customer_location_lng}`;
+      const url = `https://maps.google.com/?q=${this.order.customer_location_lat},${this.order.customer_location_lng}&mode=driving`;
       window.open(url, '_blank');
     }
   }

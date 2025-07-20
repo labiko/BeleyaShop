@@ -150,15 +150,17 @@
     }
 
     .submit-btn {
-      --background: linear-gradient(135deg, #000000 0%, #333333 100%);
-      --color: #F5FF78;
+      --background: #F5FF78;
+      --color: #000000;
+      --border-color: #000000;
+      border: 2px solid #000000;
       font-weight: 700;
       min-width: 120px;
       
       &:hover:not(.button-disabled) {
-        --background: linear-gradient(135deg, #333333 0%, #000000 100%);
+        --background: #f0f9ff;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(245, 255, 120, 0.3);
       }
 
       &.button-disabled {

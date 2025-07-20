@@ -1,0 +1,162 @@
+<ion-content class="delivery-personnel-content">
+
+  <!-- Header avec titre -->
+  <div class="personnel-header">
+    <div class="header-content">
+      
+      <!-- Titre -->
+      <div class="header-title">
+        <h1>
+          <ion-icon name="bicycle"></ion-icon>
+          Gestion des Livreurs
+        </h1>
+        <p>{{ deliveryPersonnels.length }} livreur{{ deliveryPersonnels.length !== 1 ? 's' : '' }} enregistré{{ deliveryPersonnels.length !== 1 ? 's' : '' }}</p>
+      </div>
+
+      <!-- Statistiques globales -->
+      <div class="stats-grid">
+        <div class="stat-card total-personnel">
+          <div class="stat-icon">
+            <ion-icon name="people"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ deliveryPersonnels.length }}</span>
+            <span class="stat-label">Livreurs actifs</span>
+          </div>
+        </div>
+
+        <div class="stat-card total-deliveries">
+          <div class="stat-icon">
+            <ion-icon name="checkmark-done-circle"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTotalDeliveries() }}</span>
+            <span class="stat-label">Livraisons totales</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshData($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Tirer pour actualiser"
+      refreshing-spinner="crescent"
+      refreshing-text="Actualisation...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Liste des livreurs -->
+  <div class="personnel-list" *ngIf="!isLoading">
+    
+    <!-- Message si aucun livreur -->
+    <div class="empty-state" *ngIf="deliveryPersonnels.length === 0">
+      <ion-icon name="bicycle-outline"></ion-icon>
+      <h3>Aucun livreur trouvé</h3>
+      <p>Les livreurs apparaîtront ici une fois qu'ils auront effectué des livraisons.</p>
+    </div>
+
+    <!-- Cartes des livreurs -->
+    <div class="personnel-grid" *ngIf="deliveryPersonnels.length > 0">
+      
+      <ion-card class="personnel-card" *ngFor="let personnel of deliveryPersonnels">
+        
+        <!-- Header du livreur -->
+        <div class="personnel-header-card">
+          <div class="personnel-info">
+            <div class="personnel-avatar">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <div class="personnel-details">
+              <h3 class="personnel-name">{{ personnel.name }}</h3>
+              <p class="personnel-phone">{{ formatPhone(personnel.phone) }}</p>
+              <div class="personnel-stats">
+                <span class="delivery-count">
+                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  {{ personnel.totalDeliveries }} livraison{{ personnel.totalDeliveries !== 1 ? 's' : '' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <ion-button 
+            fill="clear" 
+            (click)="togglePersonnelExpansion(personnel.id)"
+            class="expand-btn">
+            <ion-icon 
+              [name]="expandedPersonnelId === personnel.id ? 'chevron-up' : 'chevron-down'"
+              slot="icon-only">
+            </ion-icon>
+          </ion-button>
+        </div>
+
+        <!-- Contenu étendu - Commandes livrées -->
+        <ion-card-content class="personnel-content" *ngIf="expandedPersonnelId === personnel.id">
+          
+          <div class="delivered-orders-section">
+            <h4 class="section-title">
+              <ion-icon name="list" color="primary"></ion-icon>
+              Commandes livrées
+            </h4>
+
+            <!-- Liste des commandes livrées -->
+            <div class="orders-list" *ngIf="personnel.deliveredOrders.length > 0">
+              <div class="order-item" *ngFor="let order of personnel.deliveredOrders">
+                
+                <div class="order-summary">
+                  <div class="order-header">
+                    <span class="order-number">{{ order.order_number || 'Commande #' + order.id }}</span>
+                    <span class="order-amount">{{ formatPrice(order.total_amount) }}</span>
+                  </div>
+                  
+                  <div class="order-details">
+                    <div class="detail-row">
+                      <ion-icon name="time" color="medium"></ion-icon>
+                      <span>Livrée le {{ formatDate(order.delivered_at!) }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="order.customer_phone">
+                      <ion-icon name="call" color="medium"></ion-icon>
+                      <span>{{ order.customer_phone }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="order.customer_location_lat && order.customer_location_lng">
+                      <ion-icon name="location" color="medium"></ion-icon>
+                      <span>Position GPS disponible</span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        (click)="openGoogleMaps(order.customer_location_lat!, order.customer_location_lng!)"
+                        class="maps-btn">
+                        <ion-icon name="map" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Message si aucune commande -->
+            <div class="no-orders" *ngIf="personnel.deliveredOrders.length === 0">
+              <ion-icon name="document-outline" color="medium"></ion-icon>
+              <p>Aucune commande livrée pour le moment</p>
+            </div>
+
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+    <p>Chargement des livreurs...</p>
+  </div>
+
+</ion-content>

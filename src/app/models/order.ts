@@ -14,6 +14,7 @@ export interface Order {
   updated_at?: string;
   confirmed_at?: string;
   confirmed_by?: string;
+  delivered_at?: string; // Date/heure de validation livraison
 }
 
 export interface OrderItem {

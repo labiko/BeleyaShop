@@ -155,6 +155,17 @@
             </div>
           </div>
 
+          <!-- Date de livraison pour les commandes livrées -->
+          <div class="delivery-info" *ngIf="order.status === 'delivered' && order.delivered_at">
+            <div class="info-row delivered-row">
+              <ion-icon name="checkmark-done-circle" color="success"></ion-icon>
+              <div class="delivery-details">
+                <span class="delivery-label">Livrée le</span>
+                <span class="delivery-date">{{ formatDate(order.delivered_at) }}</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Localisation -->
           <div class="location-info" *ngIf="order.customer_location_lat && order.customer_location_lng">
             <div class="info-row">
@@ -250,6 +261,7 @@
               color="danger" 
               size="small" 
               (click)="deleteOrder(order)"
+              [disabled]="order.status === 'delivered'"
               class="delete-btn">
               <ion-icon name="trash" slot="start"></ion-icon>
               Supprimer

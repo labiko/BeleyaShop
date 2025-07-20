@@ -239,6 +239,7 @@
           padding: 12px;
 
           .customer-info,
+          .delivery-info,
           .location-info {
             margin-bottom: 12px;
 
@@ -265,6 +266,38 @@
                 --padding-start: 6px;
                 --padding-end: 6px;
                 margin-left: auto;
+              }
+
+              &.delivered-row {
+                background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                border: 1px solid #10b981;
+                border-radius: 8px;
+                padding: 12px;
+
+                ion-icon {
+                  font-size: 18px;
+                }
+
+                .delivery-details {
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 2px;
+
+                  .delivery-label {
+                    font-size: 11px;
+                    color: #065f46;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                  }
+
+                  .delivery-date {
+                    font-size: 13px;
+                    color: #059669;
+                    font-weight: 700;
+                  }
+                }
               }
             }
           }
@@ -365,6 +398,12 @@
             .delete-btn {
               --color: #ef4444;
               --border-color: #ef4444;
+            }
+
+            // Style spécifique pour le bouton partager livreur
+            .action-btn[color="primary"] {
+              --color: #000000;
+              --border-color: #000000;
             }
           }
         }

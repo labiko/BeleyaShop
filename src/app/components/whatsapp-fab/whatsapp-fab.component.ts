@@ -308,6 +308,8 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     if (orderResult.orderNumber) {
       message += `📋 Numéro de commande : ${orderResult.orderNumber}\n\n`;
     }
+
+    // Note: Le code de livraison sera généré lors de la confirmation par l'admin
     
     // Ajouter les produits depuis le localStorage
     this.cartItems.forEach(item => {

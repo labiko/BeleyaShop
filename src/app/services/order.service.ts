@@ -240,4 +240,121 @@ export class OrderService {
       return null;
     }
   }
+
+  /**
+   * Récupérer une commande par numéro de commande
+   */
+  async getOrderByNumber(orderNumber: string): Promise<Order | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from('orders')
+        .select('*')
+        .eq('order_number', orderNumber)
+        .in('status', ['confirmed', 'delivered'])
+        .maybeSingle();
+
+      if (error) {
+        console.error('Erreur récupération commande par numéro:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération de la commande:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Marquer une commande comme livrée
+   */
+  async markOrderAsDelivered(orderId: number): Promise<boolean> {
+    try {
+      const now = new Date().toISOString();
+      const { error } = await this.supabase
+        .from('orders')
+        .update({ 
+          status: 'delivered',
+          updated_at: now,
+          delivered_at: now
+        })
+        .eq('id', orderId);
+
+      if (error) {
+        console.error('Erreur mise à jour livraison:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de livraison:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Récupérer toutes les commandes (pour l'admin)
+   */
+  async getAllOrders(): Promise<Order[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erreur récupération toutes commandes:', error);
+        return [];
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération de toutes les commandes:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Mettre à jour le statut d'une commande
+   */
+  async updateOrderStatus(orderId: number, newStatus: 'pending' | 'confirmed' | 'cancelled' | 'delivered'): Promise<boolean> {
+    try {
+      const { error } = await this.supabase
+        .from('orders')
+        .update({ status: newStatus })
+        .eq('id', orderId);
+
+      if (error) {
+        console.error('Erreur mise à jour statut:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du statut:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Supprimer une commande
+   */
+  async deleteOrder(orderId: number): Promise<boolean> {
+    try {
+      const { error } = await this.supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+
+      if (error) {
+        console.error('Erreur suppression commande:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la commande:', error);
+      return false;
+    }
+  }
 }

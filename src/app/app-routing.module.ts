@@ -51,6 +51,10 @@ const routes: Routes = [
         loadComponent: () => import('./admin/orders/admin-orders.page').then(m => m.AdminOrdersPage)
       },
       {
+        path: 'delivery-personnel',
+        loadComponent: () => import('./admin/delivery-personnel/admin-delivery-personnel.page').then(m => m.AdminDeliveryPersonnelPage)
+      },
+      {
         path: 'migration',
         loadComponent: () => import('./admin/migration/migration.component').then(m => m.MigrationComponent)
       }

@@ -61,9 +61,8 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     this.isLoading = true;
     
     try {
-      // Charger toutes les commandes (pas seulement les pending)
-      const allOrders = await this.getAllOrders();
-      this.orders = allOrders;
+      // Charger toutes les commandes en utilisant le service
+      this.orders = await this.orderService.getAllOrders();
       this.calculateStats();
       this.applyFilters();
       this.isLoading = false;
@@ -72,20 +71,6 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
       this.showToast('Erreur lors du chargement des commandes', 'danger');
       this.isLoading = false;
     }
-  }
-
-  private async getAllOrders(): Promise<Order[]> {
-    // Utiliser directement Supabase pour récupérer toutes les commandes
-    const { data, error } = await this.orderService['supabase']
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      throw error;
-    }
-
-    return data || [];
   }
 
   private calculateStats() {
@@ -252,16 +237,13 @@ Cette action va :
     await loading.present();
 
     try {
-      // Utiliser directement Supabase pour mettre à jour le statut
-      const { error } = await this.orderService['supabase']
-        .from('orders')
-        .update({ status: newStatus })
-        .eq('id', order.id);
+      // Utiliser le service pour mettre à jour le statut
+      const success = await this.orderService.updateOrderStatus(order.id!, newStatus as any);
 
       await loading.dismiss();
 
-      if (error) {
-        throw error;
+      if (!success) {
+        throw new Error('Erreur lors de la mise à jour du statut');
       }
 
       this.showToast('Statut mis à jour avec succès', 'success');
@@ -307,16 +289,13 @@ Cette action est irréversible.`,
     await loading.present();
 
     try {
-      // Utiliser directement Supabase pour supprimer
-      const { error } = await this.orderService['supabase']
-        .from('orders')
-        .delete()
-        .eq('id', order.id);
+      // Utiliser le service pour supprimer
+      const success = await this.orderService.deleteOrder(order.id!);
 
       await loading.dismiss();
 
-      if (error) {
-        throw error;
+      if (!success) {
+        throw new Error('Erreur lors de la suppression de la commande');
       }
 
       this.showToast('Commande supprimée avec succès', 'success');
@@ -378,7 +357,7 @@ Cette action est irréversible.`,
   }
 
   openGoogleMaps(lat: number, lng: number) {
-    const url = `https://maps.google.com/?q=${lat},${lng}`;
+    const url = `https://maps.google.com/?q=${lat},${lng}&mode=driving`;
     window.open(url, '_blank');
   }
 
@@ -426,17 +405,16 @@ Cette action est irréversible.`,
     
     let message = `🚚 Nouvelle livraison à effectuer\n\n`;
     message += `📋 Commande: ${order.order_number}\n`;
-    message += `🔢 Code livraison: ${order.delivery_code}\n`;
     message += `💰 Montant: ${this.formatPrice(order.total_amount)}\n\n`;
     
     if (order.customer_location_lat && order.customer_location_lng) {
-      const googleMapsUrl = `https://maps.google.com/?q=${order.customer_location_lat},${order.customer_location_lng}`;
+      const googleMapsUrl = `https://maps.google.com/?q=${order.customer_location_lat},${order.customer_location_lng}&mode=driving`;
       message += `📍 Localisation client: ${googleMapsUrl}\n\n`;
     }
     
     message += `📱 Lien de gestion:\n${orderUrl}\n\n`;
     message += `⚠️ Instructions:\n`;
-    message += `• Vérifiez le code ${order.delivery_code} avec le client\n`;
+    message += `• Demandez le code de validation au client\n`;
     message += `• Cliquez sur le lien pour marquer comme livré\n\n`;
     message += `🤖 Envoyé depuis BeleyaShop Admin`;
 
