@@ -5,7 +5,7 @@
   .products-header {
     background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
     border-bottom: 2px solid #000000;
-    padding: 20px;
+    padding: 16px;
 
     .header-content {
       max-width: 1200px;
@@ -13,7 +13,7 @@
 
       .header-title {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
 
         h1 {
           display: flex;
@@ -60,7 +60,7 @@
       }
 
       .filters-container {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
 
         .category-segment {
           --background: rgba(255, 255, 255, 0.9);
@@ -107,14 +107,14 @@
 
   // Products list
   .products-list {
-    padding: 20px;
+    padding: 16px;
     max-width: 1200px;
     margin: 0 auto;
 
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      gap: 16px;
 
       .product-card {
         border-radius: 16px;
@@ -132,7 +132,7 @@
 
         .product-image {
           position: relative;
-          height: 200px;
+          height: 120px;
           overflow: hidden;
 
           img {
@@ -165,7 +165,7 @@
         }
 
         .product-content {
-          padding: 16px;
+          padding: 12px;
 
           .product-header {
             display: flex;

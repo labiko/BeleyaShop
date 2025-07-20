@@ -73,39 +73,13 @@
                 {{ isLoading ? 'Connexion...' : 'Se connecter' }}
               </ion-button>
 
-              <!-- Bouton de développement -->
-              <ion-button
-                expand="block"
-                fill="outline"
-                color="medium"
-                (click)="fillCredentials()"
-                class="dev-btn"
-                *ngIf="!isLoading">
-                <ion-icon name="code" slot="start"></ion-icon>
-                Remplir automatiquement (Dev)
-              </ion-button>
-            </div>
+              </div>
 
           </form>
         </ion-card-content>
       </ion-card>
     </div>
 
-    <!-- Informations de connexion -->
-    <div class="login-info">
-      <ion-card class="info-card">
-        <ion-card-content>
-          <div class="info-item">
-            <ion-icon name="information-circle" color="primary"></ion-icon>
-            <div>
-              <strong>Identifiants par défaut :</strong><br>
-              Nom d'utilisateur: <code>admin</code><br>
-              Mot de passe: <code>Passer@123</code>
-            </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    </div>
 
   </div>
 </ion-content>

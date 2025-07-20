@@ -4,6 +4,8 @@
   .login-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
     padding: 20px;
     max-width: 500px;
@@ -12,8 +14,7 @@
 
   .login-header {
     text-align: center;
-    margin-bottom: 30px;
-    padding-top: 40px;
+    margin-bottom: 20px;
 
     .logo-container {
       .logo {
@@ -42,10 +43,7 @@
   }
 
   .login-form {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100%;
 
     .login-card {
       border-radius: 20px;
@@ -134,18 +132,21 @@
           margin-top: 24px;
 
           .login-btn {
-            --background: linear-gradient(135deg, #000000 0%, #333333 100%);
-            --color: #F5FF78;
+            --background: #F5FF78;
+            --color: #000000;
             --border-radius: 12px;
+            --border-color: #000000;
+            --border-style: solid;
+            --border-width: 2px;
             height: 50px;
             font-weight: 700;
             font-size: 16px;
             margin-bottom: 12px;
             
             &:not(.button-disabled):hover {
-              --background: linear-gradient(135deg, #333333 0%, #000000 100%);
+              --background: #f1f5f9;
               transform: translateY(-1px);
-              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             }
 
             &.button-disabled {
@@ -153,71 +154,11 @@
             }
           }
 
-          .dev-btn {
-            --color: #64748b;
-            --border-color: #d1d5db;
-            --border-radius: 12px;
-            height: 44px;
-            font-weight: 600;
-            
-            &:hover {
-              --color: #000000;
-              --border-color: #000000;
-            }
-          }
         }
       }
     }
   }
 
-  .login-info {
-    margin-top: 24px;
-
-    .info-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-
-      ion-card-content {
-        padding: 16px;
-
-        .info-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-
-          ion-icon {
-            font-size: 20px;
-            margin-top: 2px;
-            flex-shrink: 0;
-          }
-
-          div {
-            font-size: 13px;
-            line-height: 1.5;
-            color: #475569;
-
-            strong {
-              color: #1e293b;
-              font-weight: 600;
-            }
-
-            code {
-              background: rgba(245, 255, 120, 0.3);
-              color: #000000;
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-family: 'Courier New', monospace;
-              font-size: 12px;
-              font-weight: 600;
-            }
-          }
-        }
-      }
-    }
-  }
 }
 
 // Responsive design
@@ -227,8 +168,7 @@
       padding: 16px;
       
       .login-header {
-        padding-top: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
 
         .logo-container {
           .logo {
