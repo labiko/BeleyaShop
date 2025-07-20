@@ -96,7 +96,13 @@ export class AdminDeliveryPersonnelPage implements OnInit {
         
         // Récupérer les paiements pour ce livreur
         const personnelPaidOrders = Array.from(this.payments.values())
-          .filter(payment => this.getPersonnelIdForOrder(payment.order) === person.id);
+          .filter(payment => {
+            // Vérifier d'abord si la commande est dans les commandes de ce livreur
+            const orderInPersonnelList = personnelOrders.some(o => o.id === payment.order.id);
+            // Ou utiliser la fonction getPersonnelIdForOrder en fallback
+            const calculatedPersonnelId = this.getPersonnelIdForOrder(payment.order);
+            return orderInPersonnelList || calculatedPersonnelId === person.id;
+          });
         
         const totalPaid = personnelPaidOrders.reduce((sum, payment) => sum + payment.paidAmount, 0);
         
@@ -113,9 +119,13 @@ export class AdminDeliveryPersonnelPage implements OnInit {
       console.log('=== Distribution des commandes livrées ===');
       console.log(`Total commandes livrées: ${deliveredOrders.length}`);
       this.deliveryPersonnels.forEach(personnel => {
-        console.log(`${personnel.name}: ${personnel.totalDeliveries} commandes`);
+        console.log(`${personnel.name}: ${personnel.totalDeliveries} commandes, ${personnel.paidOrders.length} paiements`);
         personnel.deliveredOrders.forEach((order, index) => {
-          console.log(`  - ${order.order_number || 'Commande #' + order.id} (Code: ${order.delivery_code})`);
+          const isPaid = this.isOrderPaid(order);
+          console.log(`  - ${order.order_number || 'Commande #' + order.id} (Code: ${order.delivery_code}) ${isPaid ? '[PAYÉ]' : '[NON PAYÉ]'}`);
+        });
+        personnel.paidOrders.forEach((payment, index) => {
+          console.log(`  💰 Paiement: ${payment.order.order_number || '#' + payment.order.id} - ${payment.paidAmount} GNF`);
         });
       });
 
@@ -210,14 +220,22 @@ export class AdminDeliveryPersonnelPage implements OnInit {
   }
 
   isOrderPaid(order: Order): boolean {
-    const paymentKey = `${order.id}_${this.getPersonnelIdForOrder(order)}`;
-    return this.payments.has(paymentKey);
+    // Vérifier si cette commande a un paiement associé peu importe le livreur
+    const hasPayment = Array.from(this.payments.values()).some(payment => payment.order.id === order.id);
+    
+    // Debug pour vérifier
+    if (hasPayment) {
+      console.log(`Commande ${order.order_number || '#' + order.id} est marquée comme payée`);
+    }
+    
+    return hasPayment;
   }
 
   async payOrder(order: Order, personnelId: number) {
     const alert = await this.alertController.create({
       header: '💰 Payer le livreur',
       message: `Saisir le montant à payer pour la commande ${order.order_number || '#' + order.id}`,
+      cssClass: 'payment-modal',
       inputs: [
         {
           name: 'amount',
@@ -262,6 +280,14 @@ export class AdminDeliveryPersonnelPage implements OnInit {
     };
 
     this.payments.set(paymentKey, payment);
+    
+    // Debug: Afficher les informations de paiement
+    console.log('=== Paiement enregistré ===');
+    console.log(`Commande: ${order.order_number || '#' + order.id}`);
+    console.log(`Livreur ID: ${personnelId}`);
+    console.log(`Montant: ${amount} GNF`);
+    console.log(`Clé paiement: ${paymentKey}`);
+    console.log('Tous les paiements:', Array.from(this.payments.entries()));
     
     // Recharger les données pour mettre à jour l'affichage
     await this.loadDeliveryPersonnels();
