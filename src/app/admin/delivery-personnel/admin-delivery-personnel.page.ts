@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { OrderService } from '../../services/order.service';
+import { InvoiceService, InvoiceData } from '../../services/invoice.service';
 import { Order } from '../../models/order';
 
 interface DeliveryPersonnel {
@@ -49,7 +50,8 @@ export class AdminDeliveryPersonnelPage implements OnInit {
   constructor(
     private orderService: OrderService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private invoiceService: InvoiceService
   ) {}
 
   ngOnInit() {
@@ -332,6 +334,24 @@ export class AdminDeliveryPersonnelPage implements OnInit {
       console.log('Paiements sauvegardés dans localStorage:', this.payments.size, 'paiements');
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des paiements dans localStorage:', error);
+    }
+  }
+
+  async shareInvoice(payment: OrderPayment, personnelName: string) {
+    try {
+      const invoiceData: InvoiceData = {
+        order: payment.order,
+        paidAmount: payment.paidAmount,
+        paidAt: payment.paidAt,
+        paidBy: payment.paidBy,
+        deliveryPersonName: personnelName
+      };
+
+      await this.invoiceService.shareInvoice(invoiceData);
+      await this.showToast('Facture partagée avec succès', 'success');
+    } catch (error) {
+      console.error('Erreur lors du partage de la facture:', error);
+      await this.showToast('Erreur lors du partage de la facture', 'danger');
     }
   }
 }

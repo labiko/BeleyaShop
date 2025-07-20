@@ -523,17 +523,38 @@
                     }
                   }
 
-                  .payment-status {
+                  .payment-actions {
                     margin-top: 12px;
+                    padding-top: 12px;
+                    border-top: 1px solid #e2e8f0;
                     display: flex;
-                    justify-content: flex-end;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 12px;
 
-                    ion-badge {
-                      --background: #10b981;
-                      --color: white;
-                      font-weight: 600;
-                      padding: 6px 12px;
-                      border-radius: 12px;
+                    .payment-status {
+                      ion-badge {
+                        --background: #10b981;
+                        --color: white;
+                        font-weight: 600;
+                        padding: 6px 12px;
+                        border-radius: 12px;
+                      }
+                    }
+
+                    .share-invoice-btn {
+                      --border-color: #000000;
+                      --color: #000000;
+                      font-weight: 700;
+                      height: 32px;
+                      
+                      ion-icon {
+                        font-size: 16px;
+                      }
+
+                      &:hover {
+                        --background: rgba(0, 0, 0, 0.1);
+                      }
                     }
                   }
                 }

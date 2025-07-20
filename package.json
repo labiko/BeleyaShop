@@ -23,7 +23,9 @@
     "@angular/router": "^20.0.0",
     "@ionic/angular": "^8.0.0",
     "@supabase/supabase-js": "^2.52.0",
+    "html2canvas": "^1.4.1",
     "ionicons": "^7.0.0",
+    "jspdf": "^3.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

@@ -252,12 +252,22 @@
                     </div>
                   </div>
 
-                  <!-- Badge statut payé -->
-                  <div class="payment-status">
-                    <ion-badge color="success">
-                      <ion-icon name="checkmark-circle" slot="start"></ion-icon>
-                      Payé
-                    </ion-badge>
+                  <!-- Actions de partage et statut -->
+                  <div class="payment-actions">
+                    <div class="payment-status">
+                      <ion-badge color="success">
+                        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+                        Payé
+                      </ion-badge>
+                    </div>
+                    <ion-button 
+                      fill="outline" 
+                      size="small"
+                      (click)="shareInvoice(payment, personnel.name)"
+                      class="share-invoice-btn">
+                      <ion-icon name="share" slot="start"></ion-icon>
+                      Partager facture
+                    </ion-button>
                   </div>
                 </div>
 
