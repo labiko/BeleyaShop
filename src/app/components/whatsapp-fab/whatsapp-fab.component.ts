@@ -175,7 +175,23 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         const accuracy = position.coords.accuracy;
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const altitude = position.coords.altitude;
+        const speed = position.coords.speed;
+        const heading = position.coords.heading;
+        const timestamp = new Date(position.timestamp).toLocaleTimeString();
+        
         this.positionCount++;
+        
+        // Console détaillé pour chaque position
+        console.group(`🌍 Position ${this.positionCount} reçue à ${timestamp}`);
+        console.log(`📍 Latitude: ${lat.toFixed(8)}`);
+        console.log(`📍 Longitude: ${lng.toFixed(8)}`);
+        console.log(`🎯 Précision: ${Math.round(accuracy)}m`);
+        if (altitude !== null) console.log(`⛰️ Altitude: ${Math.round(altitude)}m`);
+        if (speed !== null) console.log(`🚗 Vitesse: ${Math.round(speed * 3.6)}km/h`);
+        if (heading !== null) console.log(`🧭 Direction: ${Math.round(heading)}°`);
         
         // Stocker toutes les positions reçues
         this.allPositions.push({
@@ -184,16 +200,23 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
           accuracy: accuracy
         });
         
-        console.log(`Position ${this.positionCount}: Lat ${position.coords.latitude.toFixed(6)}, Lng ${position.coords.longitude.toFixed(6)}, Accuracy: ${Math.round(accuracy)}m`);
-        
         // Garder la position la plus précise et mettre à jour l'affichage en temps réel
-        if (!this.bestPosition || accuracy < this.bestPosition.coords.accuracy) {
+        const wasBest = !this.bestPosition || accuracy < this.bestPosition.coords.accuracy;
+        if (wasBest) {
           this.bestPosition = position;
           this.bestAccuracy = Math.round(accuracy);
+          console.log(`✅ Nouvelle meilleure position! (${Math.round(accuracy)}m)`);
+        } else {
+          console.log(`❌ Position moins précise que la meilleure (${Math.round(this.bestPosition.coords.accuracy)}m)`);
         }
+        
+        console.log(`📊 Total positions collectées: ${this.positionCount}`);
+        console.groupEnd();
       },
       (error) => {
-        console.error('Erreur de géolocalisation:', error);
+        console.error('❌ Erreur de géolocalisation:', error);
+        console.error('Code d\'erreur:', error.code);
+        console.error('Message:', error.message);
       },
       options
     );
@@ -208,15 +231,26 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     this.cleanupGeolocation();
     this.locationProgress = 100;
     
-    console.log(`Recherche terminée. ${this.positionCount} positions collectées.`);
+    console.group(`🏁 Recherche de géolocalisation terminée`);
+    console.log(`📊 Total positions collectées: ${this.positionCount}`);
     
     if (this.allPositions.length > 0) {
       // Trier par précision (accuracy croissante) pour trouver la meilleure
       const sortedPositions = this.allPositions.sort((a, b) => a.accuracy - b.accuracy);
       const bestPos = sortedPositions[0];
+      const worstPos = sortedPositions[sortedPositions.length - 1];
       
-      console.log(`Meilleure position sélectionnée: Accuracy ${Math.round(bestPos.accuracy)}m`);
-      console.log(`Positions collectées: ${this.allPositions.map(p => Math.round(p.accuracy) + 'm').join(', ')}`);
+      console.log(`🏆 Meilleure position sélectionnée:`);
+      console.log(`   📍 Lat: ${bestPos.position.coords.latitude.toFixed(8)}`);
+      console.log(`   📍 Lng: ${bestPos.position.coords.longitude.toFixed(8)}`);
+      console.log(`   🎯 Précision: ${Math.round(bestPos.accuracy)}m`);
+      
+      console.log(`📈 Statistiques de précision:`);
+      console.log(`   🟢 Meilleure: ${Math.round(bestPos.accuracy)}m`);
+      console.log(`   🔴 Pire: ${Math.round(worstPos.accuracy)}m`);
+      console.log(`   📊 Amélioration: ${Math.round(((worstPos.accuracy - bestPos.accuracy) / worstPos.accuracy) * 100)}%`);
+      
+      console.log(`📋 Toutes les précisions: ${this.allPositions.map(p => Math.round(p.accuracy) + 'm').join(', ')}`);
       
       this.currentLocation = {
         latitude: bestPos.position.coords.latitude,
@@ -225,7 +259,11 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
       };
       
       this.bestAccuracy = Math.round(bestPos.accuracy);
+    } else {
+      console.warn(`⚠️ Aucune position collectée!`);
     }
+    
+    console.groupEnd();
     
     // Attendre un peu pour que l'utilisateur voie 100%, puis envoyer la commande
     setTimeout(() => {
@@ -267,9 +305,9 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     // Finaliser l'interface
     this.gettingLocation = false;
     
-    // Rediriger vers l'accueil
+    // Rediriger vers le catalogue
     setTimeout(() => {
-      this.router.navigate(['/tabs/home']);
+      this.router.navigate(['/tabs/catalog']);
     }, 1000);
   }
 }
