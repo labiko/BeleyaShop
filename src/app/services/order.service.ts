@@ -100,9 +100,9 @@ export class OrderService {
       };
 
       if (location) {
-        orderData.customer_location_lat = location.lat;
-        orderData.customer_location_lng = location.lng;
-        orderData.customer_location_accuracy = location.accuracy;
+        orderData.customer_location_lat = Number(location.lat.toFixed(8));
+        orderData.customer_location_lng = Number(location.lng.toFixed(8));
+        orderData.customer_location_accuracy = Math.round(location.accuracy);
       }
 
       const { data: order, error: orderError } = await this.supabase
