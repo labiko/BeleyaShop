@@ -282,7 +282,32 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Créer la commande en base de données AVANT de construire le message
+    const orderResult = await this.orderService.createPendingOrder(
+      this.cartItems,
+      this.getTotalPrice(),
+      this.currentLocation ? {
+        lat: this.currentLocation.latitude,
+        lng: this.currentLocation.longitude,
+        accuracy: this.currentLocation.accuracy
+      } : undefined
+    );
+
+    if (!orderResult.success) {
+      await this.showOrderCreationError(orderResult.error || 'Erreur lors de la création de la commande');
+      this.gettingLocation = false;
+      return;
+    }
+
+    console.log('✅ Commande créée en base:', orderResult.orderId, 'Numéro:', orderResult.orderNumber);
+
+    // Maintenant construire le message WhatsApp avec le numéro de commande
     let message = `Bonjour, je veux commander :\n\n`;
+    
+    // Ajouter le numéro de commande en premier
+    if (orderResult.orderNumber) {
+      message += `📋 Numéro de commande : ${orderResult.orderNumber}\n\n`;
+    }
     
     // Ajouter les produits depuis le localStorage
     this.cartItems.forEach(item => {
@@ -302,25 +327,7 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     
     message += `🤖 Commande envoyée via BeleyaShop`;
 
-    // Créer la commande en base de données
-    const orderResult = await this.orderService.createPendingOrder(
-      this.cartItems,
-      this.getTotalPrice(),
-      this.currentLocation ? {
-        lat: this.currentLocation.latitude,
-        lng: this.currentLocation.longitude,
-        accuracy: this.currentLocation.accuracy
-      } : undefined,
-      message
-    );
-
-    if (!orderResult.success) {
-      await this.showOrderCreationError(orderResult.error || 'Erreur lors de la création de la commande');
-      this.gettingLocation = false;
-      return;
-    }
-
-    console.log('✅ Commande créée en base:', orderResult.orderId);
+    console.log('📝 Message WhatsApp final avec numéro:', message);
 
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);

@@ -1,5 +1,6 @@
 export interface Order {
   id?: number;
+  order_number?: string;
   customer_phone?: string;
   customer_location_lat?: number;
   customer_location_lng?: number;

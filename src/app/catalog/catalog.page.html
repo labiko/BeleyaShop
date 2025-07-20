@@ -41,6 +41,10 @@
           <div class="price-badge">
             {{ formatPrice(product.price) }}
           </div>
+          <div class="stock-badge" [class.out-of-stock]="product.stock_quantity === 0">
+            <ion-icon [name]="product.stock_quantity > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            {{ product.stock_quantity > 0 ? product.stock_quantity + ' dispo' : 'Rupture' }}
+          </div>
           <div class="quantity-badge" *ngIf="getProductQuantityInCart(product.id) > 0">
             {{ getProductQuantityInCart(product.id) }}
           </div>
@@ -75,10 +79,11 @@
               *ngIf="getProductQuantityInCart(product.id) === 0"
               expand="block" 
               color="primary"
-              [disabled]="!product.inStock"
+              [disabled]="product.stock_quantity === 0"
+              [class.out-of-stock-btn]="product.stock_quantity === 0"
               (click)="addToCart(product)">
-              <ion-icon name="bag-add" slot="start"></ion-icon>
-              {{ product.inStock ? 'J\'ai envie' : 'Rupture de stock' }}
+              <ion-icon [name]="product.stock_quantity > 0 ? 'bag-add' : 'ban'" slot="start"></ion-icon>
+              {{ product.stock_quantity > 0 ? 'J\'ai envie' : 'Rupture de stock' }}
             </ion-button>
           </div>
         </ion-card-content>

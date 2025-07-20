@@ -52,7 +52,7 @@ export class AdminProductsPage implements OnInit, OnDestroy {
     this.isLoading = true;
     
     try {
-      this.productsSubscription = this.productService.getAllProducts().subscribe({
+      this.productsSubscription = this.productService.getAllProductsForAdmin().subscribe({
         next: (products) => {
           this.products = products;
           this.applyFilters();
@@ -142,7 +142,7 @@ export class AdminProductsPage implements OnInit, OnDestroy {
   async deleteProduct(product: Product) {
     const alert = await this.alertController.create({
       header: '🗑️ Supprimer le produit',
-      message: `Êtes-vous sûr de vouloir supprimer le produit "<strong>${product.name}</strong>" ?<br><br>Cette action est <strong>irréversible</strong>.`,
+      message: `Êtes-vous sûr de vouloir supprimer le produit "${product.name}" ?\n\nCette action est irréversible.`,
       buttons: [
         {
           text: 'Annuler',

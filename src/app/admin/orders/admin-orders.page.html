@@ -11,6 +11,14 @@
           Gestion des Commandes
         </h1>
         <p>{{ orders.length }} commande{{ orders.length !== 1 ? 's' : '' }} au total</p>
+        <ion-button 
+          fill="outline" 
+          size="small" 
+          (click)="goToMigration()"
+          class="migration-btn">
+          <ion-icon name="sync" slot="start"></ion-icon>
+          Migration numéros
+        </ion-button>
       </div>
 
       <!-- Statistiques -->
@@ -126,7 +134,7 @@
         <!-- Header de la commande -->
         <div class="order-header">
           <div class="order-info">
-            <h3 class="order-number">Commande #{{ order.id }}</h3>
+            <h3 class="order-number">{{ order.order_number || 'Commande #' + order.id }}</h3>
             <p class="order-date">{{ formatDate(order.created_at!) }}</p>
           </div>
           

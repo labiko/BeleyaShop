@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { CartItem } from '../models/product';
 import { CartService } from '../services/cart.service';
+import { OrderService } from '../services/order.service';
 
 declare var google: any;
 
@@ -29,6 +30,8 @@ export class DeliveryPage implements OnInit, OnDestroy {
   locationError: string = '';
   locationProgress = 0;
   bestAccuracy: number | null = null;
+  createdOrderId: number | null = null;
+  createdOrderNumber: string | null = null;
   
   private cartSubscription: Subscription = new Subscription();
   private readonly VENDOR_PHONE = '33620951645';
@@ -39,7 +42,8 @@ export class DeliveryPage implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private orderService: OrderService
   ) { }
 
   ngOnInit() {
@@ -101,6 +105,7 @@ export class DeliveryPage implements OnInit, OnDestroy {
   }
 
   private startLocationSearch() {
+    console.log('📍 Début startLocationSearch()');
     this.cleanupGeolocation();
     
     this.gettingLocation = true;
@@ -154,6 +159,7 @@ export class DeliveryPage implements OnInit, OnDestroy {
   }
 
   private finishLocationSearch() {
+    console.log('🏁 Début finishLocationSearch()');
     this.cleanupGeolocation();
     this.locationProgress = 100;
     
@@ -163,28 +169,79 @@ export class DeliveryPage implements OnInit, OnDestroy {
         longitude: this.bestPosition.coords.longitude,
         accuracy: this.bestPosition.coords.accuracy
       };
-      
-      // Attendre un peu pour que l'utilisateur voie 100%, puis envoyer la commande
-      setTimeout(() => {
-        this.finalizeWhatsAppOrder();
-      }, 1000);
+      console.log('📍 Position trouvée:', this.currentLocation);
     } else {
-      this.gettingLocation = false;
-      this.locationError = 'Impossible d\'obtenir votre position. La commande sera envoyée sans localisation.';
-      // Envoyer quand même la commande sans localisation
-      setTimeout(() => {
-        this.finalizeWhatsAppOrder();
-      }, 2000);
+      this.locationError = 'Impossible d\'obtenir votre position. La commande sera créée sans localisation.';
+      console.log('⚠️ Aucune position trouvée');
     }
+    
+    // Créer la commande en base d'abord
+    console.log('⏰ Création commande dans 1 seconde...');
+    setTimeout(() => {
+      this.createOrderAndSendWhatsApp();
+    }, 1000);
   }
 
   sendWhatsAppOrder() {
+    console.log('🚀 Début sendWhatsAppOrder()');
     // Commencer la recherche de localisation automatiquement
     this.startLocationSearch();
   }
 
+  private async createOrderAndSendWhatsApp() {
+    console.log('🔧 Début createOrderAndSendWhatsApp()');
+    try {
+      // Créer la commande en base
+      const location = this.currentLocation ? {
+        lat: this.currentLocation.latitude,
+        lng: this.currentLocation.longitude,
+        accuracy: this.currentLocation.accuracy
+      } : undefined;
+
+      console.log('📦 Création commande avec location:', location);
+
+      const result = await this.orderService.createPendingOrder(
+        this.cartItems,
+        this.getTotalPrice(),
+        location
+      );
+
+      console.log('📋 Résultat création commande:', result);
+
+      if (!result.success) {
+        this.locationError = result.error || 'Erreur lors de la création de la commande';
+        this.gettingLocation = false;
+        console.error('❌ Échec création commande:', result.error);
+        return;
+      }
+
+      this.createdOrderId = result.orderId || null;
+      this.createdOrderNumber = result.orderNumber || null;
+      console.log('✅ Commande créée - ID:', this.createdOrderId, 'Numéro:', this.createdOrderNumber);
+
+      // Maintenant envoyer sur WhatsApp
+      console.log('📱 Appel finalizeWhatsAppOrder()');
+      this.finalizeWhatsAppOrder();
+
+    } catch (error) {
+      console.error('❌ Erreur création commande:', error);
+      this.locationError = 'Erreur lors de la création de la commande';
+      this.gettingLocation = false;
+    }
+  }
+
   private finalizeWhatsAppOrder() {
+    console.log('🔧 Finalisation WhatsApp avec numéro:', this.createdOrderNumber);
+    
     let message = `Bonjour, je veux commander :\n\n`;
+    
+    // Ajouter le numéro de commande
+    if (this.createdOrderNumber) {
+      message += `📋 Numéro de commande : ${this.createdOrderNumber}\n\n`;
+      console.log('✅ Numéro de commande ajouté au message WhatsApp');
+    } else {
+      console.warn('⚠️ Aucun numéro de commande disponible pour WhatsApp');
+    }
     
     // Ajouter les produits
     this.cartItems.forEach(item => {
@@ -207,6 +264,10 @@ export class DeliveryPage implements OnInit, OnDestroy {
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${this.VENDOR_PHONE}?text=${encodedMessage}`;
+    
+    console.log('📝 Message WhatsApp final:');
+    console.log(message);
+    console.log('🔗 URL WhatsApp:', whatsappUrl);
     
     // Ouvrir WhatsApp
     window.open(whatsappUrl, '_blank');

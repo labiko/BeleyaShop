@@ -88,17 +88,20 @@
 
       .add-button-container {
         .add-product-btn {
-          --background: linear-gradient(135deg, #000000 0%, #333333 100%);
-          --color: #F5FF78;
+          --background: #F5FF78;
+          --color: #000000;
           --border-radius: 12px;
+          --border-color: #000000;
+          --border-style: solid;
+          --border-width: 2px;
           height: 48px;
           font-weight: 700;
           font-size: 16px;
           
           &:hover {
-            --background: linear-gradient(135deg, #333333 0%, #000000 100%);
+            --background: #f1f5f9;
             transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
           }
         }
       }

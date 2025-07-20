@@ -120,6 +120,17 @@ export class ProductService {
     );
   }
 
+  // Méthode pour l'admin - récupère TOUS les produits (y compris en rupture)
+  getAllProductsForAdmin(): Observable<Product[]> {
+    return from(this.supabaseService.getAllProductsForAdmin()).pipe(
+      map(products => products.map(this.mapSupabaseToProduct)),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des produits pour admin:', error);
+        return of([]);
+      })
+    );
+  }
+
   getProductsByCategory(category: string): Observable<Product[]> {
     return from(this.supabaseService.getProductsByCategory(category)).pipe(
       map(products => products.map(this.mapSupabaseToProduct)),

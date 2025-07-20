@@ -402,3 +402,89 @@ ion-badge {
   background: #e5e7eb;
   border-radius: 8px;
 }
+
+// Styles globaux pour les toasts modernes
+ion-toast {
+  --border-radius: 16px;
+  --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --backdrop-filter: blur(20px);
+  --width: auto;
+  --max-width: 350px;
+  --min-width: 280px;
+  
+  // Centrage du toast
+  &.toast-center {
+    --position: absolute;
+    --start: 50%;
+    --top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .toast-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    
+    .toast-container {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .toast-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      
+      .toast-content {
+        flex: 1;
+        
+        .toast-message {
+          font-size: 14px;
+          line-height: 1.4;
+          font-weight: 500;
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  // Couleurs spécifiques
+  &.toast-success {
+    --background: rgba(16, 185, 129, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-danger,
+  &.toast-error {
+    --background: rgba(239, 68, 68, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-warning {
+    --background: rgba(245, 158, 11, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-primary {
+    --background: rgba(59, 130, 246, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+}

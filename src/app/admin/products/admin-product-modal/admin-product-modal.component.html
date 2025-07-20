@@ -110,23 +110,59 @@
         </div>
       </div>
 
-      <!-- URL de l'image -->
+      <!-- Upload d'image -->
       <div class="form-section">
-        <ion-item class="form-item">
-          <ion-label position="stacked">URL de l'image</ion-label>
-          <ion-input
-            type="url"
-            [(ngModel)]="formData.image"
-            name="image"
-            placeholder="https://example.com/image.jpg"
-            [disabled]="isSubmitting"
-            clearInput="true">
-          </ion-input>
-        </ion-item>
-        
-        <!-- Aperçu de l'image -->
-        <div class="image-preview" *ngIf="formData.image && previewImage(formData.image)">
-          <img [src]="formData.image" [alt]="formData.name" />
+        <div class="image-upload-section">
+          <ion-label class="section-label">Image du produit</ion-label>
+          
+          <!-- Zone d'upload -->
+          <div class="upload-zone" 
+               [class.has-image]="formData.image"
+               [class.uploading]="isUploading"
+               (click)="triggerFileInput()">
+            
+            <!-- Image preview ou zone vide -->
+            <div class="image-preview" *ngIf="formData.image && !isUploading">
+              <img [src]="formData.image" [alt]="formData.name" />
+              <div class="image-overlay">
+                <ion-button 
+                  fill="clear" 
+                  class="change-btn"
+                  (click)="triggerFileInput(); $event.stopPropagation()">
+                  <ion-icon name="camera" slot="icon-only"></ion-icon>
+                </ion-button>
+                <ion-button 
+                  fill="clear" 
+                  class="remove-btn"
+                  (click)="removeImage(); $event.stopPropagation()">
+                  <ion-icon name="trash" slot="icon-only"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+            
+            <!-- Zone d'upload vide -->
+            <div class="upload-empty" *ngIf="!formData.image && !isUploading">
+              <ion-icon name="cloud-upload"></ion-icon>
+              <h3>Ajouter une image</h3>
+              <p>Cliquez ou glissez votre image ici</p>
+              <ion-note>JPG, PNG, WebP • Max 5MB</ion-note>
+            </div>
+            
+            <!-- État de chargement -->
+            <div class="upload-loading" *ngIf="isUploading">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Upload en cours...</p>
+              <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
+            </div>
+          </div>
+          
+          <!-- Input file caché -->
+          <input 
+            #fileInput 
+            type="file" 
+            accept="image/*" 
+            (change)="onFileSelected($event)"
+            style="display: none">
         </div>
       </div>
 

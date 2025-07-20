@@ -32,6 +32,21 @@ export class SupabaseService {
     return data;
   }
 
+  // Méthode pour l'admin - récupère TOUS les produits
+  async getAllProductsForAdmin() {
+    const { data, error } = await this.supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des produits pour admin:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
   async getProductById(id: number) {
     const { data, error } = await this.supabase
       .from('products')

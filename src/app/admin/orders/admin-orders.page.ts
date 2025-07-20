@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController, LoadingController, ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 import { Order, OrderItem } from '../../models/order';
@@ -37,7 +38,8 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private loadingController: LoadingController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -164,7 +166,12 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
   async confirmOrder(order: Order) {
     const alert = await this.alertController.create({
       header: '✅ Confirmer la commande',
-      message: `Confirmer la commande #${order.id} ?<br><br>Cette action va :<br>• Marquer la commande comme confirmée<br>• Réduire automatiquement le stock des produits<br>• Envoyer une notification au client`,
+      message: `Confirmer la commande #${order.id} ?
+
+Cette action va :
+• Marquer la commande comme confirmée
+• Réduire automatiquement le stock des produits
+• Envoyer une notification au client`,
       buttons: [
         {
           text: 'Annuler',
@@ -218,7 +225,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
 
     const alert = await this.alertController.create({
       header: '🔄 Changer le statut',
-      message: `Marquer la commande #${order.id} comme <strong>${statusTexts[newStatus]}</strong> ?`,
+      message: `Marquer la commande #${order.id} comme ${statusTexts[newStatus]} ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -269,7 +276,9 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
   async deleteOrder(order: Order) {
     const alert = await this.alertController.create({
       header: '🗑️ Supprimer la commande',
-      message: `Êtes-vous sûr de vouloir supprimer la commande #${order.id} ?<br><br>Cette action est <strong>irréversible</strong>.`,
+      message: `Êtes-vous sûr de vouloir supprimer la commande #${order.id} ?
+
+Cette action est irréversible.`,
       buttons: [
         {
           text: 'Annuler',
@@ -381,5 +390,9 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
       color
     });
     await toast.present();
+  }
+
+  goToMigration() {
+    this.router.navigate(['/admin/migration']);
   }
 }

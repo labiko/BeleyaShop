@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar class="modal-toolbar">
-    <ion-title>Commande #{{ order.id }}</ion-title>
+    <ion-title>{{ order.order_number || 'Commande #' + order.id }}</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="close()">
         <ion-icon name="close" slot="icon-only"></ion-icon>

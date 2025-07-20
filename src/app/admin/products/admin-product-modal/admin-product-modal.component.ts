@@ -33,6 +33,8 @@ export class AdminProductModalComponent implements OnInit {
   ];
 
   isSubmitting = false;
+  isUploading = false;
+  uploadProgress = 0;
 
   constructor(
     private modalController: ModalController,
@@ -185,6 +187,83 @@ export class AdminProductModalComponent implements OnInit {
       color
     });
     await toast.present();
+  }
+
+  // Méthodes pour l'upload d'image
+  triggerFileInput() {
+    if (this.isSubmitting || this.isUploading) return;
+    
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fileInput?.click();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validation du fichier
+    if (!this.validateFile(file)) {
+      return;
+    }
+
+    this.uploadImage(file);
+  }
+
+  private validateFile(file: File): boolean {
+    // Vérifier le type
+    if (!file.type.startsWith('image/')) {
+      this.showToast('Veuillez sélectionner un fichier image', 'warning');
+      return false;
+    }
+
+    // Vérifier la taille (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      this.showToast('L\'image ne doit pas dépasser 5MB', 'warning');
+      return false;
+    }
+
+    return true;
+  }
+
+  private async uploadImage(file: File) {
+    this.isUploading = true;
+    this.uploadProgress = 0;
+
+    try {
+      // Simuler un upload progressif (remplacer par un vrai service d'upload)
+      const reader = new FileReader();
+      reader.onloadstart = () => this.uploadProgress = 10;
+      reader.onprogress = (e) => {
+        if (e.lengthComputable) {
+          this.uploadProgress = 50 + (e.loaded / e.total) * 50;
+        }
+      };
+      reader.onload = () => {
+        this.uploadProgress = 100;
+        this.formData.image = reader.result as string;
+        setTimeout(() => {
+          this.isUploading = false;
+          this.uploadProgress = 0;
+        }, 300);
+      };
+      reader.onerror = () => {
+        this.isUploading = false;
+        this.uploadProgress = 0;
+        this.showToast('Erreur lors du chargement de l\'image', 'danger');
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Erreur upload:', error);
+      this.isUploading = false;
+      this.uploadProgress = 0;
+      this.showToast('Erreur lors de l\'upload', 'danger');
+    }
+  }
+
+  removeImage() {
+    this.formData.image = '';
   }
 
   // Méthode pour prévisualiser l'image

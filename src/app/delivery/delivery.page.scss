@@ -190,11 +190,18 @@
 }
 
 .action-buttons {
-  position: sticky;
-  bottom: 16px;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 500px;
   background: var(--ion-background-color);
-  padding: 16px 0;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 100;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   
   ion-button {
     --border-radius: 12px;
@@ -208,6 +215,19 @@
     &[disabled] {
       --opacity: 0.6;
     }
+  }
+}
+
+// Pour les grands écrans (PC/tablette)
+@media (min-width: 768px) {
+  .action-buttons {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    left: auto;
+    transform: none;
+    width: 350px;
+    max-width: 350px;
   }
 }
 

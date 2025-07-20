@@ -7,6 +7,12 @@
 - Ne pas pousser vers le repository sans permission
 - Toujours demander confirmation avant toute opération Git
 
+**✅ QUAND L'UTILISATEUR DEMANDE "COMMITE" OU "COMMIT":**
+- TOUJOURS exécuter `git add -A` pour ajouter tous les fichiers
+- TOUJOURS exécuter `git commit` avec un message descriptif complet
+- TOUJOURS exécuter `git push origin dev` pour pousser vers le repository distant
+- Ne JAMAIS oublier de pousser les commits vers GitHub après les avoir créés localement
+
 ## Configuration du projet
 
 ### Recherche d'images automatique

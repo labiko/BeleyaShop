@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { Product, CartItem } from '../models/product';
 import { ProductService } from '../services/product.service';
 import { CartService } from '../services/cart.service';
+import { ToastService } from '../services/toast.service';
 import { WhatsappFabComponent } from '../components/whatsapp-fab/whatsapp-fab.component';
 import { ImageFallbackDirective } from '../directives/image-fallback.directive';
 
@@ -46,6 +47,7 @@ export class CatalogPage implements OnInit, OnDestroy {
     private cartService: CartService,
     private route: ActivatedRoute,
     private toastController: ToastController,
+    private toastService: ToastService,
     private router: Router
   ) { }
 
@@ -124,23 +126,11 @@ export class CatalogPage implements OnInit, OnDestroy {
         setTimeout(resolve, 1000);
       });
       
-      const toast = await this.toastController.create({
-        message: 'Catalogue mis à jour !',
-        duration: 2000,
-        position: 'top',
-        color: 'success'
-      });
-      await toast.present();
+      await this.toastService.showSuccess('Catalogue mis à jour !', 2000);
       
     } catch (error) {
       console.error('Error during refresh:', error);
-      const toast = await this.toastController.create({
-        message: 'Erreur lors du rafraîchissement',
-        duration: 2000,
-        position: 'top',
-        color: 'danger'
-      });
-      await toast.present();
+      await this.toastService.showError('Erreur lors du rafraîchissement', 2000);
     } finally {
       event.target.complete();
     }
@@ -183,35 +173,10 @@ export class CatalogPage implements OnInit, OnDestroy {
   async addToCart(product: Product) {
     const result = await this.cartService.addToCart(product);
     
-    if (result.success) {
-      const toast = await this.toastController.create({
-        message: `${product.name} ajouté au panier`,
-        duration: 2000,
-        position: 'bottom',
-        color: 'success',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel'
-          }
-        ]
-      });
-      await toast.present();
-    } else {
-      const toast = await this.toastController.create({
-        message: result.error || 'Erreur lors de l\'ajout au panier',
-        duration: 3000,
-        position: 'bottom',
-        color: 'danger',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel'
-          }
-        ]
-      });
-      await toast.present();
+    if (!result.success) {
+      await this.toastService.showError(result.error || 'Erreur lors de l\'ajout au panier', 3000);
     }
+    // Supprimer le message de succès pour éviter l'affichage à chaque ajout
   }
 
   async removeFromCart(product: Product) {
@@ -219,33 +184,9 @@ export class CatalogPage implements OnInit, OnDestroy {
     const result = await this.cartService.updateQuantity(product.id, newQuantity);
     
     if (result.success) {
-      const toast = await this.toastController.create({
-        message: `${product.name} retiré du panier`,
-        duration: 1500,
-        position: 'bottom',
-        color: 'warning',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel'
-          }
-        ]
-      });
-      await toast.present();
+      await this.toastService.showWarning(`${product.name} retiré du panier`, 1500);
     } else {
-      const toast = await this.toastController.create({
-        message: result.error || 'Erreur lors de la modification du panier',
-        duration: 3000,
-        position: 'bottom',
-        color: 'danger',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel'
-          }
-        ]
-      });
-      await toast.present();
+      await this.toastService.showError(result.error || 'Erreur lors de la modification du panier', 3000);
     }
   }
 
@@ -256,13 +197,10 @@ export class CatalogPage implements OnInit, OnDestroy {
   async startWhatsAppOrder() {
     // Vérifier le total minimum de 100000 GNF
     if (this.cartTotal < 100000) {
-      const toast = await this.toastController.create({
-        message: `Commande minimum: ${this.formatPrice(100000)}. Votre panier: ${this.formatPrice(this.cartTotal)}`,
-        duration: 4000,
-        position: 'bottom',
-        color: 'warning'
-      });
-      await toast.present();
+      await this.toastService.showWarning(
+        `Commande minimum: ${this.formatPrice(100000)}. Votre panier: ${this.formatPrice(this.cartTotal)}`,
+        4000
+      );
       return;
     }
     
@@ -431,23 +369,11 @@ export class CatalogPage implements OnInit, OnDestroy {
   }
 
   private async showLocationErrorToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 4000,
-      position: 'bottom',
-      color: 'danger'
-    });
-    await toast.present();
+    await this.toastService.showError(message, 4000);
   }
 
   private async showOrderSentToast() {
-    const toast = await this.toastController.create({
-      message: `Commande envoyée via WhatsApp ! Votre panier a été vidé.`,
-      duration: 3000,
-      position: 'bottom',
-      color: 'success'
-    });
-    await toast.present();
+    await this.toastService.showSuccess('Commande envoyée via WhatsApp ! Votre panier a été vidé.', 3000);
   }
 
 }

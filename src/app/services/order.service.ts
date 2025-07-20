@@ -3,6 +3,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { Order, OrderItem } from '../models/order';
 import { CartItem } from '../models/product';
+import { OrderNumberGenerator } from '../utils/order-number.util';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +80,7 @@ export class OrderService {
     totalAmount: number,
     location?: { lat: number; lng: number; accuracy: number },
     whatsappMessage?: string
-  ): Promise<{ success: boolean; orderId?: number; error?: string }> {
+  ): Promise<{ success: boolean; orderId?: number; orderNumber?: string; error?: string }> {
     try {
       // Vérifier d'abord le stock
       const stockCheck = await this.checkCartStockAvailability(cartItems);
@@ -92,8 +93,10 @@ export class OrderService {
         };
       }
 
-      // Créer la commande
+      // Créer la commande avec un numéro personnalisé
+      const orderNumber = OrderNumberGenerator.generate();
       const orderData: Partial<Order> = {
+        order_number: orderNumber,
         total_amount: totalAmount,
         status: 'pending',
         whatsapp_message: whatsappMessage
@@ -137,8 +140,8 @@ export class OrderService {
         return { success: false, error: 'Erreur lors de la création des articles' };
       }
 
-      console.log('✅ Commande créée avec succès:', order.id);
-      return { success: true, orderId: order.id };
+      console.log('✅ Commande créée avec succès:', order.id, 'Numéro:', orderNumber);
+      return { success: true, orderId: order.id, orderNumber: orderNumber };
 
     } catch (error) {
       console.error('Erreur lors de la création de commande:', error);
@@ -212,6 +215,29 @@ export class OrderService {
     } catch (error) {
       console.error('Erreur lors de la récupération des articles:', error);
       return [];
+    }
+  }
+
+  /**
+   * Récupérer le numéro de commande par ID
+   */
+  async getOrderNumber(orderId: number): Promise<string | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from('orders')
+        .select('order_number')
+        .eq('id', orderId)
+        .single();
+
+      if (error) {
+        console.error('Erreur récupération numéro commande:', error);
+        return null;
+      }
+
+      return data?.order_number || null;
+    } catch (error) {
+      console.error('Erreur lors de la récupération du numéro de commande:', error);
+      return null;
     }
   }
 }
