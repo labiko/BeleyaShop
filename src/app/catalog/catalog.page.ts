@@ -181,41 +181,72 @@ export class CatalogPage implements OnInit, OnDestroy {
   }
 
   async addToCart(product: Product) {
-    this.cartService.addToCart(product);
+    const result = await this.cartService.addToCart(product);
     
-    const toast = await this.toastController.create({
-      message: `${product.name} ajouté au panier`,
-      duration: 2000,
-      position: 'bottom',
-      color: 'success',
-      buttons: [
-        {
-          text: 'OK',
-          role: 'cancel'
-        }
-      ]
-    });
-
-    await toast.present();
+    if (result.success) {
+      const toast = await this.toastController.create({
+        message: `${product.name} ajouté au panier`,
+        duration: 2000,
+        position: 'bottom',
+        color: 'success',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel'
+          }
+        ]
+      });
+      await toast.present();
+    } else {
+      const toast = await this.toastController.create({
+        message: result.error || 'Erreur lors de l\'ajout au panier',
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel'
+          }
+        ]
+      });
+      await toast.present();
+    }
   }
 
   async removeFromCart(product: Product) {
-    this.cartService.updateQuantity(product.id, this.getProductQuantityInCart(product.id) - 1);
+    const newQuantity = this.getProductQuantityInCart(product.id) - 1;
+    const result = await this.cartService.updateQuantity(product.id, newQuantity);
     
-    const toast = await this.toastController.create({
-      message: `${product.name} retiré du panier`,
-      duration: 1500,
-      position: 'bottom',
-      color: 'warning',
-      buttons: [
-        {
-          text: 'OK',
-          role: 'cancel'
-        }
-      ]
-    });
-
-    await toast.present();
+    if (result.success) {
+      const toast = await this.toastController.create({
+        message: `${product.name} retiré du panier`,
+        duration: 1500,
+        position: 'bottom',
+        color: 'warning',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel'
+          }
+        ]
+      });
+      await toast.present();
+    } else {
+      const toast = await this.toastController.create({
+        message: result.error || 'Erreur lors de la modification du panier',
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel'
+          }
+        ]
+      });
+      await toast.present();
+    }
   }
 
   shouldShowWhatsAppButton(): boolean {

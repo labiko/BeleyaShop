@@ -6,6 +6,7 @@ export interface Product {
   image: string;
   category: 'cremes' | 'gels' | 'parfums';
   inStock: boolean;
+  stock_quantity: number;
 }
 
 export interface CartItem {

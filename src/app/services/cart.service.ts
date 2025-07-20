@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CartItem, Product } from '../models/product';
+import { OrderService } from './order.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CartService {
 
   cart$ = this.cartSubject.asObservable();
 
-  constructor() {
+  constructor(private orderService: OrderService) {
     this.loadCartFromStorage();
   }
 
@@ -38,8 +39,19 @@ export class CartService {
     }
   }
 
-  addToCart(product: Product, quantity: number = 1): void {
+  async addToCart(product: Product, quantity: number = 1): Promise<{success: boolean, error?: string}> {
     const existingItem = this.cartItems.find(item => item.product.id === product.id);
+    const newQuantity = existingItem ? existingItem.quantity + quantity : quantity;
+    
+    // Vérifier la disponibilité du stock
+    const stockAvailable = await this.orderService.checkStockAvailability(product.id, newQuantity);
+    
+    if (!stockAvailable) {
+      return {
+        success: false,
+        error: `Stock insuffisant. Quantité disponible: ${product.stock_quantity}`
+      };
+    }
     
     if (existingItem) {
       existingItem.quantity += quantity;
@@ -48,6 +60,7 @@ export class CartService {
     }
     
     this.saveCartToStorage();
+    return { success: true };
   }
 
   removeFromCart(productId: number): void {
@@ -55,16 +68,30 @@ export class CartService {
     this.saveCartToStorage();
   }
 
-  updateQuantity(productId: number, quantity: number): void {
+  async updateQuantity(productId: number, quantity: number): Promise<{success: boolean, error?: string}> {
     const item = this.cartItems.find(item => item.product.id === productId);
-    if (item) {
-      if (quantity <= 0) {
-        this.removeFromCart(productId);
-      } else {
-        item.quantity = quantity;
-        this.saveCartToStorage();
-      }
+    if (!item) {
+      return { success: false, error: 'Produit non trouvé dans le panier' };
     }
+
+    if (quantity <= 0) {
+      this.removeFromCart(productId);
+      return { success: true };
+    }
+
+    // Vérifier la disponibilité du stock pour la nouvelle quantité
+    const stockAvailable = await this.orderService.checkStockAvailability(productId, quantity);
+    
+    if (!stockAvailable) {
+      return {
+        success: false,
+        error: `Stock insuffisant. Quantité disponible: ${item.product.stock_quantity}`
+      };
+    }
+
+    item.quantity = quantity;
+    this.saveCartToStorage();
+    return { success: true };
   }
 
   clearCart(): void {

@@ -535,3 +535,123 @@
     }
   }
 }
+
+// Styles pour les alertes de popup bloqué
+:global(.popup-blocked-alert) {
+  --background: rgba(245, 255, 120, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 2px solid #000000;
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000000 !important;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 16px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000000 !important;
+    font-weight: 600;
+  }
+  
+  .alert-input-group {
+    padding: 0 20px 20px 20px;
+    
+    .alert-input {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #000000;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #000000 !important;
+      resize: none;
+    }
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 2px solid #000000;
+    display: flex;
+    
+    .alert-button {
+      flex: 1;
+      height: 50px;
+      font-weight: 700;
+      color: #000000 !important;
+      border-right: 1px solid #000000;
+      
+      &:last-child {
+        border-right: none;
+      }
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Styles pour les instructions de popup
+:global(.popup-instructions-alert) {
+  --background: rgba(245, 255, 120, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 2px solid #000000;
+    max-width: 400px;
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000000 !important;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 20px 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #000000 !important;
+    font-weight: 500;
+    white-space: pre-line;
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 2px solid #000000;
+    
+    .alert-button {
+      height: 50px;
+      font-weight: 700;
+      color: #000000 !important;
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}

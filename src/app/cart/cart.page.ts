@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { CartItem } from '../models/product';
 import { CartService } from '../services/cart.service';
 import { ImageFallbackDirective } from '../directives/image-fallback.directive';
@@ -21,7 +21,8 @@ export class CartPage implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -39,8 +40,18 @@ export class CartPage implements OnInit, OnDestroy {
     this.cartItems = this.cartService.getCartItems();
   }
 
-  updateQuantity(productId: number, newQuantity: number) {
-    this.cartService.updateQuantity(productId, newQuantity);
+  async updateQuantity(productId: number, newQuantity: number) {
+    const result = await this.cartService.updateQuantity(productId, newQuantity);
+    
+    if (!result.success) {
+      const toast = await this.toastController.create({
+        message: result.error || 'Erreur lors de la modification',
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+      await toast.present();
+    }
   }
 
   removeFromCart(productId: number) {

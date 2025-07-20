@@ -32,7 +32,8 @@ export class ProductService {
         price: 100000,
         image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&crop=center',
         category: 'cremes',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 50
       },
       {
         name: 'Crème Vaseline Intensive Care',
@@ -40,7 +41,8 @@ export class ProductService {
         price: 120000,
         image: 'https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=400&h=400&fit=crop&crop=center',
         category: 'cremes',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 30
       },
       {
         name: 'Gel Douche Dove',
@@ -48,7 +50,8 @@ export class ProductService {
         price: 80000,
         image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center',
         category: 'gels',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 75
       },
       {
         name: 'Gel Douche Johnson\'s Baby',
@@ -56,7 +59,8 @@ export class ProductService {
         price: 75000,
         image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400&h=400&fit=crop&crop=center',
         category: 'gels',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 40
       },
       {
         name: 'Parfum CK One',
@@ -64,7 +68,8 @@ export class ProductService {
         price: 250000,
         image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop&crop=center',
         category: 'parfums',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 15
       },
       {
         name: 'Parfum Adidas Dynamic Pulse',
@@ -72,7 +77,8 @@ export class ProductService {
         price: 180000,
         image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=400&fit=crop&crop=center',
         category: 'parfums',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 25
       },
       {
         name: 'Crème L\'Occitane Karité',
@@ -80,7 +86,8 @@ export class ProductService {
         price: 150000,
         image: 'https://images.unsplash.com/photo-1556228852-33462d9de1a5?w=400&h=400&fit=crop&crop=center',
         category: 'cremes',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 20
       },
       {
         name: 'Gel Exfoliant Neutrogena',
@@ -88,7 +95,8 @@ export class ProductService {
         price: 90000,
         image: 'https://images.unsplash.com/photo-1556228894-56c2f0ba90aa?w=400&h=400&fit=crop&crop=center',
         category: 'gels',
-        in_stock: true
+        in_stock: true,
+        stock_quantity: 35
       }
     ];
 
@@ -140,7 +148,8 @@ export class ProductService {
       price: supabaseProduct.price,
       image: supabaseProduct.image,
       category: supabaseProduct.category,
-      inStock: supabaseProduct.in_stock
+      inStock: supabaseProduct.in_stock,
+      stock_quantity: supabaseProduct.stock_quantity || 0
     };
   }
 

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, AlertController } from '@ionic/angular';
 import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
 import { CartItem } from '../../models/product';
 
 @Component({
@@ -37,6 +38,7 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
+    private orderService: OrderService,
     private router: Router,
     private toastController: ToastController,
     private alertController: AlertController
@@ -271,7 +273,15 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  private finalizeWhatsAppOrder() {
+  private async finalizeWhatsAppOrder() {
+    // Vérifier d'abord la disponibilité du stock
+    const stockCheck = await this.orderService.checkCartStockAvailability(this.cartItems);
+    if (!stockCheck.available) {
+      await this.showStockUnavailableAlert(stockCheck.unavailableItems);
+      this.gettingLocation = false;
+      return;
+    }
+
     let message = `Bonjour, je veux commander :\n\n`;
     
     // Ajouter les produits depuis le localStorage
@@ -292,13 +302,194 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     
     message += `🤖 Commande envoyée via BeleyaShop`;
 
+    // Créer la commande en base de données
+    const orderResult = await this.orderService.createPendingOrder(
+      this.cartItems,
+      this.getTotalPrice(),
+      this.currentLocation ? {
+        lat: this.currentLocation.latitude,
+        lng: this.currentLocation.longitude,
+        accuracy: this.currentLocation.accuracy
+      } : undefined,
+      message
+    );
+
+    if (!orderResult.success) {
+      await this.showOrderCreationError(orderResult.error || 'Erreur lors de la création de la commande');
+      this.gettingLocation = false;
+      return;
+    }
+
+    console.log('✅ Commande créée en base:', orderResult.orderId);
+
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${this.VENDOR_PHONE}?text=${encodedMessage}`;
     
-    // Ouvrir WhatsApp
-    window.open(whatsappUrl, '_blank');
+    // Tentative d'ouverture WhatsApp avec détection de popup bloqué
+    try {
+      const popup = window.open(whatsappUrl, '_blank');
+      
+      // Vérifier si le popup a été bloqué
+      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        await this.showPopupBlockedAlert(whatsappUrl);
+      } else {
+        // Popup ouvert avec succès
+        console.log('✅ WhatsApp ouvert avec succès');
+        this.handleSuccessfulOrder();
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'ouverture WhatsApp:', error);
+      await this.showPopupBlockedAlert(whatsappUrl);
+    }
+  }
+
+  private async showPopupBlockedAlert(whatsappUrl: string) {
+    const alert = await this.alertController.create({
+      header: '🚫 Popup bloqué',
+      message: `Votre navigateur bloque l'ouverture de WhatsApp.\n\n• Autorisez les popups pour ce site\n• Ou copiez le lien ci-dessous pour ouvrir WhatsApp manuellement`,
+      inputs: [
+        {
+          name: 'whatsappLink',
+          type: 'textarea',
+          value: whatsappUrl,
+          attributes: {
+            readonly: true,
+            rows: 3
+          }
+        }
+      ],
+      buttons: [
+        {
+          text: 'Copier le lien',
+          handler: (data) => {
+            this.copyToClipboard(whatsappUrl);
+            return false; // Empêche la fermeture de l'alert
+          }
+        },
+        {
+          text: 'Autoriser popups',
+          handler: () => {
+            this.showPopupInstructions();
+            return false;
+          }
+        },
+        {
+          text: 'Réessayer',
+          handler: () => {
+            window.open(whatsappUrl, '_blank');
+            this.handleSuccessfulOrder();
+          }
+        }
+      ],
+      cssClass: 'popup-blocked-alert'
+    });
+
+    await alert.present();
+  }
+
+  private async showPopupInstructions() {
+    const alert = await this.alertController.create({
+      header: '📋 Autoriser les popups',
+      message: `Pour autoriser les popups :\n\n🔧 Chrome/Edge :\n• Cliquez sur l'icône de blocage dans la barre d'adresse\n• Sélectionnez "Toujours autoriser"\n\n🔧 Firefox :\n• Cliquez sur l'icône de bouclier\n• Désactivez le blocage de popups\n\n🔧 Safari :\n• Préférences > Sites web > Fenêtres popup\n• Autorisez pour ce site`,
+      buttons: [
+        {
+          text: 'Compris',
+          role: 'cancel'
+        }
+      ],
+      cssClass: 'popup-instructions-alert'
+    });
+
+    await alert.present();
+  }
+
+  private async copyToClipboard(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const toast = await this.toastController.create({
+        message: '📋 Lien copié ! Collez-le dans WhatsApp',
+        duration: 3000,
+        position: 'top',
+        color: 'success'
+      });
+      await toast.present();
+    } catch (error) {
+      console.error('Erreur copie clipboard:', error);
+      // Fallback pour anciens navigateurs
+      this.fallbackCopyToClipboard(text);
+    }
+  }
+
+  private fallbackCopyToClipboard(text: string) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
     
+    try {
+      document.execCommand('copy');
+      this.toastController.create({
+        message: '📋 Lien copié !',
+        duration: 2000,
+        position: 'top',
+        color: 'success'
+      }).then(toast => toast.present());
+    } catch (error) {
+      console.error('Fallback copy failed:', error);
+    }
+    
+    document.body.removeChild(textArea);
+  }
+
+  private async showStockUnavailableAlert(unavailableItems: any[]) {
+    const itemsList = unavailableItems.map(item => 
+      `• ${item.product.name}: demandé ${item.requestedQuantity}, disponible ${item.availableStock}`
+    ).join('\n');
+
+    const alert = await this.alertController.create({
+      header: '❌ Stock insuffisant',
+      message: `Impossible de traiter votre commande:\n\n${itemsList}\n\nVeuillez ajuster les quantités dans votre panier.`,
+      buttons: [
+        {
+          text: 'Modifier le panier',
+          handler: () => {
+            this.router.navigate(['/tabs/cart']);
+          }
+        }
+      ],
+      cssClass: 'custom-alert'
+    });
+
+    await alert.present();
+  }
+
+  private async showOrderCreationError(error: string) {
+    const alert = await this.alertController.create({
+      header: '❌ Erreur de commande',
+      message: `Une erreur s'est produite:\n\n${error}\n\nVeuillez réessayer ou contacter le support.`,
+      buttons: [
+        {
+          text: 'Réessayer',
+          handler: () => {
+            this.startLocationSearch();
+          }
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        }
+      ],
+      cssClass: 'custom-alert'
+    });
+
+    await alert.present();
+  }
+
+  private handleSuccessfulOrder() {
     // Vider le panier après envoi
     this.cartService.clearCart();
     

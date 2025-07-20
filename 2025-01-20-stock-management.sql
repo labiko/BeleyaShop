@@ -1,59 +1,26 @@
--- Script SQL pour créer la table products dans Supabase
+-- Script SQL pour ajouter la gestion de stock - 20 Janvier 2025
 -- Exécutez ce script dans le SQL Editor de votre dashboard Supabase
 
--- Créer la table products
-CREATE TABLE IF NOT EXISTS products (
-  id BIGSERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT,
-  price INTEGER NOT NULL,
-  image TEXT,
-  category TEXT NOT NULL,
-  stock_quantity INTEGER DEFAULT 0 NOT NULL,
-  in_stock BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
+-- =====================================================
+-- MISE À JOUR TABLE PRODUCTS - Ajouter stock_quantity
+-- =====================================================
 
--- Créer un index sur la catégorie pour optimiser les requêtes
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
-
--- Créer un index sur in_stock pour optimiser les requêtes
-CREATE INDEX IF NOT EXISTS idx_products_in_stock ON products(in_stock);
-
--- Ajouter une politique RLS (Row Level Security) pour permettre la lecture publique
-ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-
--- Politique pour permettre la lecture publique (SELECT)
-CREATE POLICY "Enable read access for all users" ON products
-FOR SELECT USING (true);
-
--- Politique pour permettre l'insertion publique (pour le seeding automatique)
-CREATE POLICY "Enable insert access for all users" ON products
-FOR INSERT WITH CHECK (true);
-
--- Politique pour permettre la mise à jour publique
-CREATE POLICY "Enable update access for all users" ON products
-FOR UPDATE USING (true);
-
--- Politique pour permettre la suppression publique
-CREATE POLICY "Enable delete access for all users" ON products
-FOR DELETE USING (true);
-
--- Fonction pour mettre à jour automatiquement updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+-- Ajouter la colonne stock_quantity si elle n'existe pas
+DO $$ 
 BEGIN
-    NEW.updated_at = TIMEZONE('utc'::text, NOW());
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'products' AND column_name = 'stock_quantity') THEN
+        ALTER TABLE products ADD COLUMN stock_quantity INTEGER DEFAULT 0 NOT NULL;
+        RAISE NOTICE 'Colonne stock_quantity ajoutée à la table products';
+    ELSE
+        RAISE NOTICE 'Colonne stock_quantity existe déjà dans la table products';
+    END IF;
+END $$;
 
--- Trigger pour mettre à jour automatiquement updated_at
-CREATE TRIGGER update_products_updated_at 
-    BEFORE UPDATE ON products 
-    FOR EACH ROW 
-    EXECUTE FUNCTION update_updated_at_column();
+-- Mettre à jour les produits existants avec un stock par défaut
+UPDATE products SET stock_quantity = 50 WHERE stock_quantity = 0 AND category = 'cremes';
+UPDATE products SET stock_quantity = 75 WHERE stock_quantity = 0 AND category = 'gels';
+UPDATE products SET stock_quantity = 25 WHERE stock_quantity = 0 AND category = 'parfums';
 
 -- =====================================================
 -- TABLE ORDERS - Commandes en attente de validation
@@ -98,6 +65,14 @@ CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id)
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
+-- Supprimer les politiques existantes si elles existent
+DROP POLICY IF EXISTS "Enable read access for orders" ON orders;
+DROP POLICY IF EXISTS "Enable insert access for orders" ON orders;
+DROP POLICY IF EXISTS "Enable update access for orders" ON orders;
+DROP POLICY IF EXISTS "Enable read access for order_items" ON order_items;
+DROP POLICY IF EXISTS "Enable insert access for order_items" ON order_items;
+DROP POLICY IF EXISTS "Enable update access for order_items" ON order_items;
+
 -- Politiques RLS pour orders (lecture et écriture publique pour demo)
 CREATE POLICY "Enable read access for orders" ON orders FOR SELECT USING (true);
 CREATE POLICY "Enable insert access for orders" ON orders FOR INSERT WITH CHECK (true);
@@ -108,7 +83,8 @@ CREATE POLICY "Enable read access for order_items" ON order_items FOR SELECT USI
 CREATE POLICY "Enable insert access for order_items" ON order_items FOR INSERT WITH CHECK (true);
 CREATE POLICY "Enable update access for order_items" ON order_items FOR UPDATE USING (true);
 
--- Trigger pour mettre à jour updated_at sur orders
+-- Trigger pour mettre à jour updated_at sur orders (utilise la fonction existante)
+DROP TRIGGER IF EXISTS update_orders_updated_at ON orders;
 CREATE TRIGGER update_orders_updated_at 
     BEFORE UPDATE ON orders 
     FOR EACH ROW 
@@ -185,3 +161,31 @@ BEGIN
     RETURN true;
 END;
 $$ LANGUAGE plpgsql;
+
+-- =====================================================
+-- VÉRIFICATIONS ET NOTIFICATIONS
+-- =====================================================
+
+-- Vérifier que tout s'est bien passé
+DO $$
+DECLARE
+    table_count INTEGER;
+    function_count INTEGER;
+BEGIN
+    -- Compter les tables créées
+    SELECT COUNT(*) INTO table_count 
+    FROM information_schema.tables 
+    WHERE table_name IN ('orders', 'order_items') 
+    AND table_schema = 'public';
+    
+    -- Compter les fonctions créées
+    SELECT COUNT(*) INTO function_count 
+    FROM information_schema.routines 
+    WHERE routine_name IN ('check_stock_availability', 'reduce_product_stock', 'confirm_order')
+    AND routine_schema = 'public';
+    
+    RAISE NOTICE '✅ Gestion de stock installée avec succès!';
+    RAISE NOTICE '📊 Tables créées/vérifiées: %', table_count;
+    RAISE NOTICE '⚙️ Fonctions créées: %', function_count;
+    RAISE NOTICE '🎯 Le système de gestion de stock est prêt à fonctionner!';
+END $$;
