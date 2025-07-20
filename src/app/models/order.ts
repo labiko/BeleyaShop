@@ -1,6 +1,7 @@
 export interface Order {
   id?: number;
   order_number?: string;
+  delivery_code?: string; // Code de livraison à 4 chiffres
   customer_phone?: string;
   customer_location_lat?: number;
   customer_location_lng?: number;

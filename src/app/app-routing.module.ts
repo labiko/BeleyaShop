@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'delivery',
     loadChildren: () => import('./delivery/delivery.module').then( m => m.DeliveryPageModule)
   },
+  {
+    path: 'delivery/order/:orderNumber',
+    loadComponent: () => import('./delivery-order/delivery-order.page').then(m => m.DeliveryOrderPage)
+  },
   // Routes admin
   {
     path: 'admin/login',
@@ -45,6 +49,10 @@ const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () => import('./admin/orders/admin-orders.page').then(m => m.AdminOrdersPage)
+      },
+      {
+        path: 'migration',
+        loadComponent: () => import('./admin/migration/migration.component').then(m => m.MigrationComponent)
       }
     ]
   }

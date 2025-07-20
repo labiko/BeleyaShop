@@ -176,6 +176,18 @@
             <span class="amount-value">{{ formatPrice(order.total_amount) }}</span>
           </div>
 
+          <!-- Code de livraison pour les commandes confirmées -->
+          <div class="delivery-code-section" *ngIf="order.status === 'confirmed' && order.delivery_code">
+            <div class="delivery-code-card">
+              <div class="code-header">
+                <ion-icon name="shield-checkmark" color="success"></ion-icon>
+                <span>Code de livraison</span>
+              </div>
+              <div class="delivery-code">{{ order.delivery_code }}</div>
+              <ion-note>Le client doit communiquer ce code au livreur</ion-note>
+            </div>
+          </div>
+
           <!-- Actions rapides -->
           <div class="quick-actions" *ngIf="order.status === 'pending'">
             <ion-button 
@@ -200,7 +212,17 @@
           </div>
 
           <!-- Actions pour commandes confirmées -->
-          <div class="quick-actions" *ngIf="order.status === 'confirmed'">
+          <div class="confirmed-actions" *ngIf="order.status === 'confirmed'">
+            <ion-button 
+              fill="outline" 
+              color="primary" 
+              size="small" 
+              (click)="shareOrderWithDelivery(order)"
+              class="action-btn">
+              <ion-icon name="share-social" slot="start"></ion-icon>
+              Partager livreur
+            </ion-button>
+            
             <ion-button 
               fill="outline" 
               color="success" 

@@ -166,7 +166,7 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
   async confirmOrder(order: Order) {
     const alert = await this.alertController.create({
       header: '✅ Confirmer la commande',
-      message: `Confirmer la commande #${order.id} ?
+      message: `Confirmer la commande ${order.order_number || '#' + order.id} ?
 
 Cette action va :
 • Marquer la commande comme confirmée
@@ -225,7 +225,7 @@ Cette action va :
 
     const alert = await this.alertController.create({
       header: '🔄 Changer le statut',
-      message: `Marquer la commande #${order.id} comme ${statusTexts[newStatus]} ?`,
+      message: `Marquer la commande ${order.order_number || '#' + order.id} comme ${statusTexts[newStatus]} ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -276,7 +276,7 @@ Cette action va :
   async deleteOrder(order: Order) {
     const alert = await this.alertController.create({
       header: '🗑️ Supprimer la commande',
-      message: `Êtes-vous sûr de vouloir supprimer la commande #${order.id} ?
+      message: `Êtes-vous sûr de vouloir supprimer la commande ${order.order_number || '#' + order.id} ?
 
 Cette action est irréversible.`,
       buttons: [
@@ -380,6 +380,74 @@ Cette action est irréversible.`,
   openGoogleMaps(lat: number, lng: number) {
     const url = `https://maps.google.com/?q=${lat},${lng}`;
     window.open(url, '_blank');
+  }
+
+  async shareOrderWithDelivery(order: Order) {
+    // Liste des livreurs disponibles
+    const deliveryPersons = [
+      { id: 1, name: 'Mamadou Diallo', phone: '33620951645' },
+      { id: 2, name: 'Amadou Barry', phone: '33123456789' },
+      { id: 3, name: 'Ibrahima Sow', phone: '33987654321' }
+    ];
+
+    const alert = await this.alertController.create({
+      header: '🚚 Partager avec livreur',
+      message: 'Sélectionnez le livreur pour cette commande:',
+      inputs: deliveryPersons.map(person => ({
+        name: 'deliveryPerson',
+        type: 'radio',
+        label: `${person.name} (${person.phone})`,
+        value: person,
+        checked: false
+      })),
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        },
+        {
+          text: 'Partager',
+          handler: (selectedPerson) => {
+            if (selectedPerson) {
+              this.sendOrderToDelivery(order, selectedPerson);
+            }
+          }
+        }
+      ],
+      cssClass: 'delivery-selection-alert'
+    });
+
+    await alert.present();
+  }
+
+  private sendOrderToDelivery(order: Order, deliveryPerson: any) {
+    // URL de consultation de la commande pour le livreur
+    const orderUrl = `${window.location.origin}/delivery/order/${order.order_number}`;
+    
+    let message = `🚚 Nouvelle livraison à effectuer\n\n`;
+    message += `📋 Commande: ${order.order_number}\n`;
+    message += `🔢 Code livraison: ${order.delivery_code}\n`;
+    message += `💰 Montant: ${this.formatPrice(order.total_amount)}\n\n`;
+    
+    if (order.customer_location_lat && order.customer_location_lng) {
+      const googleMapsUrl = `https://maps.google.com/?q=${order.customer_location_lat},${order.customer_location_lng}`;
+      message += `📍 Localisation client: ${googleMapsUrl}\n\n`;
+    }
+    
+    message += `📱 Lien de gestion:\n${orderUrl}\n\n`;
+    message += `⚠️ Instructions:\n`;
+    message += `• Vérifiez le code ${order.delivery_code} avec le client\n`;
+    message += `• Cliquez sur le lien pour marquer comme livré\n\n`;
+    message += `🤖 Envoyé depuis BeleyaShop Admin`;
+
+    // Encoder le message pour WhatsApp
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${deliveryPerson.phone}?text=${encodedMessage}`;
+    
+    // Ouvrir WhatsApp
+    window.open(whatsappUrl, '_blank');
+    
+    this.showToast(`Commande partagée avec ${deliveryPerson.name}`, 'success');
   }
 
   private async showToast(message: string, color: string) {
