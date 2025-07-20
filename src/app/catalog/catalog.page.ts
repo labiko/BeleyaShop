@@ -38,6 +38,7 @@ export class CatalogPage implements OnInit, OnDestroy {
   private progressInterval?: any;
   private watchId?: number;
   private locationTimeout?: any;
+  private autoRefreshInterval?: any;
   private readonly VENDOR_PHONE = '33620951645';
 
   constructor(
@@ -52,6 +53,7 @@ export class CatalogPage implements OnInit, OnDestroy {
     this.loadProducts();
     this.checkInitialCategory();
     this.subscribeToCart();
+    this.startAutoRefresh();
   }
 
   ngOnDestroy() {
@@ -66,8 +68,9 @@ export class CatalogPage implements OnInit, OnDestroy {
       this.productsSubscription.unsubscribe();
     }
     
-    // Nettoyer la géolocalisation
+    // Nettoyer la géolocalisation et auto-refresh
     this.cleanupGeolocation();
+    this.stopAutoRefresh();
   }
 
   private subscribeToCart() {
@@ -92,6 +95,55 @@ export class CatalogPage implements OnInit, OnDestroy {
       this.products = products;
       this.filterProductsByCategory();
     });
+  }
+
+  // Auto-refresh system
+  private startAutoRefresh() {
+    // Rafraîchissement automatique toutes les 5 minutes
+    this.autoRefreshInterval = setInterval(() => {
+      console.log('Auto-refresh: Recharging products...');
+      this.loadProducts();
+    }, 5 * 60 * 1000); // 5 minutes en millisecondes
+  }
+
+  private stopAutoRefresh() {
+    if (this.autoRefreshInterval) {
+      clearInterval(this.autoRefreshInterval);
+      this.autoRefreshInterval = undefined;
+    }
+  }
+
+  // Pull-to-refresh functionality
+  async handleRefresh(event: any) {
+    console.log('Manual refresh triggered');
+    
+    try {
+      await new Promise(resolve => {
+        this.loadProducts();
+        // Simuler un délai pour montrer le refresh
+        setTimeout(resolve, 1000);
+      });
+      
+      const toast = await this.toastController.create({
+        message: 'Catalogue mis à jour !',
+        duration: 2000,
+        position: 'top',
+        color: 'success'
+      });
+      await toast.present();
+      
+    } catch (error) {
+      console.error('Error during refresh:', error);
+      const toast = await this.toastController.create({
+        message: 'Erreur lors du rafraîchissement',
+        duration: 2000,
+        position: 'top',
+        color: 'danger'
+      });
+      await toast.present();
+    } finally {
+      event.target.complete();
+    }
   }
 
   filterByCategory(event: any) {

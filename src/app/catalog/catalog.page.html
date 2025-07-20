@@ -5,6 +5,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- Pull-to-refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Tirez pour actualiser"
+      refreshingSpinner="circles"
+      refreshingText="Mise à jour en cours...">
+    </ion-refresher-content>
+  </ion-refresher>
+  
   <div class="catalog-container">
     <div class="filters-section">
       <ion-segment [(ngModel)]="selectedCategory" (ionChange)="filterByCategory($event)">

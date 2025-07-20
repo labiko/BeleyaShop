@@ -21,6 +21,8 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
   locationProgress = 0;
   bestAccuracy: number | null = null;
   currentLocation: any = null;
+  positionCount = 0;
+  allPositions: any[] = [];
   
   // Propriétés pour le cercle de progression
   readonly circumference = 2 * Math.PI * 52; // rayon = 52
@@ -143,6 +145,8 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     this.locationProgress = 0;
     this.bestPosition = null;
     this.bestAccuracy = null;
+    this.positionCount = 0;
+    this.allPositions = [];
 
     if (!navigator.geolocation) {
       // Envoyer sans géolocalisation
@@ -171,8 +175,18 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         const accuracy = position.coords.accuracy;
+        this.positionCount++;
         
-        // Garder la position la plus précise
+        // Stocker toutes les positions reçues
+        this.allPositions.push({
+          position: position,
+          timestamp: Date.now(),
+          accuracy: accuracy
+        });
+        
+        console.log(`Position ${this.positionCount}: Lat ${position.coords.latitude.toFixed(6)}, Lng ${position.coords.longitude.toFixed(6)}, Accuracy: ${Math.round(accuracy)}m`);
+        
+        // Garder la position la plus précise et mettre à jour l'affichage en temps réel
         if (!this.bestPosition || accuracy < this.bestPosition.coords.accuracy) {
           this.bestPosition = position;
           this.bestAccuracy = Math.round(accuracy);
@@ -194,12 +208,23 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     this.cleanupGeolocation();
     this.locationProgress = 100;
     
-    if (this.bestPosition) {
+    console.log(`Recherche terminée. ${this.positionCount} positions collectées.`);
+    
+    if (this.allPositions.length > 0) {
+      // Trier par précision (accuracy croissante) pour trouver la meilleure
+      const sortedPositions = this.allPositions.sort((a, b) => a.accuracy - b.accuracy);
+      const bestPos = sortedPositions[0];
+      
+      console.log(`Meilleure position sélectionnée: Accuracy ${Math.round(bestPos.accuracy)}m`);
+      console.log(`Positions collectées: ${this.allPositions.map(p => Math.round(p.accuracy) + 'm').join(', ')}`);
+      
       this.currentLocation = {
-        latitude: this.bestPosition.coords.latitude,
-        longitude: this.bestPosition.coords.longitude,
-        accuracy: this.bestPosition.coords.accuracy
+        latitude: bestPos.position.coords.latitude,
+        longitude: bestPos.position.coords.longitude,
+        accuracy: bestPos.position.coords.accuracy
       };
+      
+      this.bestAccuracy = Math.round(bestPos.accuracy);
     }
     
     // Attendre un peu pour que l'utilisateur voie 100%, puis envoyer la commande
