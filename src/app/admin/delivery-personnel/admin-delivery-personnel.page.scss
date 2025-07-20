@@ -101,6 +101,10 @@
           &.total-deliveries .stat-icon {
             background: linear-gradient(135deg, #10b981, #059669);
           }
+
+          &.total-payments .stat-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+          }
         }
       }
     }
@@ -209,6 +213,29 @@
           padding: 16px;
           background: #fafafa;
 
+          .tabs-container {
+            margin-bottom: 20px;
+
+            ion-segment {
+              --background: white;
+              border: 2px solid #e2e8f0;
+              border-radius: 12px;
+
+              ion-segment-button {
+                --color: #64748b;
+                --color-checked: #000000;
+                --background-checked: #F5FF78;
+                --indicator-color: transparent;
+                font-weight: 600;
+                font-size: 12px;
+                
+                &.segment-button-checked {
+                  font-weight: 700;
+                }
+              }
+            }
+          }
+
           .delivered-orders-section {
             .section-title {
               display: flex;
@@ -240,6 +267,12 @@
                   box-shadow: 0 4px 12px rgba(245, 255, 120, 0.3);
                 }
 
+                &.paid-order {
+                  opacity: 0.7;
+                  background: #f8f9fa;
+                  border-color: #10b981;
+                }
+
                 &:last-child {
                   margin-bottom: 0;
                 }
@@ -264,6 +297,34 @@
                       background: #f0fdf4;
                       padding: 4px 8px;
                       border-radius: 8px;
+                      border: 1px solid #bbf7d0;
+                    }
+                  }
+
+                  .delivery-code-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 12px;
+                    padding: 8px 12px;
+                    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                    border: 1px solid #10b981;
+                    border-radius: 8px;
+
+                    .code-label {
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #065f46;
+                    }
+
+                    .delivery-code {
+                      font-family: 'Courier New', monospace;
+                      font-size: 14px;
+                      font-weight: 700;
+                      color: #10b981;
+                      background: white;
+                      padding: 2px 6px;
+                      border-radius: 4px;
                       border: 1px solid #bbf7d0;
                     }
                   }
@@ -301,11 +362,185 @@
                       }
                     }
                   }
+
+                  .payment-actions {
+                    margin-top: 12px;
+                    padding-top: 12px;
+                    border-top: 1px solid #e2e8f0;
+                    
+                    .pay-btn {
+                      --background: #10b981;
+                      --color: white;
+                      font-weight: 600;
+                      width: 100%;
+
+                      &:disabled {
+                        --background: #9ca3af;
+                        --color: #f3f4f6;
+                      }
+                    }
+                  }
                 }
               }
             }
 
             .no-orders {
+              text-align: center;
+              padding: 32px 16px;
+              color: #64748b;
+
+              ion-icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+              }
+
+              p {
+                font-size: 14px;
+                font-weight: 500;
+                margin: 0;
+              }
+            }
+          }
+
+          // Section Historique Paiement
+          .payment-history-section {
+            .section-title {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font-size: 16px;
+              font-weight: 600;
+              color: #000000;
+              margin: 0 0 16px 0;
+              border-bottom: 2px solid #F5FF78;
+              padding-bottom: 8px;
+
+              ion-icon {
+                font-size: 18px;
+              }
+            }
+
+            .payments-list {
+              .payment-item {
+                background: white;
+                border: 2px solid #10b981;
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 12px;
+                transition: all 0.3s ease;
+
+                &:hover {
+                  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                }
+
+                &:last-child {
+                  margin-bottom: 0;
+                }
+
+                .payment-summary {
+                  .payment-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+
+                    .order-number {
+                      font-size: 14px;
+                      font-weight: 700;
+                      color: #000000;
+                    }
+
+                    .paid-amount {
+                      font-size: 14px;
+                      font-weight: 700;
+                      color: #10b981;
+                      background: #f0fdf4;
+                      padding: 4px 8px;
+                      border-radius: 8px;
+                      border: 1px solid #bbf7d0;
+                    }
+                  }
+
+                  .delivery-code-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 12px;
+                    padding: 8px 12px;
+                    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                    border: 1px solid #10b981;
+                    border-radius: 8px;
+
+                    .code-label {
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #065f46;
+                    }
+
+                    .delivery-code {
+                      font-family: 'Courier New', monospace;
+                      font-size: 14px;
+                      font-weight: 700;
+                      color: #10b981;
+                      background: white;
+                      padding: 2px 6px;
+                      border-radius: 4px;
+                      border: 1px solid #bbf7d0;
+                    }
+                  }
+
+                  .payment-details {
+                    .detail-row {
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      font-size: 12px;
+                      color: #64748b;
+                      margin-bottom: 6px;
+
+                      &:last-child {
+                        margin-bottom: 0;
+                      }
+
+                      ion-icon {
+                        font-size: 14px;
+                        flex-shrink: 0;
+                      }
+
+                      span {
+                        flex: 1;
+                        font-weight: 500;
+                      }
+
+                      .maps-btn {
+                        --color: #3b82f6;
+                        --padding-start: 4px;
+                        --padding-end: 4px;
+                        margin-left: auto;
+                        width: 32px;
+                        height: 32px;
+                      }
+                    }
+                  }
+
+                  .payment-status {
+                    margin-top: 12px;
+                    display: flex;
+                    justify-content: flex-end;
+
+                    ion-badge {
+                      --background: #10b981;
+                      --color: white;
+                      font-weight: 600;
+                      padding: 6px 12px;
+                      border-radius: 12px;
+                    }
+                  }
+                }
+              }
+            }
+
+            .no-payments {
               text-align: center;
               padding: 32px 16px;
               color: #64748b;
