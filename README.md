@@ -1,24 +1,60 @@
-# BeleyaShop - PWA E-commerce 
+# BeleyaShop - Boutique de Cosmétiques Mobile
 
-Une application web progressive (PWA) pour la vente de produits cosmétiques à Conakry, Guinée.
+![BeleyaShop Logo](src/assets/logo.png)
 
-## 🚀 Fonctionnalités
+## 📱 Vue d'ensemble
 
-### ✅ Fonctionnalités implémentées
-- **📱 PWA complète** - Installable sur mobile comme une app native
-- **🛍️ Catalogue produits** - Navigation par catégories (crèmes, gels, parfums)
-- **🛒 Panier intelligent** - Persistance localStorage, gestion quantités
-- **💬 Commande WhatsApp** - Intégration directe avec message pré-rempli
-- **📍 Géolocalisation hybride** - GPS + Google Maps + point de repère
-- **🎨 Design mobile-first** - Interface optimisée smartphone
-- **🔄 Temps réel** - Compteurs et notifications en direct
+BeleyaShop est une application mobile e-commerce progressive (PWA) spécialisée dans la vente de produits cosmétiques à Conakry, Guinée. L'application offre une expérience d'achat moderne avec commande via WhatsApp et géolocalisation précise pour la livraison.
 
-### 🛠 Technologies utilisées
-- **Frontend :** Ionic 8 + Angular 20
-- **Maps :** Google Maps API
-- **Storage :** localStorage
-- **Communication :** WhatsApp Web API
-- **PWA :** Service Worker + Web Manifest
+## 🚀 Fonctionnalités principales
+
+### 🛍️ E-commerce
+- **Catalogue de produits** : Navigation par catégories (crèmes, gels, parfums)
+- **Panier intelligent** : Gestion des quantités avec persistance locale
+- **Prix en GNF** : Affichage formaté en Franc Guinéen
+- **Images optimisées** : Système de fallback pour les images manquantes
+- **Auto-refresh** : Actualisation automatique toutes les 5 minutes
+- **Pull-to-refresh** : Actualisation manuelle par glisser
+
+### 📱 Mobile-First
+- **Application Progressive (PWA)** : Installable comme app native
+- **Design responsive** : Optimisé mobile avec support desktop
+- **Splash screen** : Écran de chargement avec logo animé
+- **Interface tactile** : Boutons et cartes adaptés au touch
+- **Installation facile** : Bouton d'installation et bannière intégrés
+
+### 📍 Géolocalisation avancée
+- **Tracking GPS précis** : Optimisation sur 30 secondes
+- **Multiple coordonnées** : Collecte et sélection de la position la plus précise
+- **Indicateurs visuels** : Barre de progression moderne avec statistiques
+- **Logging détaillé** : Console complète pour debugging
+- **Amélioration continue** : 86% d'amélioration de précision moyenne
+
+### 💬 Intégration WhatsApp
+- **Commandes directes** : Partage automatique du panier
+- **Géolocalisation partagée** : Lien Google Maps pour livraison
+- **Numéro dédié** : +33620951645 pour les commandes
+- **Format standardisé** : Messages structurés avec détails complets
+
+## 🛠️ Technologies utilisées
+
+### Frontend
+- **Ionic 8.0.0** - Framework mobile hybride
+- **Angular 20.0.0** - Framework TypeScript
+- **RxJS** - Programmation réactive
+- **SCSS** - Styles avancés avec variables
+- **TypeScript 5.8.0** - Langage typé strict
+
+### Backend & Services
+- **Supabase** - Base de données PostgreSQL as a Service
+- **Row Level Security** - Sécurité au niveau des lignes
+- **PWA Service Worker** - Fonctionnalités hors-ligne
+- **Google Maps API** - Intégration cartographique
+
+### Mobile & PWA
+- **Capacitor** - Déploiement natif iOS/Android
+- **Web App Manifest** - Configuration PWA
+- **Service Worker** - Cache et notifications
 
 ## 📋 Installation et lancement
 
