@@ -37,6 +37,7 @@ export class AdminDeliveryPersonnelPage implements OnInit {
   
   // Stockage local des paiements (en production, cela devrait être en base de données)
   private payments: Map<string, OrderPayment> = new Map();
+  private readonly PAYMENTS_STORAGE_KEY = 'delivery_payments';
 
   // Liste statique des livreurs (peut être déplacée vers un service/base de données plus tard)
   private personnelList = [
@@ -52,6 +53,7 @@ export class AdminDeliveryPersonnelPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadPaymentsFromStorage();
     this.loadDeliveryPersonnels();
     
     // Écouter l'événement de rafraîchissement
@@ -281,6 +283,9 @@ export class AdminDeliveryPersonnelPage implements OnInit {
 
     this.payments.set(paymentKey, payment);
     
+    // Sauvegarder dans localStorage
+    this.savePaymentsToStorage();
+    
     // Debug: Afficher les informations de paiement
     console.log('=== Paiement enregistré ===');
     console.log(`Commande: ${order.order_number || '#' + order.id}`);
@@ -303,5 +308,30 @@ export class AdminDeliveryPersonnelPage implements OnInit {
       color
     });
     await toast.present();
+  }
+
+  // Méthodes de persistance localStorage
+  private loadPaymentsFromStorage() {
+    try {
+      const storedPayments = localStorage.getItem(this.PAYMENTS_STORAGE_KEY);
+      if (storedPayments) {
+        const paymentsArray = JSON.parse(storedPayments);
+        this.payments = new Map(paymentsArray);
+        console.log('Paiements chargés depuis localStorage:', this.payments.size, 'paiements');
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des paiements depuis localStorage:', error);
+      this.payments = new Map();
+    }
+  }
+
+  private savePaymentsToStorage() {
+    try {
+      const paymentsArray = Array.from(this.payments.entries());
+      localStorage.setItem(this.PAYMENTS_STORAGE_KEY, JSON.stringify(paymentsArray));
+      console.log('Paiements sauvegardés dans localStorage:', this.payments.size, 'paiements');
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde des paiements dans localStorage:', error);
+    }
   }
 }
