@@ -270,19 +270,63 @@
   }
 }
 
+// Styles spécifiques pour desktop (assurer que rien n'est cassé)
+@media (min-width: 769px) {
+  .filters-section {
+    display: block !important; // Force l'affichage sur desktop
+    visibility: visible !important; // Force la visibilité sur desktop
+    opacity: 1 !important; // Force l'opacité sur desktop
+    height: auto !important; // Hauteur automatique sur desktop
+    overflow-x: visible !important; // Restaurer le comportement normal sur desktop
+    padding: 16px !important; // Padding original sur desktop
+    background: #000000 !important; // Fond noir sur desktop
+    
+    ion-segment {
+      display: flex !important; // Force l'affichage du segment sur desktop
+      min-width: auto !important; // Largeur automatique sur desktop
+      flex-wrap: wrap !important; // Permettre le wrapping sur desktop si nécessaire
+      --background: transparent !important;
+      
+      ion-segment-button {
+        display: flex !important; // Force l'affichage des boutons sur desktop
+        min-width: auto !important; // Largeur automatique sur desktop
+        flex-shrink: 1 !important; // Permettre la réduction sur desktop
+        flex: 1 !important; // Rétablir la flexibilité originale
+        margin: 2px !important;
+        --indicator-height: 3px !important;
+        --color: #F5FF78 !important;
+        --color-checked: #F5FF78 !important;
+        --color-hover: #f6ff86 !important;
+        --background-checked: rgba(245, 255, 120, 0.2) !important;
+        --border-radius: 8px !important;
+        
+        ion-label {
+          font-size: 14px !important; // Taille originale sur desktop
+          padding: 0 8px !important; // Padding original sur desktop
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          color: #F5FF78 !important;
+          font-weight: 500 !important;
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .filters-section {
     padding: 12px;
-    overflow-x: auto; // Scroll horizontal pour les petits écrans
+    overflow-x: auto; // Scroll horizontal pour les petits écrans MOBILE SEULEMENT
     -webkit-overflow-scrolling: touch;
     
     ion-segment {
-      min-width: max-content; // Largeur basée sur le contenu
-      flex-wrap: nowrap;
+      min-width: max-content; // Largeur basée sur le contenu MOBILE SEULEMENT
+      flex-wrap: nowrap; // MOBILE SEULEMENT
       
       ion-segment-button {
-        min-width: 90px; // Largeur minimale adaptée
-        flex-shrink: 0;
+        min-width: 90px; // Largeur minimale adaptée MOBILE SEULEMENT
+        flex-shrink: 0; // MOBILE SEULEMENT
         
         ion-label {
           font-size: 12px !important;

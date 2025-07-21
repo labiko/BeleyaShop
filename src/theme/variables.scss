@@ -207,6 +207,80 @@ ion-tab-button {
   min-height: 50px !important;
 }
 
+// Règles spécifiques pour desktop - assurer la visibilité des tabs
+@media screen and (min-width: 769px) {
+  // Forcer la visibilité des tabs sur desktop en annulant tous les styles mobiles
+  ion-tab-bar {
+    display: flex !important;
+    visibility: visible !important;
+    position: fixed !important;
+    bottom: 0px !important; // Coller au bas de l'écran
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+    background: #F5FF78 !important;
+    border-top: 2px solid #000000 !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    padding: 8px 0 !important;
+    margin: 0 !important; // Supprimer toute marge
+    border-radius: 0 !important; // Supprimer les coins arrondis sur desktop
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15) !important; // Ombre discrète
+  }
+
+  ion-tab-button {
+    display: flex !important;
+    visibility: visible !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    color: #000000 !important;
+    padding: 4px 8px !important;
+    margin: 0 !important;
+    
+    ion-label {
+      color: #000000 !important;
+      font-weight: 700 !important;
+      font-size: 12px !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      margin-top: 2px !important;
+      line-height: 1 !important;
+      text-align: center !important;
+    }
+
+    ion-icon {
+      color: #000000 !important;
+      font-size: 20px !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      margin-bottom: 2px !important;
+    }
+
+    // État sélectionné
+    &.tab-selected {
+      ion-label {
+        color: #000000 !important;
+        font-weight: 800 !important;
+      }
+      
+      ion-icon {
+        color: #000000 !important;
+      }
+    }
+  }
+
+  // S'assurer que le contenu principal a assez d'espace en bas
+  ion-content {
+    padding-bottom: 60px !important;
+  }
+}
+
 // Règles spécifiques pour mobiles - détection par type d'appareil
 @media screen and (max-width: 768px), 
        screen and (max-device-width: 768px),
