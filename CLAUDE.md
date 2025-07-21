@@ -23,6 +23,7 @@
 - **Branche principale**: `master` (production)
 - **Branche de développement**: `dev` (commits par défaut)
 - **Repository**: https://github.com/labiko/BeleyaShop.git
+- **URL de l'application**: https://beleya-shop.vercel.app/tabs/catalog
 
 ### Commandes de test
 - Tests: Vérifier les commandes disponibles dans package.json
