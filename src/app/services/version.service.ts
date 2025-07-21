@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class VersionService {
   // Version de l'application
-  private readonly version = '0.0.15';
+  private readonly version = '0.0.16';
   private readonly buildDate = '2025-07-21T18:16:12.884Z';
 
   constructor() {}
