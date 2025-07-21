@@ -8,7 +8,7 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 1000;
+  z-index: 10000;
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
   
   .modern-whatsapp-btn {
@@ -198,6 +198,8 @@
 @media (max-width: 768px) {
   .mobile-whatsapp-button {
     display: block;
+    bottom: 85px !important; // Positionner au-dessus des tabs (hauteur 65px + marge)
+    padding: 16px 16px 0 16px !important; // Enlever le padding bottom
   }
   
   .desktop-only {
@@ -206,13 +208,14 @@
   
   // Add bottom padding to content to avoid overlap with fixed button
   ion-content {
-    --padding-bottom: 100px;
+    --padding-bottom: 180px; // Plus d'espace pour le bouton + tabs
   }
 }
 
 @media (min-width: 769px) {
   .mobile-whatsapp-button {
     display: block; // Montrer aussi sur desktop
+    bottom: 85px !important; // Positionner au-dessus des tabs même sur desktop
   }
   
   .desktop-only {
