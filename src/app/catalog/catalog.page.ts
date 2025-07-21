@@ -406,7 +406,18 @@ export class CatalogPage implements OnInit, OnDestroy {
     this.pwaService.isInstallable$.subscribe(isInstallable => {
       this.showInstallButton = isInstallable && !this.pwaService.isStandalone();
       console.log('PWA installable:', isInstallable, 'Standalone:', this.pwaService.isStandalone());
+      console.log('Show install button:', this.showInstallButton);
     });
+
+    // Force check après un délai pour les navigateurs lents
+    setTimeout(() => {
+      const canInstall = this.pwaService.canInstall();
+      console.log('PWA can install (delayed check):', canInstall);
+      if (canInstall && !this.showInstallButton) {
+        this.showInstallButton = true;
+        console.log('PWA install button forced to show');
+      }
+    }, 3000);
   }
 
   async installPwa() {

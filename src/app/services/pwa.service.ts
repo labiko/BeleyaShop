@@ -77,9 +77,26 @@ export class PwaService {
   }
 
   canInstall(): boolean {
-    return !this.isStandalone() && 
-           ('serviceWorker' in navigator) && 
-           (this.promptEvent !== null || this.hasBeforeInstallPromptSupport());
+    const standalone = this.isStandalone();
+    const hasServiceWorker = 'serviceWorker' in navigator;
+    const hasPrompt = this.promptEvent !== null;
+    const hasSupport = this.hasBeforeInstallPromptSupport();
+    
+    console.log('PWA canInstall check:', {
+      standalone,
+      hasServiceWorker,
+      hasPrompt,
+      hasSupport,
+      userAgent: navigator.userAgent
+    });
+    
+    // Plus permissif pour mobiles
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isChrome = /Chrome/i.test(navigator.userAgent);
+    
+    return !standalone && 
+           hasServiceWorker && 
+           (hasPrompt || (isMobile && isChrome) || hasSupport);
   }
 
   private hasBeforeInstallPromptSupport(): boolean {

@@ -273,12 +273,21 @@
 @media (max-width: 768px) {
   .filters-section {
     padding: 12px;
+    overflow-x: auto; // Scroll horizontal pour les petits écrans
+    -webkit-overflow-scrolling: touch;
     
     ion-segment {
+      min-width: max-content; // Largeur basée sur le contenu
+      flex-wrap: nowrap;
+      
       ion-segment-button {
+        min-width: 90px; // Largeur minimale adaptée
+        flex-shrink: 0;
+        
         ion-label {
-          font-size: 13px;
-          padding: 0 4px;
+          font-size: 12px !important;
+          padding: 0 6px !important;
+          white-space: nowrap !important;
         }
       }
     }
@@ -298,14 +307,24 @@
 @media (max-width: 576px) {
   .filters-section {
     padding: 8px;
+    overflow-x: auto; // Permettre le scroll horizontal si nécessaire
+    -webkit-overflow-scrolling: touch; // Smooth scrolling sur iOS
     
     ion-segment {
+      min-width: 100%; // Assurer la largeur minimale
+      flex-wrap: nowrap; // Empêcher le wrapping
+      
       ion-segment-button {
         margin: 1px;
+        min-width: 80px; // Largeur minimale pour éviter la troncature
+        flex-shrink: 0; // Empêcher la réduction
         
         ion-label {
-          font-size: 12px;
-          padding: 0 2px;
+          font-size: 11px !important;
+          padding: 0 4px !important;
+          white-space: nowrap !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
         }
       }
     }
