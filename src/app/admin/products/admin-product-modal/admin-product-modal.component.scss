@@ -436,3 +436,55 @@
     }
   }
 }
+
+// Category selector styling
+.category-selector {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  .category-display {
+    color: var(--ion-color-dark);
+    font-weight: 500;
+    margin-top: 8px;
+  }
+
+  .category-arrow {
+    color: var(--ion-color-medium);
+    font-size: 20px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.02);
+    
+    .category-arrow {
+      color: var(--ion-color-dark);
+      transform: translateY(1px);
+    }
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Action sheet styling
+::ng-deep .category-action-sheet {
+  .action-sheet-group {
+    .action-sheet-button {
+      height: 56px;
+      
+      .action-sheet-icon {
+        margin-right: 16px;
+        font-size: 24px;
+      }
+      
+      .button-inner {
+        justify-content: flex-start;
+        font-weight: 500;
+      }
+    }
+  }
+}

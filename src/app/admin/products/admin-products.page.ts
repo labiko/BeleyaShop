@@ -25,6 +25,7 @@ export class AdminProductsPage implements OnInit, OnDestroy {
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  categories: any[] = [];
   isLoading = false;
   searchTerm = '';
   selectedCategory = 'all';
@@ -32,12 +33,27 @@ export class AdminProductsPage implements OnInit, OnDestroy {
   private productsSubscription?: Subscription;
 
   ngOnInit() {
+    this.loadCategories();
     this.loadProducts();
     
     // Écouter l'événement de rafraîchissement
     window.addEventListener('admin-refresh', () => {
       this.loadProducts();
     });
+  }
+
+  async loadCategories() {
+    try {
+      this.categories = await this.supabaseService.getCategories();
+    } catch (error) {
+      console.error('Erreur lors du chargement des catégories:', error);
+      // En cas d'erreur, utiliser les catégories par défaut
+      this.categories = [
+        { name: 'Soins du visage', icon: 'face-outline' },
+        { name: 'Maquillage', icon: 'brush-outline' },
+        { name: 'Parfums', icon: 'flower-outline' }
+      ];
+    }
   }
 
   ngOnDestroy() {
@@ -189,22 +205,16 @@ export class AdminProductsPage implements OnInit, OnDestroy {
     return `${price.toLocaleString()} GNF`;
   }
 
-  getCategoryIcon(category: string): string {
-    switch (category) {
-      case 'cremes': return 'medical';
-      case 'gels': return 'water';
-      case 'parfums': return 'flower';
-      default: return 'cube';
-    }
+  getCategoryIcon(categoryName: string): string {
+    const category = this.categories.find(cat => cat.name === categoryName);
+    return category?.icon || 'cube-outline';
   }
 
-  getCategoryColor(category: string): string {
-    switch (category) {
-      case 'cremes': return 'success';
-      case 'gels': return 'primary';
-      case 'parfums': return 'secondary';
-      default: return 'medium';
-    }
+  getCategoryColor(categoryName: string): string {
+    // Assigner des couleurs basées sur l'index de la catégorie
+    const index = this.categories.findIndex(cat => cat.name === categoryName);
+    const colors = ['success', 'primary', 'secondary', 'tertiary', 'warning', 'danger'];
+    return colors[index % colors.length] || 'medium';
   }
 
   getStockStatus(product: Product): { color: string; text: string; icon: string } {

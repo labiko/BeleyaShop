@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { IonicModule, ModalController, LoadingController, ToastController, ActionSheetController } from '@ionic/angular';
 import { Product } from '../../../models/product';
 import { SupabaseService } from '../../../services/supabase.service';
 import { ImageResizeService } from '../../../services/image-resize.service';
@@ -19,6 +19,7 @@ export class AdminProductModalComponent implements OnInit {
   private loadingController = inject(LoadingController);
   private toastController = inject(ToastController);
   private imageResizeService = inject(ImageResizeService);
+  private actionSheetController = inject(ActionSheetController);
 
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() product: Product | null = null;
@@ -34,17 +35,16 @@ export class AdminProductModalComponent implements OnInit {
     three_day_delivery_eligible: false
   };
 
-  categories = [
-    { value: 'cremes', label: 'Crèmes', icon: 'medical' },
-    { value: 'gels', label: 'Gels douche', icon: 'water' },
-    { value: 'parfums', label: 'Parfums', icon: 'flower' }
-  ];
+  categories: any[] = [];
+  selectedCategoryLabel = 'Sélectionnez une catégorie';
 
   isSubmitting = false;
   isUploading = false;
   uploadProgress = 0;
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.loadCategories();
+    
     if (this.mode === 'edit' && this.product) {
       this.formData = {
         name: this.product.name,
@@ -56,7 +56,65 @@ export class AdminProductModalComponent implements OnInit {
         in_stock: this.product.inStock,
         three_day_delivery_eligible: this.product.three_day_delivery_eligible || false
       };
+      
+      // Set selected category label
+      const selectedCat = this.categories.find(cat => cat.name === this.product?.category);
+      this.selectedCategoryLabel = selectedCat ? selectedCat.name : 'Sélectionnez une catégorie';
     }
+
+    // Initialize with default image if no image set
+    if (!this.formData.image) {
+      this.formData.image = this.getDefaultImage();
+    }
+  }
+
+  async loadCategories() {
+    try {
+      this.categories = await this.supabaseService.getCategories();
+      if (!this.categories || this.categories.length === 0) {
+        this.categories = [
+          { name: 'Soins du visage', description: 'Crèmes, sérums, masques pour le visage', icon: 'face-outline' },
+          { name: 'Maquillage', description: 'Rouge à lèvres, fond de teint, mascara', icon: 'brush-outline' },
+          { name: 'Parfums', description: 'Eaux de parfum, eaux de toilette', icon: 'flower-outline' }
+        ];
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des catégories:', error);
+      this.categories = [
+        { name: 'Soins du visage', description: 'Crèmes, sérums, masques pour le visage', icon: 'face-outline' },
+        { name: 'Maquillage', description: 'Rouge à lèvres, fond de teint, mascara', icon: 'brush-outline' },
+        { name: 'Parfums', description: 'Eaux de parfum, eaux de toilette', icon: 'flower-outline' }
+      ];
+    }
+  }
+
+  async selectCategory() {
+    const buttons: any[] = this.categories.map(category => ({
+      text: category.name,
+      icon: category.icon || 'cube-outline',
+      handler: () => {
+        this.formData.category = category.name;
+        this.selectedCategoryLabel = category.name;
+        this.onCategorySelected();
+      }
+    }));
+
+    buttons.push({
+      text: 'Annuler',
+      icon: 'close',
+      role: 'cancel',
+      handler: () => {
+        console.log('Annulé');
+      }
+    });
+
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Sélectionnez une catégorie',
+      cssClass: 'category-action-sheet',
+      buttons: buttons
+    });
+
+    await actionSheet.present();
   }
 
   get modalTitle(): string {
@@ -152,17 +210,26 @@ export class AdminProductModalComponent implements OnInit {
   }
 
   private getDefaultImage(): string {
-    // Image par défaut selon la catégorie
-    switch (this.formData.category) {
-      case 'cremes':
-        return 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&crop=center';
-      case 'gels':
-        return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center';
-      case 'parfums':
-        return 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop&crop=center';
-      default:
-        return 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&crop=center';
-    }
+    // Utiliser une image de produit existant aléatoire
+    const productImages = [
+      'https://i.ibb.co/NSkPYLZ/beure.jpg',
+      'https://i.ibb.co/VVgJ1Nh/creme.jpg',
+      'https://i.ibb.co/m0FQNyt/fond.png',
+      'https://i.ibb.co/YhcGzSC/gel2.png',
+      'https://i.ibb.co/Gx8cBJm/gel3.jpg',
+      'https://i.ibb.co/LJXzYym/huile.jpg',
+      'https://i.ibb.co/RpCdmDV/lotion.jpg',
+      'https://i.ibb.co/kSq3dXR/mascara1.jpg',
+      'https://i.ibb.co/BzY0nGN/mascara2.jpg',
+      'https://i.ibb.co/w4j3K2j/nivea.jpg',
+      'https://i.ibb.co/KqJg4K1/parfum1.jpg',
+      'https://i.ibb.co/b5bxBt2/savon.jpg',
+      'https://i.ibb.co/7n4N8mD/serume.jpg'
+    ];
+    
+    // Sélectionner une image aléatoire
+    const randomIndex = Math.floor(Math.random() * productImages.length);
+    return productImages[randomIndex];
   }
 
   onStockChange() {
@@ -170,7 +237,7 @@ export class AdminProductModalComponent implements OnInit {
     this.formData.in_stock = this.formData.stock_quantity > 0;
   }
 
-  onCategoryChange() {
+  onCategorySelected() {
     // Si aucune image n'est définie, utiliser l'image par défaut de la catégorie
     if (!this.formData.image.trim()) {
       this.formData.image = this.getDefaultImage();

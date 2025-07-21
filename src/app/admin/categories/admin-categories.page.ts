@@ -286,7 +286,7 @@ export class AdminCategoriesPage implements OnInit {
   async onDeleteCategory(category: Category) {
     const alert = await this.alertController.create({
       header: '🗑️ Supprimer Catégorie',
-      message: `Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?<br><br>⚠️ Cette action est irréversible.`,
+      message: `Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ? Cette action est irréversible.`,
       buttons: [
         {
           text: 'Annuler',

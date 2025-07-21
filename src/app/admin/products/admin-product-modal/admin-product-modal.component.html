@@ -53,23 +53,14 @@
 
       <!-- Catégorie -->
       <div class="form-section">
-        <ion-item class="form-item">
-          <ion-label position="stacked">Catégorie *</ion-label>
-          <ion-select
-            [(ngModel)]="formData.category"
-            name="category"
-            placeholder="Sélectionnez une catégorie"
-            (ionChange)="onCategoryChange()"
-            [disabled]="isSubmitting">
-            <ion-select-option 
-              *ngFor="let cat of categories" 
-              [value]="cat.value">
-              <div class="category-option">
-                <ion-icon [name]="cat.icon"></ion-icon>
-                {{ cat.label }}
-              </div>
-            </ion-select-option>
-          </ion-select>
+        <ion-item class="form-item category-selector" button (click)="selectCategory()" [disabled]="isSubmitting">
+          <ion-label position="stacked">
+            <span class="required">Catégorie *</span>
+          </ion-label>
+          <ion-label class="category-display">
+            {{ selectedCategoryLabel }}
+          </ion-label>
+          <ion-icon name="chevron-down" slot="end" class="category-arrow"></ion-icon>
         </ion-item>
       </div>
 
@@ -173,7 +164,7 @@
           <ion-toggle
             [(ngModel)]="formData.in_stock"
             name="in_stock"
-            [disabled]="isSubmitting || formData.stock_quantity <= 0"
+            [disabled]="isSubmitting"
             slot="end">
           </ion-toggle>
         </ion-item>
