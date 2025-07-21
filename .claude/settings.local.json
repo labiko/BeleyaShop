@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ionic start:*)",
+      "Bash(npm install:*)",
+      "Bash(ionic generate:*)",
+      "Bash(ng generate:*)",
+      "Bash(npm run build:*)",
+      "Bash(rm:*)",
+      "Bash(ng version)",
+      "Bash(mkdir:*)",
+      "Bash(npm start)",
+      "Bash(npm start:*)",
+      "Bash(ionic serve:*)",
+      "Bash(npx ng serve:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(copy:*)",
+      "Bash(cp:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)",
+      "Bash(vercel login:*)",
+      "Bash(dir dist)",
+      "Bash(ls:*)",
+      "Bash(dir)",
+      "Bash(vercel:*)",
+      "Bash(git merge:*)"
+    ],
+    "deny": []
+  }
+}
