@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController, ModalController, LoadingController } from '@ionic/angular';
@@ -16,6 +16,13 @@ import { AdminProductModalComponent } from './admin-product-modal/admin-product-
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminProductsPage implements OnInit, OnDestroy {
+  private productService = inject(ProductService);
+  private supabaseService = inject(SupabaseService);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private modalController = inject(ModalController);
+  private loadingController = inject(LoadingController);
+
   products: Product[] = [];
   filteredProducts: Product[] = [];
   isLoading = false;
@@ -23,15 +30,6 @@ export class AdminProductsPage implements OnInit, OnDestroy {
   selectedCategory = 'all';
   
   private productsSubscription?: Subscription;
-
-  constructor(
-    private productService: ProductService,
-    private supabaseService: SupabaseService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private modalController: ModalController,
-    private loadingController: LoadingController
-  ) {}
 
   ngOnInit() {
     this.loadProducts();

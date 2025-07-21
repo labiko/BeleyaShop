@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -24,6 +24,10 @@ interface LocationCoords {
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class DeliveryPage implements OnInit, OnDestroy {
+  private cartService = inject(CartService);
+  private router = inject(Router);
+  private orderService = inject(OrderService);
+
   cartItems: CartItem[] = [];
   currentLocation: LocationCoords | null = null;
   gettingLocation = false;
@@ -39,12 +43,6 @@ export class DeliveryPage implements OnInit, OnDestroy {
   private watchId?: number;
   private locationTimeout?: any;
   private bestPosition: any = null;
-
-  constructor(
-    private cartService: CartService,
-    private router: Router,
-    private orderService: OrderService
-  ) { }
 
   ngOnInit() {
     this.cartSubscription = this.cartService.cart$.subscribe(cartItems => {

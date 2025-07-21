@@ -9,6 +9,7 @@
           <div class="title-text">
             <span class="main-title">BeleyaShop Admin</span>
             <span class="sub-title" *ngIf="currentUser">{{ currentUser.username }}</span>
+            <span class="version-info">v{{ appVersion }}</span>
           </div>
         </div>
       </ion-title>
@@ -42,6 +43,12 @@
       <ion-icon name="receipt"></ion-icon>
       <ion-label>Commandes</ion-label>
       <ion-badge color="warning" *ngIf="false">3</ion-badge>
+    </ion-tab-button>
+
+    <!-- Onglet Catégories -->
+    <ion-tab-button tab="categories" class="admin-tab">
+      <ion-icon name="folder"></ion-icon>
+      <ion-label>Catégories</ion-label>
     </ion-tab-button>
 
     <!-- Onglet Livreurs -->

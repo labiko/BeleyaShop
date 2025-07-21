@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
 export interface ToastOptions {
@@ -14,8 +14,8 @@ export interface ToastOptions {
   providedIn: 'root'
 })
 export class ToastService {
+  private toastController = inject(ToastController);
 
-  constructor(private toastController: ToastController) { }
 
   async show(options: ToastOptions) {
     const {

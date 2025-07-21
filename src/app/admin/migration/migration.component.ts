@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
 import { OrderNumberMigration } from '../../utils/migrate-order-numbers';
@@ -297,14 +297,14 @@ import { ToastService } from '../../services/toast.service';
   imports: [CommonModule, IonicModule]
 })
 export class MigrationComponent {
+  private loadingController = inject(LoadingController);
+  private alertController = inject(AlertController);
+  private toastService = inject(ToastService);
+
   status: { total: number; migrated: number; pending: number } | null = null;
   migrationResult: { success: boolean; migratedCount: number; errors: any[] } | null = null;
 
-  constructor(
-    private loadingController: LoadingController,
-    private alertController: AlertController,
-    private toastService: ToastService
-  ) {
+  constructor() {
     this.checkStatus();
   }
 

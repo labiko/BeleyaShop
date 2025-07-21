@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { VersionService } from '../services/version.service';
 
 @Component({
   selector: 'app-home',
@@ -11,12 +12,11 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule]
 })
-export class HomePage implements OnInit {
+export class HomePage {
+  private router = inject(Router);
+  private versionService = inject(VersionService);
 
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-  }
+  appVersion = this.versionService.getVersion();
 
   goToCatalog() {
     this.router.navigate(['/tabs/catalog']);

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -16,14 +16,12 @@ import { ImageFallbackDirective } from '../directives/image-fallback.directive';
   imports: [CommonModule, FormsModule, IonicModule, ImageFallbackDirective]
 })
 export class CartPage implements OnInit, OnDestroy {
+  private cartService = inject(CartService);
+  private router = inject(Router);
+  private toastController = inject(ToastController);
+
   cartItems: CartItem[] = [];
   private cartSubscription: Subscription = new Subscription();
-
-  constructor(
-    private cartService: CartService,
-    private router: Router,
-    private toastController: ToastController
-  ) { }
 
   ngOnInit() {
     this.cartSubscription = this.cartService.cart$.subscribe(cartItems => {
@@ -41,6 +39,9 @@ export class CartPage implements OnInit, OnDestroy {
   }
 
   async updateQuantity(productId: number, newQuantity: number) {
+    const currentItem = this.cartItems.find(item => item.product.id === productId);
+    const previousQuantity = currentItem?.quantity || 0;
+    
     const result = await this.cartService.updateQuantity(productId, newQuantity);
     
     if (!result.success) {
@@ -51,6 +52,30 @@ export class CartPage implements OnInit, OnDestroy {
         color: 'danger'
       });
       await toast.present();
+    } else {
+      // Afficher un message de succès pour toute modification de quantité
+      let message = '';
+      let color = 'success';
+      
+      if (newQuantity > previousQuantity) {
+        message = `✅ Quantité augmentée (${previousQuantity} → ${newQuantity})`;
+      } else if (newQuantity < previousQuantity) {
+        message = `📉 Quantité réduite (${previousQuantity} → ${newQuantity})`;
+        color = 'warning';
+      } else if (newQuantity === previousQuantity) {
+        message = `ℹ️ Quantité inchangée (${newQuantity})`;
+        color = 'medium';
+      }
+      
+      if (message) {
+        const toast = await this.toastController.create({
+          message: message,
+          duration: 2000,
+          position: 'bottom',
+          color: color
+        });
+        await toast.present();
+      }
     }
   }
 

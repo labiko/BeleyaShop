@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,12 @@ import { CartItem } from '../../models/product';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class WhatsappFabComponent implements OnInit, OnDestroy {
+  private cartService = inject(CartService);
+  private orderService = inject(OrderService);
+  private router = inject(Router);
+  private toastController = inject(ToastController);
+  private alertController = inject(AlertController);
+
   cartItemCount: number = 0;
   cartItems: CartItem[] = [];
   gettingLocation = false;
@@ -35,14 +41,6 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
   private watchId?: number;
   private locationTimeout?: any;
   private bestPosition: any = null;
-
-  constructor(
-    private cartService: CartService,
-    private orderService: OrderService,
-    private router: Router,
-    private toastController: ToastController,
-    private alertController: AlertController
-  ) { }
 
   ngOnInit() {
     this.cartSubscription = this.cartService.cart$.subscribe(cartItems => {

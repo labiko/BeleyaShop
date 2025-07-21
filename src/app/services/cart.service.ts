@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CartItem, Product } from '../models/product';
 import { OrderService } from './order.service';
@@ -7,13 +7,15 @@ import { OrderService } from './order.service';
   providedIn: 'root'
 })
 export class CartService {
+  private orderService = inject(OrderService);
+
   private readonly STORAGE_KEY = 'beleya_cart';
   private cartItems: CartItem[] = [];
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
 
   cart$ = this.cartSubject.asObservable();
 
-  constructor(private orderService: OrderService) {
+  constructor() {
     this.loadCartFromStorage();
   }
 

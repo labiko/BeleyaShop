@@ -51,6 +51,10 @@ const routes: Routes = [
         loadComponent: () => import('./admin/orders/admin-orders.page').then(m => m.AdminOrdersPage)
       },
       {
+        path: 'categories',
+        loadComponent: () => import('./admin/categories/admin-categories.page').then(m => m.AdminCategoriesPage)
+      },
+      {
         path: 'delivery-personnel',
         loadComponent: () => import('./admin/delivery-personnel/admin-delivery-personnel.page').then(m => m.AdminDeliveryPersonnelPage)
       },

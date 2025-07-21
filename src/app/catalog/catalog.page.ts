@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +10,7 @@ import { CartService } from '../services/cart.service';
 import { ToastService } from '../services/toast.service';
 import { WhatsappFabComponent } from '../components/whatsapp-fab/whatsapp-fab.component';
 import { ImageFallbackDirective } from '../directives/image-fallback.directive';
+import { VersionService } from '../services/version.service';
 
 @Component({
   selector: 'app-catalog',
@@ -19,6 +20,14 @@ import { ImageFallbackDirective } from '../directives/image-fallback.directive';
   imports: [CommonModule, FormsModule, IonicModule, WhatsappFabComponent, ImageFallbackDirective]
 })
 export class CatalogPage implements OnInit, OnDestroy {
+  private productService = inject(ProductService);
+  private cartService = inject(CartService);
+  private route = inject(ActivatedRoute);
+  private toastController = inject(ToastController);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
+  private versionService = inject(VersionService);
+
   products: Product[] = [];
   filteredProducts: Product[] = [];
   selectedCategory: string = 'all';
@@ -42,16 +51,12 @@ export class CatalogPage implements OnInit, OnDestroy {
   private autoRefreshInterval?: any;
   private readonly VENDOR_PHONE = '33620951645';
 
-  constructor(
-    private productService: ProductService,
-    private cartService: CartService,
-    private route: ActivatedRoute,
-    private toastController: ToastController,
-    private toastService: ToastService,
-    private router: Router
-  ) { }
-
   ngOnInit() {
+    // Affichage de la version dans la console pour le développement
+    const versionInfo = this.versionService.getVersionInfo();
+    console.log(`🚀 BeleyaShop Catalog v${versionInfo.version}`);
+    console.log(`📅 Build: ${versionInfo.formattedBuildDate}`);
+    
     this.loadProducts();
     this.checkInitialCategory();
     this.subscribeToCart();

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController, LoadingController, ModalController } from '@ionic/angular';
@@ -16,6 +16,13 @@ import { AdminOrderDetailModalComponent } from './admin-order-detail-modal/admin
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminOrdersPage implements OnInit, OnDestroy {
+  private orderService = inject(OrderService);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private loadingController = inject(LoadingController);
+  private modalController = inject(ModalController);
+  private router = inject(Router);
+
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   isLoading = false;
@@ -32,15 +39,6 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
   };
 
   private refreshSubscription?: Subscription;
-
-  constructor(
-    private orderService: OrderService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private loadingController: LoadingController,
-    private modalController: ModalController,
-    private router: Router
-  ) {}
 
   ngOnInit() {
     this.loadOrders();

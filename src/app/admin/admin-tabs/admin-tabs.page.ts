@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthAdminService, AdminUser } from '../../services/auth-admin.service';
+import { VersionService } from '../../services/version.service';
 
 @Component({
   selector: 'app-admin-tabs',
@@ -13,15 +14,15 @@ import { AuthAdminService, AdminUser } from '../../services/auth-admin.service';
   imports: [CommonModule, IonicModule]
 })
 export class AdminTabsPage implements OnInit, OnDestroy {
+  private authAdminService = inject(AuthAdminService);
+  private router = inject(Router);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private versionService = inject(VersionService);
+
   currentUser: AdminUser | null = null;
   private userSubscription?: Subscription;
-
-  constructor(
-    private authAdminService: AuthAdminService,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {}
+  appVersion = this.versionService.getVersion();
 
   ngOnInit() {
     // S'abonner aux changements d'état d'authentification

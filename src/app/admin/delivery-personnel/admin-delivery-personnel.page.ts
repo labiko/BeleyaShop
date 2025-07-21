@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
@@ -31,6 +31,11 @@ interface OrderPayment {
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminDeliveryPersonnelPage implements OnInit {
+  private orderService = inject(OrderService);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private invoiceService = inject(InvoiceService);
+
   deliveryPersonnels: DeliveryPersonnel[] = [];
   isLoading = false;
   expandedPersonnelId: number | null = null;
@@ -50,13 +55,6 @@ export class AdminDeliveryPersonnelPage implements OnInit {
     { id: 2, name: 'Amadou Barry', phone: '123456789' },
     { id: 3, name: 'Ibrahima Sow', phone: '987654321' }
   ];
-
-  constructor(
-    private orderService: OrderService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private invoiceService: InvoiceService
-  ) {}
 
   ngOnInit() {
     this.loadPaymentsFromStorage();

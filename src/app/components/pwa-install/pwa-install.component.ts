@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -12,14 +12,12 @@ import { PwaService } from '../../services/pwa.service';
   imports: [CommonModule, IonicModule]
 })
 export class PwaInstallComponent implements OnInit, OnDestroy {
+  private pwaService = inject(PwaService);
+  private toastController = inject(ToastController);
+
   showInstallButton = false;
   isInstalling = false;
   private installSubscription?: Subscription;
-
-  constructor(
-    private pwaService: PwaService,
-    private toastController: ToastController
-  ) {}
 
   ngOnInit() {
     this.installSubscription = this.pwaService.isInstallable$.subscribe(isInstallable => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,11 @@ import { AuthAdminService } from '../../services/auth-admin.service';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminLoginPage implements OnInit {
+  private authAdminService = inject(AuthAdminService);
+  private router = inject(Router);
+  private toastController = inject(ToastController);
+  private loadingController = inject(LoadingController);
+
   credentials = {
     username: '',
     password: ''
@@ -20,13 +25,6 @@ export class AdminLoginPage implements OnInit {
 
   showPassword = false;
   isLoading = false;
-
-  constructor(
-    private authAdminService: AuthAdminService,
-    private router: Router,
-    private toastController: ToastController,
-    private loadingController: LoadingController
-  ) {}
 
   ngOnInit() {
     // Si déjà connecté, rediriger vers l'admin

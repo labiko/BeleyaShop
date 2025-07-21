@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,20 +14,18 @@ import { Order, OrderItem } from '../models/order';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class DeliveryOrderPage implements OnInit {
+  private route = inject(ActivatedRoute);
+  router = inject(Router);
+  private orderService = inject(OrderService);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private loadingController = inject(LoadingController);
+
   order: Order | null = null;
   orderItems: OrderItem[] = [];
   isLoading = true;
   error: string = '';
   deliveryCode = '';
-
-  constructor(
-    private route: ActivatedRoute,
-    public router: Router, // Rendre public pour l'utiliser dans le template
-    private orderService: OrderService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private loadingController: LoadingController
-  ) { }
 
   ngOnInit() {
     const orderNumber = this.route.snapshot.paramMap.get('orderNumber');

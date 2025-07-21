@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2, inject } from '@angular/core';
 import { ImageFallbackService } from '../services/image-fallback.service';
 
 @Directive({
@@ -6,13 +6,13 @@ import { ImageFallbackService } from '../services/image-fallback.service';
   standalone: true
 })
 export class ImageFallbackDirective {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+  private imageFallbackService = inject(ImageFallbackService);
+
   @Input() fallbackType: 'product' | 'cart' = 'product';
 
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private imageFallbackService: ImageFallbackService
-  ) {
+  constructor() {
     this.setupFallback();
   }
 

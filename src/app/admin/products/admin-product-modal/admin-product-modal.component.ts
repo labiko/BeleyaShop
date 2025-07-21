@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, LoadingController, ToastController } from '@ionic/angular';
 import { Product } from '../../../models/product';
 import { SupabaseService } from '../../../services/supabase.service';
+import { ImageResizeService } from '../../../services/image-resize.service';
 
 @Component({
   selector: 'app-admin-product-modal',
@@ -13,6 +14,12 @@ import { SupabaseService } from '../../../services/supabase.service';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminProductModalComponent implements OnInit {
+  private modalController = inject(ModalController);
+  private supabaseService = inject(SupabaseService);
+  private loadingController = inject(LoadingController);
+  private toastController = inject(ToastController);
+  private imageResizeService = inject(ImageResizeService);
+
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() product: Product | null = null;
 
@@ -36,13 +43,6 @@ export class AdminProductModalComponent implements OnInit {
   isSubmitting = false;
   isUploading = false;
   uploadProgress = 0;
-
-  constructor(
-    private modalController: ModalController,
-    private supabaseService: SupabaseService,
-    private loadingController: LoadingController,
-    private toastController: ToastController
-  ) {}
 
   ngOnInit() {
     if (this.mode === 'edit' && this.product) {
@@ -181,10 +181,10 @@ export class AdminProductModalComponent implements OnInit {
     this.modalController.dismiss({ success: false });
   }
 
-  private async showToast(message: string, color: string) {
+  private async showToast(message: string, color: string, duration: number = 3000) {
     const toast = await this.toastController.create({
       message,
-      duration: 3000,
+      duration,
       position: 'top',
       color
     });
@@ -199,7 +199,7 @@ export class AdminProductModalComponent implements OnInit {
     fileInput?.click();
   }
 
-  onFileSelected(event: any) {
+  async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -208,7 +208,48 @@ export class AdminProductModalComponent implements OnInit {
       return;
     }
 
-    this.uploadImage(file);
+    try {
+      // Afficher les informations de l'image originale
+      const originalInfo = await this.imageResizeService.getImageInfo(file);
+      console.log('Image originale:', {
+        size: `${(originalInfo.size / (1024 * 1024)).toFixed(2)} MB`,
+        dimensions: `${originalInfo.width}x${originalInfo.height}px`
+      });
+
+      // Redimensionner automatiquement l'image
+      const loading = await this.loadingController.create({
+        message: 'Redimensionnement de l\'image...',
+        spinner: 'crescent'
+      });
+      await loading.present();
+
+      const resizedFile = await this.imageResizeService.resizeWithPreset(file, 'PRODUCT_IMAGE');
+      
+      // Informations sur l'image redimensionnée
+      const resizedInfo = await this.imageResizeService.getImageInfo(resizedFile);
+      console.log('Image redimensionnée:', {
+        size: `${(resizedInfo.size / (1024 * 1024)).toFixed(2)} MB`,
+        dimensions: `${resizedInfo.width}x${resizedInfo.height}px`
+      });
+
+      await loading.dismiss();
+
+      // Afficher un message de succès avec les détails
+      const compressionRatio = ((originalInfo.size - resizedInfo.size) / originalInfo.size * 100).toFixed(1);
+      this.showToast(
+        `📸 Image optimisée ! Taille réduite de ${compressionRatio}% (${(originalInfo.size / (1024 * 1024)).toFixed(1)}MB → ${(resizedInfo.size / (1024 * 1024)).toFixed(1)}MB)`,
+        'success',
+        4000
+      );
+
+      this.uploadImage(resizedFile);
+    } catch (error) {
+      console.error('Erreur lors du redimensionnement:', error);
+      this.showToast('Erreur lors du redimensionnement. Upload de l\'image originale...', 'warning');
+      
+      // En cas d'erreur, utiliser l'image originale
+      this.uploadImage(file);
+    }
   }
 
   private validateFile(file: File): boolean {

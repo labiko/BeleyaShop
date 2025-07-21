@@ -1,0 +1,116 @@
+<ion-content class="admin-categories-content">
+  
+  <!-- Header section -->
+  <div class="categories-header">
+    <div class="header-content">
+      
+      <!-- Title -->
+      <div class="header-title">
+        <h1>
+          <ion-icon name="folder"></ion-icon>
+          Gestion des Catégories
+        </h1>
+        <p>{{ categories.length }} catégorie{{ categories.length > 1 ? 's' : '' }} disponible{{ categories.length > 1 ? 's' : '' }}</p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="search-container">
+        <ion-searchbar
+          [(ngModel)]="searchTerm"
+          (ionInput)="onSearch()"
+          placeholder="Rechercher une catégorie..."
+          debounce="300"
+          showClearButton="focus">
+        </ion-searchbar>
+      </div>
+
+      <!-- Add button -->
+      <div class="add-button-container">
+        <ion-button 
+          expand="block" 
+          class="add-category-btn"
+          (click)="onAddCategory()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Nouvelle Catégorie
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Categories list -->
+  <div class="categories-list">
+    
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="dots" class="loading-spinner"></ion-spinner>
+      <p>Chargement des catégories...</p>
+    </div>
+
+    <!-- Categories grid -->
+    <div *ngIf="!isLoading && filteredCategories.length > 0" class="categories-grid">
+      <ion-card 
+        *ngFor="let category of filteredCategories; trackBy: trackByCategory" 
+        class="category-card">
+        
+        <div class="category-content">
+          
+          <!-- Category header -->
+          <div class="category-header">
+            <div class="category-icon">
+              <ion-icon [name]="category.icon || 'cube-outline'"></ion-icon>
+            </div>
+            <div class="category-info">
+              <h3 class="category-name">{{ category.name }}</h3>
+              <p class="category-description" *ngIf="category.description">{{ category.description }}</p>
+            </div>
+          </div>
+
+          <!-- Category actions -->
+          <div class="category-actions">
+            <ion-button 
+              fill="outline" 
+              size="small"
+              class="edit-btn"
+              (click)="onEditCategory(category)">
+              <ion-icon name="create" slot="start"></ion-icon>
+              Modifier
+            </ion-button>
+            
+            <ion-button 
+              fill="outline" 
+              size="small"
+              class="delete-btn"
+              (click)="onDeleteCategory(category)">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Supprimer
+            </ion-button>
+          </div>
+
+        </div>
+
+      </ion-card>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && filteredCategories.length === 0" class="empty-state">
+      <ion-icon name="folder-open-outline" size="large"></ion-icon>
+      <h3>{{ searchTerm ? 'Aucune catégorie trouvée' : 'Aucune catégorie' }}</h3>
+      <p *ngIf="searchTerm">
+        Aucune catégorie ne correspond à "{{ searchTerm }}".
+      </p>
+      <p *ngIf="!searchTerm">
+        Commencez par créer votre première catégorie.
+      </p>
+      <ion-button 
+        *ngIf="!searchTerm"
+        fill="outline" 
+        (click)="onAddCategory()">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Créer une catégorie
+      </ion-button>
+    </div>
+
+  </div>
+
+</ion-content>

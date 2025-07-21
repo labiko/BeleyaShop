@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController, ToastController } from '@ionic/angular';
 import { Order, OrderItem } from '../../../models/order';
@@ -12,16 +12,14 @@ import { OrderService } from '../../../services/order.service';
   imports: [CommonModule, IonicModule]
 })
 export class AdminOrderDetailModalComponent implements OnInit {
+  private modalController = inject(ModalController);
+  private orderService = inject(OrderService);
+  private toastController = inject(ToastController);
+
   @Input() order!: Order;
   
   orderItems: OrderItem[] = [];
   isLoading = true;
-
-  constructor(
-    private modalController: ModalController,
-    private orderService: OrderService,
-    private toastController: ToastController
-  ) {}
 
   async ngOnInit() {
     if (this.order?.id) {
