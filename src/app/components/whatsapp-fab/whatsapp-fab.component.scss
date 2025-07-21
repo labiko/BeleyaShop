@@ -212,11 +212,11 @@
 
 @media (min-width: 769px) {
   .mobile-whatsapp-button {
-    display: none;
+    display: block; // Montrer aussi sur desktop
   }
   
   .desktop-only {
-    display: block;
+    display: none; // Masquer le FAB classique sur desktop
   }
 }
 

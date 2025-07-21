@@ -6,11 +6,24 @@
       
       <!-- Titre -->
       <div class="header-title">
-        <h1>
-          <ion-icon name="bicycle"></ion-icon>
-          Gestion des Livreurs
-        </h1>
-        <p>{{ deliveryPersonnels.length }} livreur{{ deliveryPersonnels.length !== 1 ? 's' : '' }} enregistré{{ deliveryPersonnels.length !== 1 ? 's' : '' }}</p>
+        <div class="title-row">
+          <div class="title-content">
+            <h1>
+              <ion-icon name="bicycle"></ion-icon>
+              Gestion des Livreurs
+            </h1>
+            <p>{{ deliveryPersonnels.length }} livreur{{ deliveryPersonnels.length !== 1 ? 's' : '' }} enregistré{{ deliveryPersonnels.length !== 1 ? 's' : '' }}</p>
+          </div>
+          <ion-button 
+            fill="solid" 
+            color="success"
+            size="default"
+            (click)="addNewDeliveryPerson()"
+            class="add-delivery-btn">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Ajouter un livreur
+          </ion-button>
+        </div>
       </div>
 
       <!-- Statistiques globales -->
@@ -88,19 +101,32 @@
                   <ion-icon name="checkmark-circle" color="success"></ion-icon>
                   {{ personnel.totalDeliveries }} livraison{{ personnel.totalDeliveries !== 1 ? 's' : '' }}
                 </span>
+                <span class="unpaid-count" *ngIf="getUnpaidOrdersCount(personnel) > 0">
+                  <ion-icon name="alert-circle" color="warning"></ion-icon>
+                  {{ getUnpaidOrdersCount(personnel) }} non payé{{ getUnpaidOrdersCount(personnel) !== 1 ? 'es' : 'e' }}
+                </span>
               </div>
             </div>
           </div>
           
-          <ion-button 
-            fill="clear" 
-            (click)="togglePersonnelExpansion(personnel.id)"
-            class="expand-btn">
-            <ion-icon 
-              [name]="expandedPersonnelId === personnel.id ? 'chevron-up' : 'chevron-down'"
-              slot="icon-only">
-            </ion-icon>
-          </ion-button>
+          <div class="personnel-actions">
+            <ion-button 
+              fill="clear" 
+              (click)="togglePersonnelExpansion(personnel.id); $event.stopPropagation()"
+              class="expand-btn">
+              <ion-icon 
+                [name]="expandedPersonnelId === personnel.id ? 'chevron-up' : 'chevron-down'"
+                slot="icon-only">
+              </ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              color="danger"
+              (click)="deleteDeliveryPerson(personnel); $event.stopPropagation()"
+              class="delete-btn">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
         </div>
 
         <!-- Contenu étendu - Onglets -->

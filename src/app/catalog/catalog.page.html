@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="light">
-    <ion-title color="dark">BeleyaShop - Catalogue</ion-title>
+    <ion-title color="dark" class="catalog-title">
+      <img src="assets/logo.png" alt="BeleyaShop Logo" class="header-logo">
+      BeleyaShop - Catalogue
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -47,6 +50,10 @@
           </div>
           <div class="quantity-badge" *ngIf="getProductQuantityInCart(product.id) > 0">
             {{ getProductQuantityInCart(product.id) }}
+          </div>
+          <div class="delivery-badge" *ngIf="product.three_day_delivery_eligible">
+            <ion-icon name="rocket"></ion-icon>
+            <span>Livraison 3J</span>
           </div>
         </div>
         

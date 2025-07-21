@@ -80,6 +80,20 @@
           --handle-background: white;
           --handle-background-checked: #000000;
         }
+
+        .toggle-label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          span {
+            font-weight: 600;
+          }
+          
+          ion-icon {
+            font-size: 18px;
+          }
+        }
       }
 
       .toggle-info {
@@ -150,27 +164,61 @@
     }
 
     .submit-btn {
-      --background: #F5FF78;
-      --color: #000000;
-      --border-color: #000000;
-      border: 2px solid #000000;
+      --background: transparent !important;
+      --color: #10b981 !important;
+      --border-color: #10b981 !important;
+      background: transparent !important;
+      color: #10b981 !important;
+      border: 1px solid #10b981 !important;
       font-weight: 700;
       min-width: 120px;
+      fill: none !important;
       
       &:hover:not(.button-disabled) {
-        --background: #f0f9ff;
+        --background: transparent !important;
+        --color: #059669 !important;
+        --border-color: #059669 !important;
+        background: transparent !important;
+        color: #059669 !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(245, 255, 120, 0.3);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
       }
 
       &.button-disabled {
+        --background: transparent !important;
+        --color: #d1d5db !important;
+        --border-color: #d1d5db !important;
+        background: transparent !important;
+        color: #d1d5db !important;
         opacity: 0.6;
       }
 
+      &::part(native) {
+        background: transparent !important;
+        color: #10b981 !important;
+      }
+
       ion-spinner {
+        --color: #10b981 !important;
         width: 16px;
         height: 16px;
         margin-right: 8px;
+      }
+
+      span {
+        color: #10b981 !important;
+        display: inline !important;
+        visibility: visible !important;
+      }
+
+      // Forcer le style sur tous les états possibles
+      &:not(.button-disabled) {
+        background: transparent !important;
+        color: #10b981 !important;
+        
+        span {
+          color: #10b981 !important;
+        }
       }
     }
   }

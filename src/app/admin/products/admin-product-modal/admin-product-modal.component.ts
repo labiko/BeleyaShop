@@ -23,7 +23,8 @@ export class AdminProductModalComponent implements OnInit {
     stock_quantity: 0,
     category: 'cremes' as 'cremes' | 'gels' | 'parfums',
     image: '',
-    in_stock: true
+    in_stock: true,
+    three_day_delivery_eligible: false
   };
 
   categories = [
@@ -52,7 +53,8 @@ export class AdminProductModalComponent implements OnInit {
         stock_quantity: this.product.stock_quantity,
         category: this.product.category,
         image: this.product.image,
-        in_stock: this.product.inStock
+        in_stock: this.product.inStock,
+        three_day_delivery_eligible: this.product.three_day_delivery_eligible || false
       };
     }
   }

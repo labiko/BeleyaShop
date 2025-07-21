@@ -7,6 +7,7 @@ export interface Product {
   category: 'cremes' | 'gels' | 'parfums';
   inStock: boolean;
   stock_quantity: number;
+  three_day_delivery_eligible?: boolean;
 }
 
 export interface CartItem {

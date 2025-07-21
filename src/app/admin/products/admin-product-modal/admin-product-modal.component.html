@@ -185,6 +185,30 @@
         </div>
       </div>
 
+      <!-- Éligibilité livraison 3 jours -->
+      <div class="form-section">
+        <ion-item class="form-item">
+          <ion-label>
+            <div class="toggle-label">
+              <span>Éligible livraison 3 jours ouvrés</span>
+              <ion-icon name="rocket" color="primary"></ion-icon>
+            </div>
+          </ion-label>
+          <ion-toggle
+            [(ngModel)]="formData.three_day_delivery_eligible"
+            name="three_day_delivery_eligible"
+            [disabled]="isSubmitting"
+            slot="end">
+          </ion-toggle>
+        </ion-item>
+        <div class="toggle-info">
+          <ion-note color="medium">
+            <ion-icon name="information-circle"></ion-icon>
+            Les produits éligibles affichent un badge "Livraison 3J" dans le catalogue
+          </ion-note>
+        </div>
+      </div>
+
     </div>
   </form>
 </ion-content>
@@ -201,6 +225,7 @@
       </ion-button>
       
       <ion-button 
+        fill="outline"
         (click)="onSubmit()" 
         [disabled]="isSubmitting || !productForm.form.valid"
         class="submit-btn">

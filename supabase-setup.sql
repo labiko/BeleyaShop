@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS products (
   category TEXT NOT NULL,
   stock_quantity INTEGER DEFAULT 0 NOT NULL,
   in_stock BOOLEAN DEFAULT true,
+  three_day_delivery_eligible BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
@@ -20,6 +21,10 @@ CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 
 -- Créer un index sur in_stock pour optimiser les requêtes
 CREATE INDEX IF NOT EXISTS idx_products_in_stock ON products(in_stock);
+
+-- Créer un index pour les produits éligibles à la livraison 3 jours
+CREATE INDEX IF NOT EXISTS idx_products_three_day_delivery ON products(three_day_delivery_eligible) 
+WHERE three_day_delivery_eligible = true;
 
 -- Ajouter une politique RLS (Row Level Security) pour permettre la lecture publique
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;

@@ -411,6 +411,8 @@ ion-toast {
   --width: auto;
   --max-width: 350px;
   --min-width: 280px;
+  --z-index: 10000;
+  z-index: 10000 !important;
   
   // Centrage du toast
   &.toast-center {
@@ -489,9 +491,8 @@ ion-toast {
   }
 }
 
-// Styles spécifiques pour la modal de paiement avec fond blanc
-.payment-modal.alert-wrapper,
-ion-alert.payment-modal {
+// Styles globaux pour toutes les modales avec texte noir gras
+ion-alert {
   --background: white !important;
   --color: #000000 !important;
   background: white !important;
@@ -517,12 +518,28 @@ ion-alert.payment-modal {
   .alert-message {
     background: white !important;
     background-color: white !important;
-    color: #374151 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
   }
   
   .alert-input-wrapper {
     background: white !important;
     background-color: white !important;
+    
+    .alert-input {
+      background: #f8fafc !important;
+      background-color: #f8fafc !important;
+      border: 2px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      color: #000000 !important;
+      font-weight: 600 !important;
+      padding: 12px !important;
+      
+      &:focus {
+        border-color: #F5FF78 !important;
+        box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3) !important;
+      }
+    }
   }
   
   .alert-input {
@@ -531,11 +548,17 @@ ion-alert.payment-modal {
     border: 2px solid #e2e8f0 !important;
     border-radius: 8px !important;
     color: #000000 !important;
+    font-weight: 600 !important;
     padding: 12px !important;
     
     &:focus {
       border-color: #F5FF78 !important;
       box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3) !important;
+    }
+    
+    &::placeholder {
+      color: #64748b !important;
+      font-weight: 500 !important;
     }
   }
   
@@ -547,6 +570,7 @@ ion-alert.payment-modal {
   .alert-button {
     background: white !important;
     background-color: white !important;
+    font-weight: 700 !important;
     
     &.alert-button-cancel {
       color: #64748b !important;
@@ -554,7 +578,16 @@ ion-alert.payment-modal {
     
     &:not(.alert-button-cancel) {
       color: #10b981 !important;
-      font-weight: 600 !important;
+      font-weight: 700 !important;
     }
   }
+}
+
+// Styles spécifiques pour la modal de paiement (rétrocompatibilité)
+.payment-modal.alert-wrapper,
+ion-alert.payment-modal {
+  --background: white !important;
+  --color: #000000 !important;
+  background: white !important;
+  color: #000000 !important;
 }

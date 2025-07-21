@@ -39,12 +39,16 @@ export class AdminDeliveryPersonnelPage implements OnInit {
   // Stockage local des paiements (en production, cela devrait être en base de données)
   private payments: Map<string, OrderPayment> = new Map();
   private readonly PAYMENTS_STORAGE_KEY = 'delivery_payments';
+  
+  // Stockage local des livreurs
+  private personnelList: Array<{id: number, name: string, phone: string}> = [];
+  private readonly PERSONNEL_STORAGE_KEY = 'delivery_personnel';
 
-  // Liste statique des livreurs (peut être déplacée vers un service/base de données plus tard)
-  private personnelList = [
-    { id: 1, name: 'Mamadou Diallo', phone: '33620951645' },
-    { id: 2, name: 'Amadou Barry', phone: '33123456789' },
-    { id: 3, name: 'Ibrahima Sow', phone: '33987654321' }
+  // Liste par défaut des livreurs (sera fusionnée avec ceux en localStorage)
+  private defaultPersonnelList = [
+    { id: 1, name: 'Mamadou Diallo', phone: '620951645' },
+    { id: 2, name: 'Amadou Barry', phone: '123456789' },
+    { id: 3, name: 'Ibrahima Sow', phone: '987654321' }
   ];
 
   constructor(
@@ -56,6 +60,7 @@ export class AdminDeliveryPersonnelPage implements OnInit {
 
   ngOnInit() {
     this.loadPaymentsFromStorage();
+    this.loadPersonnelFromStorage();
     this.loadDeliveryPersonnels();
     
     // Écouter l'événement de rafraîchissement
@@ -160,8 +165,8 @@ export class AdminDeliveryPersonnelPage implements OnInit {
 
   formatPhone(phone: string): string {
     // Formatter le numéro de téléphone pour l'affichage
-    if (phone.length === 11 && phone.startsWith('33')) {
-      return `+${phone.slice(0, 2)} ${phone.slice(2, 3)} ${phone.slice(3, 5)} ${phone.slice(5, 7)} ${phone.slice(7, 9)} ${phone.slice(9)}`;
+    if (phone.length === 9) {
+      return `+33 ${phone.slice(0, 1)} ${phone.slice(1, 3)} ${phone.slice(3, 5)} ${phone.slice(5, 7)} ${phone.slice(7)}`;
     }
     return phone;
   }
@@ -233,6 +238,10 @@ export class AdminDeliveryPersonnelPage implements OnInit {
     }
     
     return hasPayment;
+  }
+
+  getUnpaidOrdersCount(personnel: DeliveryPersonnel): number {
+    return personnel.deliveredOrders.filter(order => !this.isOrderPaid(order)).length;
   }
 
   async payOrder(order: Order, personnelId: number) {
@@ -347,11 +356,216 @@ export class AdminDeliveryPersonnelPage implements OnInit {
         deliveryPersonName: personnelName
       };
 
-      await this.invoiceService.shareInvoice(invoiceData);
-      await this.showToast('Facture partagée avec succès', 'success');
+      // Trouver le livreur pour récupérer son numéro de téléphone
+      const personnel = this.deliveryPersonnels.find(p => p.name === personnelName);
+      
+      if (personnel?.phone) {
+        await this.invoiceService.shareInvoiceToWhatsApp(invoiceData, personnel.phone);
+        await this.showToast('Facture envoyée sur WhatsApp', 'success');
+      } else {
+        await this.invoiceService.shareInvoice(invoiceData);
+        await this.showToast('Facture partagée avec succès', 'success');
+      }
     } catch (error) {
       console.error('Erreur lors du partage de la facture:', error);
       await this.showToast('Erreur lors du partage de la facture', 'danger');
+    }
+  }
+
+  async addNewDeliveryPerson() {
+    const alert = await this.alertController.create({
+      header: '👨‍💼 Ajouter un nouveau livreur',
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Nom complet du livreur',
+          attributes: {
+            maxlength: 50
+          }
+        },
+        {
+          name: 'phone',
+          type: 'tel',
+          placeholder: 'Numéro de téléphone (9 chiffres)',
+          attributes: {
+            maxlength: 9,
+            pattern: '[0-9]*'
+          }
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        },
+        {
+          text: 'Ajouter',
+          handler: (data) => {
+            if (data.name && data.phone) {
+              const name = data.name.trim();
+              const phone = data.phone.trim();
+              
+              if (name.length > 0 && phone.length === 9) {
+                this.createNewDeliveryPerson(name, phone);
+                return true;
+              } else {
+                if (name.length === 0) {
+                  this.showToast('Le nom complet est obligatoire', 'warning');
+                } else if (phone.length !== 9) {
+                  this.showToast('Le numéro de téléphone doit contenir exactement 9 chiffres', 'warning');
+                }
+                return false;
+              }
+            } else {
+              this.showToast('Veuillez remplir tous les champs', 'warning');
+              return false;
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  private async createNewDeliveryPerson(name: string, phone: string) {
+    try {
+      // Générer un nouvel ID
+      const newId = Math.max(...this.personnelList.map(p => p.id)) + 1;
+      
+      // Vérifier si le numéro de téléphone n'existe pas déjà
+      const existingPersonnel = this.personnelList.find(p => p.phone === phone);
+      if (existingPersonnel) {
+        await this.showToast('Ce numéro de téléphone est déjà utilisé par un autre livreur', 'warning');
+        return;
+      }
+
+      // Ajouter le nouveau livreur à la liste
+      const newPersonnel = {
+        id: newId,
+        name: name,
+        phone: phone
+      };
+      
+      this.personnelList.push(newPersonnel);
+      
+      // Sauvegarder en localStorage
+      this.savePersonnelToStorage();
+      
+      // Recharger les données pour afficher le nouveau livreur
+      await this.loadDeliveryPersonnels();
+      
+      await this.showToast(`Livreur ${name} ajouté avec succès`, 'success');
+      
+      console.log('Nouveau livreur ajouté:', newPersonnel);
+    } catch (error) {
+      console.error('Erreur lors de la création du livreur:', error);
+      await this.showToast('Erreur lors de la création du livreur', 'danger');
+    }
+  }
+
+  async deleteDeliveryPerson(personnel: DeliveryPersonnel) {
+    // Vérifier si le livreur fait partie de la liste par défaut
+    const isDefaultPersonnel = this.defaultPersonnelList.some(p => p.id === personnel.id);
+    
+    if (isDefaultPersonnel) {
+      await this.showToast('Les livreurs par défaut ne peuvent pas être supprimés', 'warning');
+      return;
+    }
+
+    // Vérifier si le livreur a des commandes non payées
+    const unpaidOrders = personnel.deliveredOrders.filter(order => !this.isOrderPaid(order));
+    if (unpaidOrders.length > 0) {
+      await this.showToast(`Ce livreur a ${unpaidOrders.length} commande(s) non payée(s). Veuillez d'abord régler ces commandes.`, 'warning');
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Confirmer la suppression',
+      message: `Êtes-vous sûr de vouloir supprimer le livreur ${personnel.name} ?`,
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'alert-button-cancel'
+        },
+        {
+          text: 'Supprimer',
+          cssClass: 'alert-button-confirm',
+          handler: async () => {
+            try {
+              // Supprimer le livreur de la liste
+              this.personnelList = this.personnelList.filter(p => p.id !== personnel.id);
+              
+              // Sauvegarder en localStorage
+              this.savePersonnelToStorage();
+              
+              // Recharger les données
+              await this.loadDeliveryPersonnels();
+              
+              await this.showToast(`Livreur ${personnel.name} supprimé avec succès`, 'success');
+              
+              console.log('Livreur supprimé:', personnel);
+            } catch (error) {
+              console.error('Erreur lors de la suppression du livreur:', error);
+              await this.showToast('Erreur lors de la suppression du livreur', 'danger');
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // Méthodes de persistance localStorage pour les livreurs
+  private loadPersonnelFromStorage() {
+    try {
+      const storedPersonnel = localStorage.getItem(this.PERSONNEL_STORAGE_KEY);
+      if (storedPersonnel) {
+        const parsedPersonnel = JSON.parse(storedPersonnel);
+        
+        // Fusionner avec la liste par défaut, en évitant les doublons
+        const mergedPersonnel = [...this.defaultPersonnelList];
+        
+        parsedPersonnel.forEach((stored: any) => {
+          // Vérifier si ce livreur n'existe pas déjà (par ID ou téléphone)
+          const existsById = mergedPersonnel.some(p => p.id === stored.id);
+          const existsByPhone = mergedPersonnel.some(p => p.phone === stored.phone);
+          
+          if (!existsById && !existsByPhone) {
+            mergedPersonnel.push(stored);
+          } else if (existsById) {
+            // Mettre à jour les informations si l'ID existe déjà
+            const index = mergedPersonnel.findIndex(p => p.id === stored.id);
+            if (index !== -1) {
+              mergedPersonnel[index] = stored;
+            }
+          }
+        });
+        
+        this.personnelList = mergedPersonnel;
+        console.log('Livreurs chargés depuis localStorage:', this.personnelList.length, 'livreurs');
+      } else {
+        // Première utilisation, utiliser la liste par défaut
+        this.personnelList = [...this.defaultPersonnelList];
+        this.savePersonnelToStorage();
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des livreurs depuis localStorage:', error);
+      this.personnelList = [...this.defaultPersonnelList];
+    }
+  }
+
+  private savePersonnelToStorage() {
+    try {
+      localStorage.setItem(this.PERSONNEL_STORAGE_KEY, JSON.stringify(this.personnelList));
+      console.log('Livreurs sauvegardés dans localStorage:', this.personnelList.length, 'livreurs');
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde des livreurs dans localStorage:', error);
     }
   }
 }

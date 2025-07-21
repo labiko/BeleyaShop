@@ -269,4 +269,76 @@ export class InvoiceService {
       throw error;
     }
   }
+
+  async shareInvoiceToWhatsApp(invoiceData: InvoiceData, phoneNumber: string): Promise<void> {
+    try {
+      const pdfBlob = await this.generateInvoicePDF(invoiceData);
+      const fileName = `facture_${invoiceData.order.order_number || invoiceData.order.id}_${invoiceData.deliveryPersonName.replace(/\s+/g, '_')}.pdf`;
+
+      // Préparer le message WhatsApp
+      const message = `🧾 *Facture de paiement - BeleyaShop*
+
+👨‍💼 Livreur: ${invoiceData.deliveryPersonName}
+📦 Commande: ${invoiceData.order.order_number || '#' + invoiceData.order.id}
+💰 Montant payé: ${this.formatPrice(invoiceData.paidAmount)} GNF
+📅 Date de paiement: ${this.formatDate(invoiceData.paidAt)}
+
+✅ Code de validation: ${invoiceData.order.delivery_code || 'N/A'}
+📍 Livraison effectuée le: ${this.formatDate(invoiceData.order.delivered_at!)}
+
+Merci pour votre excellent travail ! 🚛✨`;
+
+      // Vérifier si Web Share API est supporté avec des fichiers
+      if (navigator.share && navigator.canShare) {
+        const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+        
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'Facture de paiement livreur',
+              text: message,
+              files: [file]
+            });
+            return;
+          } catch (shareError) {
+            console.log('Erreur partage natif, basculement vers WhatsApp Web:', shareError);
+          }
+        }
+      }
+
+      // Fallback: Générer un lien WhatsApp Web avec téléchargement manuel
+      const encodedMessage = encodeURIComponent(message + '\n\n📎 Veuillez télécharger la facture ci-jointe.');
+      
+      // Formater le numéro de téléphone (9 chiffres → +33xxxxxxxxx)
+      let formattedPhone = phoneNumber.replace(/\s+/g, '');
+      if (!formattedPhone.startsWith('+')) {
+        if (formattedPhone.length === 9) {
+          formattedPhone = '+33' + formattedPhone;
+        } else if (formattedPhone.startsWith('33')) {
+          formattedPhone = '+' + formattedPhone;
+        } else {
+          formattedPhone = '+33' + formattedPhone;
+        }
+      }
+
+      // Télécharger d'abord le PDF
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Puis ouvrir WhatsApp Web avec le message
+      const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+      window.open(whatsappUrl, '_blank');
+      
+    } catch (error) {
+      console.error('Erreur lors du partage vers WhatsApp:', error);
+      // En cas d'erreur, utiliser le partage standard
+      await this.shareInvoice(invoiceData);
+    }
+  }
 }

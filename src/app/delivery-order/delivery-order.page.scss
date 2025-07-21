@@ -217,7 +217,8 @@
 
         ion-button {
           --border-radius: 8px;
-          font-weight: 600;
+          --color: #000000 !important;
+          font-weight: 700;
         }
       }
     }

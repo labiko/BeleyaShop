@@ -12,30 +12,57 @@
       margin: 0 auto;
 
       .header-title {
-        text-align: center;
         margin-bottom: 16px;
 
-        h1 {
+        .title-row {
           display: flex;
+          justify-content: space-between;
           align-items: center;
-          justify-content: center;
-          gap: 12px;
-          font-size: 24px;
-          font-weight: 800;
-          color: #000000;
-          margin: 0 0 8px 0;
-          letter-spacing: -0.3px;
+          gap: 20px;
 
-          ion-icon {
-            font-size: 28px;
+          .title-content {
+            text-align: center;
+            flex: 1;
+
+            h1 {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 12px;
+              font-size: 24px;
+              font-weight: 800;
+              color: #000000;
+              margin: 0 0 8px 0;
+              letter-spacing: -0.3px;
+
+              ion-icon {
+                font-size: 28px;
+              }
+            }
+
+            p {
+              color: #374151;
+              font-size: 14px;
+              font-weight: 500;
+              margin: 0;
+            }
           }
-        }
 
-        p {
-          color: #374151;
-          font-size: 14px;
-          font-weight: 500;
-          margin: 0;
+          .add-delivery-btn {
+            --background: #10b981;
+            --color: white;
+            font-weight: 600;
+            height: 44px;
+            min-width: 160px;
+            
+            ion-icon {
+              font-size: 18px;
+            }
+
+            &:hover {
+              --background: #059669;
+            }
+          }
         }
       }
 
@@ -182,6 +209,10 @@
               }
 
               .personnel-stats {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+
                 .delivery-count {
                   display: inline-flex;
                   align-items: center;
@@ -198,14 +229,49 @@
                     font-size: 14px;
                   }
                 }
+
+                .unpaid-count {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  font-size: 13px;
+                  font-weight: 600;
+                  color: #f59e0b;
+                  background: #fffbeb;
+                  padding: 4px 8px;
+                  border-radius: 12px;
+                  border: 1px solid #fde68a;
+
+                  ion-icon {
+                    font-size: 14px;
+                  }
+                }
               }
             }
           }
 
-          .expand-btn {
-            --color: #64748b;
-            --padding-start: 8px;
-            --padding-end: 8px;
+          .personnel-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+
+            .expand-btn {
+              --color: #64748b;
+              --padding-start: 8px;
+              --padding-end: 8px;
+            }
+
+            .delete-btn {
+              --color: #ef4444;
+              --padding-start: 8px;
+              --padding-end: 8px;
+              opacity: 0.7;
+              transition: opacity 0.2s ease;
+
+              &:hover {
+                opacity: 1;
+              }
+            }
           }
         }
 
@@ -640,8 +706,21 @@
 @media (max-width: 768px) {
   .delivery-personnel-content {
     .personnel-header .header-content {
-      .header-title h1 {
-        font-size: 20px;
+      .header-title {
+        .title-row {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+
+          .title-content h1 {
+            font-size: 20px;
+          }
+
+          .add-delivery-btn {
+            width: 100%;
+            max-width: 280px;
+          }
+        }
       }
 
       .stats-grid {

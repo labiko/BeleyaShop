@@ -1,3 +1,19 @@
+.catalog-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 700 !important;
+  color: #000000 !important;
+
+  .header-logo {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+}
+
 .catalog-container {
   padding: 0;
   padding-bottom: 120px; // Espace pour le bouton WhatsApp mobile
@@ -114,6 +130,28 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       z-index: 2;
       animation: bounceIn 0.3s ease;
+    }
+
+    .delivery-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: #F5FF78;
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 2;
+      border: 2px solid #000000;
+      
+      ion-icon {
+        font-size: 16px;
+      }
     }
   }
   

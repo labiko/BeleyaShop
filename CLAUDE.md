@@ -35,6 +35,14 @@
 - **Typographie**: Noir gras pour tous les textes
 - **Exception**: Bouton WhatsApp garde ses couleurs originales
 
+### Modales et Alertes
+- **IMPORTANT**: Toutes les modales doivent avoir un fond blanc et du texte en noir gras
+- Les styles globaux sont définis dans `src/global.scss` pour toutes les `ion-alert`
+- Titre de la modale: `font-weight: 700` (noir gras)
+- Message de la modale: `font-weight: 600` (noir semi-gras)
+- Champs de saisie: `font-weight: 600` avec focus sur couleur principale
+- Boutons: `font-weight: 700` (vert pour confirmer, gris pour annuler)
+
 ## Fonctionnalités clés
 
 ### Géolocalisation
