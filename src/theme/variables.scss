@@ -90,11 +90,11 @@
   --ion-toolbar-border-color: rgba(0, 0, 0, 0.2);
   --ion-toolbar-color: #000000;
 
-  // Tab bar - noir
-  --ion-tab-bar-background: #000000;
-  --ion-tab-bar-color: #F5FF78;
-  --ion-tab-bar-color-selected: #F5FF78;
-  --ion-tab-bar-border-color: rgba(245, 255, 120, 0.3);
+  // Tab bar - jaune lime
+  --ion-tab-bar-background: #F5FF78;
+  --ion-tab-bar-color: #000000;
+  --ion-tab-bar-color-selected: #000000;
+  --ion-tab-bar-border-color: rgba(0, 0, 0, 0.3);
 
   // Item - fond jaune lime clair avec texte noir gras
   --ion-item-background: rgba(245, 255, 120, 0.3);
@@ -172,7 +172,7 @@
   --ion-color-step-950: #4d4706;
   --ion-item-background: rgba(253, 255, 240, 0.9);
   --ion-toolbar-background: #F5FF78;
-  --ion-tab-bar-background: #000000;
+  --ion-tab-bar-background: #F5FF78;
   --ion-card-background: rgba(253, 255, 240, 0.9);
 }
 
@@ -208,17 +208,17 @@ ion-tab-button {
 }
 
 ion-tab-button ion-label {
-  color: #F5FF78 !important;
+  color: #000000 !important;
   font-weight: 700 !important;
 }
 
 ion-tab-button.tab-selected ion-label {
-  color: #F5FF78 !important;
+  color: #000000 !important;
   font-weight: 700 !important;
 }
 
 ion-tab-button ion-icon {
-  color: #F5FF78 !important;
+  color: #000000 !important;
 }
 
 // Exceptions pour le bouton WhatsApp

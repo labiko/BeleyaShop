@@ -53,6 +53,8 @@ git push origin dev
 - **Couleur principale**: #F5FF78 (lime yellow)
 - **Couleur secondaire**: #000000 (noir)
 - **Typographie**: Noir gras pour tous les textes
+- **Prix des produits**: OBLIGATOIREMENT en noir gras (#000000, font-weight: 700) pour lisibilité sur fond jaune
+- **Navigation tabs**: OBLIGATOIREMENT texte et icônes en noir gras (#000000, font-weight: 700) sur fond jaune lime
 - **Exception**: Bouton WhatsApp garde ses couleurs originales
 
 ### Modales et Alertes
