@@ -8,11 +8,18 @@
 - Toujours demander confirmation avant toute opération Git
 
 **✅ QUAND L'UTILISATEUR DEMANDE "COMMITE" OU "COMMIT":**
+- **BRANCHE PAR DÉFAUT** : TOUJOURS commiter sur la branche `dev` sauf indication contraire
 - **IMPORTANT** : TOUJOURS exécuter `npm run version:bump` AVANT le commit pour incrémenter la version
 - TOUJOURS exécuter `git add -A` pour ajouter tous les fichiers (incluant les fichiers de version modifiés)
 - TOUJOURS exécuter `git commit` avec un message descriptif complet
-- TOUJOURS exécuter `git push origin dev` pour pousser vers le repository distant
+- TOUJOURS exécuter `git push origin dev` pour pousser vers le repository distant (branche dev par défaut)
+- Ne JAMAIS faire de merge automatique vers master sans demande explicite
 - Ne JAMAIS oublier de pousser les commits vers GitHub après les avoir créés localement
+
+**🚫 POLITIQUE DE MERGE STRICTE:**
+- Ne JAMAIS merger automatiquement dev vers master
+- Attendre une demande explicite de merge avant de fusionner les branches
+- Seul l'utilisateur décide quand merger vers master
 
 **🔢 VERSIONING AUTOMATIQUE AVANT CHAQUE COMMIT:**
 ```bash

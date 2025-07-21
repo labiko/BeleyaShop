@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController, ModalController } from '@ionic/angular';
 import { ProductService } from '../../services/product.service';
+import { SupabaseService } from '../../services/supabase.service';
 
 export interface Category {
   id?: number;
@@ -20,6 +21,7 @@ export interface Category {
 })
 export class AdminCategoriesPage implements OnInit {
   private productService = inject(ProductService);
+  private supabaseService = inject(SupabaseService);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
 
@@ -45,20 +47,43 @@ export class AdminCategoriesPage implements OnInit {
   async loadCategories() {
     this.isLoading = true;
     try {
-      // Pour l'instant, utilisons les catégories par défaut
-      // Plus tard, on pourra les charger depuis la base de données
-      this.categories = [...this.defaultCategories];
+      const dbCategories = await this.supabaseService.getCategories();
+      
+      if (dbCategories && dbCategories.length > 0) {
+        this.categories = dbCategories;
+      } else {
+        // Si aucune catégorie en base, créer les catégories par défaut
+        await this.createDefaultCategories();
+      }
+      
       this.filteredCategories = [...this.categories];
     } catch (error) {
       console.error('Erreur lors du chargement des catégories:', error);
+      // En cas d'erreur, utiliser les catégories par défaut
+      this.categories = [...this.defaultCategories];
+      this.filteredCategories = [...this.categories];
+      
       const toast = await this.toastController.create({
-        message: '❌ Erreur lors du chargement des catégories',
-        duration: 3000,
-        color: 'danger'
+        message: '⚠️ Connexion à la base de données impossible, utilisation des catégories par défaut',
+        duration: 4000,
+        color: 'warning'
       });
       await toast.present();
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  async createDefaultCategories() {
+    try {
+      for (const category of this.defaultCategories) {
+        await this.supabaseService.createCategory(category);
+      }
+      const dbCategories = await this.supabaseService.getCategories();
+      this.categories = dbCategories || [];
+    } catch (error) {
+      console.error('Erreur lors de la création des catégories par défaut:', error);
+      this.categories = [...this.defaultCategories];
     }
   }
 
@@ -146,10 +171,11 @@ export class AdminCategoriesPage implements OnInit {
         return;
       }
 
-      // Ajouter l'ID
-      category.id = this.categories.length + 1;
+      // Créer en base de données
+      const newCategory = await this.supabaseService.createCategory(category);
       
-      this.categories.push(category);
+      // Ajouter à la liste locale
+      this.categories.push(newCategory);
       this.onSearch(); // Refresh filtered list
       
       const toast = await this.toastController.create({
@@ -228,18 +254,24 @@ export class AdminCategoriesPage implements OnInit {
 
   async updateCategory(originalCategory: Category, updatedData: Partial<Category>) {
     try {
-      const index = this.categories.findIndex(c => c.id === originalCategory.id);
-      if (index !== -1) {
-        this.categories[index] = { ...originalCategory, ...updatedData };
-        this.onSearch(); // Refresh filtered list
+      if (originalCategory.id) {
+        // Mettre à jour en base de données
+        const updatedCategory = await this.supabaseService.updateCategory(originalCategory.id, updatedData);
         
-        const toast = await this.toastController.create({
-          message: `✅ Catégorie "${updatedData.name}" modifiée avec succès`,
-          duration: 3000,
-          color: 'success'
-        });
-        await toast.present();
+        // Mettre à jour la liste locale
+        const index = this.categories.findIndex(c => c.id === originalCategory.id);
+        if (index !== -1) {
+          this.categories[index] = updatedCategory;
+          this.onSearch(); // Refresh filtered list
+        }
       }
+      
+      const toast = await this.toastController.create({
+        message: `✅ Catégorie "${updatedData.name}" modifiée avec succès`,
+        duration: 3000,
+        color: 'success'
+      });
+      await toast.present();
     } catch (error) {
       console.error('Erreur lors de la modification de la catégorie:', error);
       const toast = await this.toastController.create({
@@ -276,6 +308,12 @@ export class AdminCategoriesPage implements OnInit {
 
   async deleteCategory(category: Category) {
     try {
+      if (category.id) {
+        // Supprimer de la base de données
+        await this.supabaseService.deleteCategory(category.id);
+      }
+      
+      // Supprimer de la liste locale
       this.categories = this.categories.filter(c => c.id !== category.id);
       this.onSearch(); // Refresh filtered list
       

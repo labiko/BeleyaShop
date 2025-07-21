@@ -175,7 +175,17 @@ export class ProductService {
     };
   }
 
-  getCategories(): string[] {
-    return ['cremes', 'gels', 'parfums'];
+  getCategories(): Observable<any[]> {
+    return from(this.supabaseService.getCategories()).pipe(
+      catchError(error => {
+        console.error('Erreur lors du chargement des catégories:', error);
+        // En cas d'erreur, retourner les catégories par défaut
+        return of([
+          { name: 'Soins du visage', icon: 'face-outline' },
+          { name: 'Maquillage', icon: 'brush-outline' },
+          { name: 'Parfums', icon: 'flower-outline' }
+        ]);
+      })
+    );
   }
 }

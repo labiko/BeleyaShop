@@ -122,4 +122,64 @@ export class SupabaseService {
 
     return true;
   }
+
+  // Méthodes pour les catégories
+  async getCategories() {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+
+    if (error) {
+      console.error('Erreur lors de la récupération des catégories:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async createCategory(category: any) {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .insert([category])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erreur lors de la création de la catégorie:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async updateCategory(id: number, updates: any) {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erreur lors de la mise à jour de la catégorie:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async deleteCategory(id: number) {
+    const { error } = await this.supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erreur lors de la suppression de la catégorie:', error);
+      throw error;
+    }
+
+    return true;
+  }
 }

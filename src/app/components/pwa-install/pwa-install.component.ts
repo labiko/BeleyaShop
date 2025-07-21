@@ -16,12 +16,20 @@ export class PwaInstallComponent implements OnInit, OnDestroy {
   private toastController = inject(ToastController);
 
   showInstallButton = false;
+  showIOSInstructions = false;
   isInstalling = false;
+  installInstructions = '';
   private installSubscription?: Subscription;
 
   ngOnInit() {
     this.installSubscription = this.pwaService.isInstallable$.subscribe(isInstallable => {
       this.showInstallButton = isInstallable && !this.pwaService.isStandalone();
+      
+      // Show iOS instructions if on iOS Safari and app is not installed
+      if (this.pwaService.isIOSDevice() && !this.pwaService.isStandalone()) {
+        this.showIOSInstructions = true;
+        this.installInstructions = this.pwaService.getInstallInstructions();
+      }
     });
   }
 

@@ -176,10 +176,49 @@
   --ion-card-background: rgba(253, 255, 240, 0.9);
 }
 
-// Règles globales pour forcer le texte noir gras
-* {
+// Règles spécifiques pour le texte noir gras (sans impacter les tabs)
+ion-content, 
+ion-card, 
+ion-item, 
+ion-button:not(ion-tab-button), 
+ion-label:not(ion-tab-button ion-label),
+.welcome-section,
+.feature-item,
+.category-item,
+h1, h2, h3, h4, h5, h6,
+p:not(ion-tab-button p) {
   color: #000000 !important;
   font-weight: 700 !important;
+}
+
+// Forcer l'affichage des tabs sur mobile
+ion-tab-bar {
+  display: flex !important;
+  visibility: visible !important;
+  background: var(--ion-tab-bar-background) !important;
+}
+
+ion-tab-button {
+  display: flex !important;
+  visibility: visible !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 50px !important;
+}
+
+ion-tab-button ion-label {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+ion-tab-button.tab-selected ion-label {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+ion-tab-button ion-icon {
+  color: #000000 !important;
 }
 
 // Exceptions pour le bouton WhatsApp

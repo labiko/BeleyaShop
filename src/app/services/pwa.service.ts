@@ -67,6 +67,44 @@ export class PwaService {
   }
 
   isStandalone(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches;
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           (window.navigator as any).standalone || 
+           document.referrer.includes('android-app://');
+  }
+
+  isInstalled(): boolean {
+    return this.isStandalone();
+  }
+
+  canInstall(): boolean {
+    return !this.isStandalone() && 
+           ('serviceWorker' in navigator) && 
+           (this.promptEvent !== null || this.hasBeforeInstallPromptSupport());
+  }
+
+  private hasBeforeInstallPromptSupport(): boolean {
+    return 'onbeforeinstallprompt' in window;
+  }
+
+  getInstallInstructions(): string {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    if (isIOS && isSafari) {
+      return 'Appuyez sur l\'icône de partage puis "Sur l\'écran d\'accueil"';
+    } else if (isAndroid) {
+      return 'Appuyez sur le menu (⋮) puis "Ajouter à l\'écran d\'accueil"';
+    } else {
+      return 'Utilisez le menu du navigateur pour installer cette application';
+    }
+  }
+
+  isIOSDevice(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  }
+
+  isAndroidDevice(): boolean {
+    return /Android/.test(navigator.userAgent);
   }
 }

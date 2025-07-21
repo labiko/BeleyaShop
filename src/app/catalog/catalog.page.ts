@@ -30,6 +30,7 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  categories: any[] = [];
   selectedCategory: string = 'all';
   cartItems: CartItem[] = [];
   cartTotal: number = 0;
@@ -57,10 +58,23 @@ export class CatalogPage implements OnInit, OnDestroy {
     console.log(`🚀 BeleyaShop Catalog v${versionInfo.version}`);
     console.log(`📅 Build: ${versionInfo.formattedBuildDate}`);
     
+    this.loadCategories();
     this.loadProducts();
     this.checkInitialCategory();
     this.subscribeToCart();
     this.startAutoRefresh();
+  }
+
+  loadCategories() {
+    this.productService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        console.log('Categories loaded:', this.categories);
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+      }
+    });
   }
 
   ngOnDestroy() {
