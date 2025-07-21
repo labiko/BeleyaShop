@@ -11,6 +11,7 @@ import { ToastService } from '../services/toast.service';
 import { WhatsappFabComponent } from '../components/whatsapp-fab/whatsapp-fab.component';
 import { ImageFallbackDirective } from '../directives/image-fallback.directive';
 import { VersionService } from '../services/version.service';
+import { PwaService } from '../services/pwa.service';
 
 @Component({
   selector: 'app-catalog',
@@ -27,6 +28,7 @@ export class CatalogPage implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private router = inject(Router);
   private versionService = inject(VersionService);
+  private pwaService = inject(PwaService);
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
@@ -42,6 +44,9 @@ export class CatalogPage implements OnInit, OnDestroy {
   currentLocation: any = null;
   showAddressInput: boolean = false;
   customerAddress: string = '';
+  
+  // PWA
+  showInstallButton: boolean = false;
   
   private cartSubscription?: Subscription;
   private routeSubscription?: Subscription;
@@ -63,6 +68,7 @@ export class CatalogPage implements OnInit, OnDestroy {
     this.checkInitialCategory();
     this.subscribeToCart();
     this.startAutoRefresh();
+    this.checkPwaInstallability();
   }
 
   loadCategories() {
@@ -393,6 +399,29 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   private async showOrderSentToast() {
     await this.toastService.showSuccess('Commande envoyée via WhatsApp ! Votre panier a été vidé.', 3000);
+  }
+
+  // PWA Methods
+  private checkPwaInstallability() {
+    this.pwaService.isInstallable$.subscribe(isInstallable => {
+      this.showInstallButton = isInstallable && !this.pwaService.isStandalone();
+      console.log('PWA installable:', isInstallable, 'Standalone:', this.pwaService.isStandalone());
+    });
+  }
+
+  async installPwa() {
+    if (!this.pwaService.isPwaInstallable()) {
+      await this.toastService.showWarning('Installation non disponible pour ce navigateur', 3000);
+      return;
+    }
+
+    const success = await this.pwaService.installPwa();
+    if (success) {
+      await this.toastService.showSuccess('Application installée avec succès !', 3000);
+      this.showInstallButton = false;
+    } else {
+      await this.toastService.showError('Installation annulée ou échouée', 3000);
+    }
   }
 
 }

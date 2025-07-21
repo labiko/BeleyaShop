@@ -4,6 +4,17 @@
       <img src="assets/logo.png" alt="BeleyaShop Logo" class="header-logo">
       BeleyaShop - Catalogue
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button 
+        *ngIf="showInstallButton"
+        fill="outline"
+        color="dark"
+        (click)="installPwa()"
+        class="install-button">
+        <ion-icon name="download" slot="start"></ion-icon>
+        Installer
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
