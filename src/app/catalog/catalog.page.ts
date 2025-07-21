@@ -151,7 +151,7 @@ export class CatalogPage implements OnInit, OnDestroy {
         setTimeout(resolve, 1000);
       });
       
-      await this.toastService.showSuccess('Catalogue mis à jour !', 2000);
+      //await this.toastService.showSuccess('Catalogue mis à jour !', 2000);
       
     } catch (error) {
       console.error('Error during refresh:', error);

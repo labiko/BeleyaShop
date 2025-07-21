@@ -4,6 +4,29 @@ ion-tab-bar {
   --color-selected: #000000;
   border-top: 2px solid #000000;
   padding-bottom: var(--ion-safe-area-bottom, 0);
+  position: fixed !important;
+  bottom: 0 !important;
+  z-index: 1000 !important;
+}
+
+// Styles spécifiques pour mobile uniquement
+@media (max-width: 768px) {
+  ion-tab-bar {
+    padding-bottom: 20px !important; // Padding supplémentaire pour éviter la barre de navigation mobile
+    min-height: 70px !important; // Hauteur minimale plus grande
+    background: #F5FF78 !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2) !important; // Ombre pour séparer de l'écran
+  }
+
+  ion-tab-button {
+    min-height: 55px !important;
+    padding-bottom: 5px !important;
+  }
+
+  // S'assurer que le contenu n'est pas masqué par la tab bar
+  ion-content {
+    --padding-bottom: 90px !important; // Espace pour la tab bar
+  }
 }
 
 ion-tab-button {
