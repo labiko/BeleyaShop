@@ -214,15 +214,16 @@ ion-tab-button {
   
   ion-tab-bar {
     position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
+    bottom: 30px !important; // Remonter de 30px au-dessus du bas pour éviter la barre de navigation mobile
+    left: 10px !important;
+    right: 10px !important;
+    width: calc(100% - 20px) !important; // Largeur avec marges
     z-index: 9999 !important;
-    padding-bottom: env(safe-area-inset-bottom, 20px) !important;
-    min-height: 65px !important;
+    padding: 10px 0 15px 0 !important; // Padding interne pour la hauteur
+    min-height: 55px !important;
     background: #F5FF78 !important;
-    border-top: 2px solid #000000 !important;
+    border: 2px solid #000000 !important; // Bordure complète au lieu de juste le haut
+    border-radius: 25px !important; // Coins arrondis pour un look moderne
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3) !important;
   }
 
