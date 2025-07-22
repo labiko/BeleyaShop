@@ -29,7 +29,13 @@
       "Bash(ls:*)",
       "Bash(dir)",
       "Bash(vercel:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(npm run version:bump:*)",
+      "Bash(grep:*)",
+      "Bash(npm version:*)"
     ],
     "deny": []
   }
