@@ -5,9 +5,15 @@
 
 .welcome-section {
   padding: 20px;
+  padding-bottom: 100px; // Espace pour les tabs sur mobile
   text-align: center;
   background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
   min-height: 100vh;
+  
+  // Sur desktop, moins de padding car tabs en bas fixe
+  @media (min-width: 769px) {
+    padding-bottom: 80px;
+  }
 }
 
 .logo-container {
@@ -178,6 +184,13 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+// Sur mobile, ajouter plus d'espace en bas pour les tabs flottants
+@media (max-width: 768px) {
+  .categories-preview {
+    padding-bottom: 50px; // Espace supplémentaire pour les tabs mobiles remontés
   }
 }
 
