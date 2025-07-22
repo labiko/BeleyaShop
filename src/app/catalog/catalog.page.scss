@@ -16,7 +16,12 @@
 
 .catalog-container {
   padding: 0;
-  padding-bottom: 80px; // Espace réduit car pas de tabs sur mobile
+  padding-bottom: 80px; // Espace par défaut
+  
+  // Sur grand écran, plus d'espace pour éviter que le dernier produit soit caché
+  @media (min-width: 769px) {
+    padding-bottom: 140px; // Plus d'espace pour le bouton WhatsApp desktop
+  }
 }
 
 .filters-section {

@@ -222,7 +222,11 @@
 @media (min-width: 769px) {
   .mobile-whatsapp-button {
     display: block; // Montrer aussi sur desktop
-    bottom: 125px !important; // Positionner au-dessus des tabs même sur desktop
+    bottom: 80px !important; // Position plus basse sur desktop pour ne pas gêner
+    max-width: 600px; // Limiter la largeur sur grand écran
+    left: 50%; // Centrer horizontalement
+    transform: translateX(-50%); // Centrer horizontalement
+    padding: 16px !important;
   }
   
   .desktop-only {
