@@ -1,0 +1,84 @@
+<ion-content class="admin-login-content">
+  <div class="login-container">
+    <!-- Header avec logo -->
+    <div class="login-header">
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="BeleyaShop Logo" class="logo" />
+        <h1>BeleyaShop Admin</h1>
+        <p>Interface d'administration</p>
+      </div>
+    </div>
+
+    <!-- Formulaire de connexion -->
+    <div class="login-form">
+      <ion-card class="login-card">
+        <ion-card-header>
+          <ion-card-title>
+            Connexion Administrateur
+          </ion-card-title>
+          <ion-card-subtitle>
+            Accédez au panneau d'administration BeleyaShop
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+            
+            <!-- Champ Nom d'utilisateur -->
+            <ion-item class="login-item">
+              <ion-label position="stacked">Nom d'utilisateur</ion-label>
+              <ion-input
+                type="text"
+                [(ngModel)]="credentials.username"
+                name="username"
+                placeholder="Entrez votre nom d'utilisateur"
+                required
+                [disabled]="isLoading"
+                clearInput="true">
+                <ion-icon name="person" slot="start"></ion-icon>
+              </ion-input>
+            </ion-item>
+
+            <!-- Champ Mot de passe -->
+            <ion-item class="login-item">
+              <ion-label position="stacked">Mot de passe</ion-label>
+              <ion-input
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="credentials.password"
+                name="password"
+                placeholder="Entrez votre mot de passe"
+                required
+                [disabled]="isLoading">
+                <ion-icon name="lock-closed" slot="start"></ion-icon>
+                <ion-button
+                  fill="clear"
+                  slot="end"
+                  (click)="togglePasswordVisibility()"
+                  [disabled]="isLoading">
+                  <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+                </ion-button>
+              </ion-input>
+            </ion-item>
+
+            <!-- Bouton de connexion -->
+            <div class="login-buttons">
+              <ion-button
+                expand="block"
+                type="submit"
+                class="login-btn"
+                [disabled]="isLoading || !loginForm.form.valid">
+                <ion-icon name="log-in" slot="start" *ngIf="!isLoading"></ion-icon>
+                <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+                {{ isLoading ? 'Connexion...' : 'Se connecter' }}
+              </ion-button>
+
+              </div>
+
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+
+  </div>
+</ion-content>

@@ -1,0 +1,865 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * BeleyaShop - Global Styles
+ * -----------------------------------------------------
+ * Styles globaux pour un thème clair et moderne
+ */
+
+// Désactiver le mode sombre par défaut
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+// Styles globaux pour l'application avec gradient
+body {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+   background: white;
+
+
+  min-height: 100vh;
+}
+
+ion-app {
+   background: white;
+}
+
+ion-content {
+  --background: transparent;
+}
+
+// Amélioration des cartes avec effet de verre
+ion-card {
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.15);
+  border-radius: 16px;
+  margin: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 211, 221, 0.2);
+  
+  &.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(43, 108, 176, 0.25);
+    }
+  }
+  
+  &.cart-item {
+    margin-bottom: 12px;
+  }
+}
+
+// Amélioration des boutons avec gradient
+ion-button {
+  --border-radius: 12px;
+  font-weight: 500;
+  text-transform: none;
+  
+  &[color="primary"] {
+    --background: linear-gradient(135deg, #2b6cb0, #4178b8) !important;
+    --background-activated: linear-gradient(135deg, #25609b, #3a6ba5) !important;
+    --background-hover: linear-gradient(135deg, #25609b, #3a6ba5) !important;
+    --box-shadow: 0 4px 12px rgba(43, 108, 176, 0.3);
+    --color: white !important;
+  }
+  
+  &[color="success"] {
+    --background: linear-gradient(135deg, #25d366, #20c157) !important;
+    --background-activated: linear-gradient(135deg, #1eb850, #1aa349) !important;
+    --background-hover: linear-gradient(135deg, #1eb850, #1aa349) !important;
+    --box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    --color: white !important;
+  }
+  
+  &.checkout-btn {
+    --background: linear-gradient(135deg, #28a745, #3eb058) !important;
+    --background-hover: #24963e !important;
+    --box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+  }
+}
+
+// Amélioration des segments avec verre
+ion-segment {
+  --background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 6px;
+  margin: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 211, 221, 0.3);
+}
+
+ion-segment-button {
+  --background-checked: linear-gradient(135deg, #2b6cb0, #4178b8);
+  --color-checked: #ffffff;
+  --border-radius: 8px;
+  font-weight: 500;
+}
+
+// Amélioration des items
+ion-item {
+  --background: transparent;
+  --border-color: #e9ecef;
+  
+  &.item-lines-default {
+    --border-width: 0 0 1px 0;
+  }
+}
+
+// Amélioration des toolbars avec gradient
+ion-toolbar {
+  --background: linear-gradient(135deg, rgba(170, 224, 232, 0.9), rgba(125, 211, 221, 0.7));
+  --color: #2d3748;
+  --border-color: rgba(125, 211, 221, 0.3);
+  backdrop-filter: blur(10px);
+  
+  ion-title {
+    font-weight: 700;
+    font-size: 18px;
+    color: #2d3748;
+  }
+}
+
+// Styles pour les images de produits
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+// Container pour la grille de produits
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+// États vides
+.empty-state, .empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  
+  ion-icon {
+    font-size: 64px;
+    color: #6c757d;
+    margin-bottom: 16px;
+  }
+  
+  h2 {
+    color: #343a40;
+    margin-bottom: 8px;
+  }
+  
+  p {
+    color: #6c757d;
+    margin-bottom: 24px;
+  }
+}
+
+// FAB WhatsApp avec style moderne
+.whatsapp-fab {
+  ion-fab-button {
+    --background: linear-gradient(135deg, #25d366, #20c157);
+    --background-hover: #1eb850;
+    --box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    transform: scale(1.1);
+  }
+  
+  .cart-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+  }
+  
+  .fab-label {
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(45, 55, 72, 0.9);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(125, 211, 221, 0.3);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  ion-card {
+    margin: 6px;
+  }
+}
+
+/**
+ * Styles pour le Back-Office Admin
+ * -----------------------------------------------------
+ */
+
+// Styles pour les modales de produits et commandes
+.product-modal,
+.order-detail-modal {
+  --width: 90%;
+  --max-width: 600px;
+  --height: 90%;
+  --max-height: 800px;
+  --border-radius: 16px;
+}
+
+// Styles globaux pour les alertes admin
+.custom-alert {
+  --background: rgba(255, 255, 255, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 20px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    
+    .alert-button {
+      height: 50px;
+      font-weight: 600;
+      
+      &.alert-button-cancel,
+      &.secondary {
+        color: #6b7280;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      
+      &.alert-button-confirm,
+      &.success {
+        color: #059669;
+        font-weight: 700;
+      }
+      
+      &.danger {
+        color: #dc2626;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Animation d'entrée pour les pages admin
+@keyframes adminPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-products-content,
+.admin-orders-content {
+  animation: adminPageEnter 0.3s ease-out;
+}
+
+// Styles pour les badges de statut
+ion-badge {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  
+  &[color="warning"] {
+    --background: #f59e0b;
+    --color: white;
+  }
+  
+  &[color="primary"] {
+    --background: #3b82f6;
+    --color: white;
+  }
+  
+  &[color="success"] {
+    --background: #10b981;
+    --color: white;
+  }
+  
+  &[color="danger"] {
+    --background: #ef4444;
+    --color: white;
+  }
+  
+  &[color="medium"] {
+    --background: #6b7280;
+    --color: white;
+  }
+}
+
+// Styles pour les spinners de chargement
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  
+  ion-spinner {
+    --color: #3b82f6;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+// Animation de pulsation pour les éléments de chargement
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading-skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+
+// Styles globaux pour les toasts modernes
+ion-toast {
+  --border-radius: 16px;
+  --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --backdrop-filter: blur(20px);
+  --width: auto;
+  --max-width: 500px;
+  --min-width: 320px;
+  --z-index: 10000;
+  z-index: 10000 !important;
+  
+  // Centrage du toast - Toujours centré
+  &.toast-center {
+    --position: fixed;
+    --start: 50%;
+    --top: 50%;
+    transform: translate(-50%, -50%);
+    
+    // Sur mobile, maintenir le centrage mais ajuster la largeur
+    @media (max-width: 768px) {
+      --width: 90%;
+      --max-width: 90%;
+      --min-width: 90%;
+      // Garder le centrage avec transform: translate(-50%, -50%)
+    }
+  }
+  
+  .toast-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    
+    .toast-container {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .toast-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      
+      .toast-content {
+        flex: 1;
+        
+        .toast-message {
+          font-size: 14px;
+          line-height: 1.4;
+          font-weight: 500;
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  // Couleurs spécifiques
+  &.toast-success {
+    --background: rgba(16, 185, 129, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-danger,
+  &.toast-error {
+    --background: rgba(239, 68, 68, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-warning {
+    --background: rgba(245, 158, 11, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+  &.toast-primary {
+    --background: rgba(59, 130, 246, 0.95);
+    --color: white;
+    
+    .toast-icon {
+      color: white;
+    }
+  }
+  
+// Toast personnalisé pour les mises à jour - Version simplifiée
+ion-toast.custom-update-toast {
+  --position: fixed;
+  --start: 50%;
+  --top: 50%;
+  --transform: translate(-50%, -50%);
+  --width: 90%;
+  --max-width: 400px;
+  --border-radius: 16px;
+  --background: linear-gradient(135deg, #10b981, #059669);
+  --color: white;
+  --box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  z-index: 10000;
+  
+  .toast-wrapper {
+    border: 2px solid #F5FF78;
+    border-radius: 16px;
+  }
+  
+  .toast-container {
+    padding: 18px 16px;
+    text-align: center;
+  }
+  
+  .toast-message {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    width: 100%;
+    display: block;
+  }
+  
+  .toast-button-group {
+    display: flex;
+    justify-content: center;
+    
+    .toast-button {
+      width: 100%;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 20px;
+      background: #F5FF78;
+      color: #000;
+      border: 2px solid #F5FF78;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+}
+
+// Animation pour le toast de mise à jour
+@keyframes updateToastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -100px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// Styles globaux pour toutes les modales avec texte noir gras
+ion-alert {
+  --background: white !important;
+  --color: #000000 !important;
+  background: white !important;
+  color: #000000 !important;
+  
+  .alert-wrapper {
+    --background: white !important;
+    background: white !important;
+    color: #000000 !important;
+  }
+  
+  .alert-head {
+    background: white !important;
+    background-color: white !important;
+    color: #000000 !important;
+  }
+  
+  .alert-title {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+  
+  .alert-message {
+    background: white !important;
+    background-color: white !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+  }
+  
+  .alert-input-wrapper {
+    background: white !important;
+    background-color: white !important;
+    
+    .alert-input {
+      background: #f8fafc !important;
+      background-color: #f8fafc !important;
+      border: 2px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      color: #000000 !important;
+      font-weight: 600 !important;
+      padding: 12px !important;
+      
+      &:focus {
+        border-color: #F5FF78 !important;
+        box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3) !important;
+      }
+    }
+  }
+  
+  .alert-input {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+    padding: 12px !important;
+    
+    &:focus {
+      border-color: #F5FF78 !important;
+      box-shadow: 0 0 0 3px rgba(245, 255, 120, 0.3) !important;
+    }
+    
+    &::placeholder {
+      color: #64748b !important;
+      font-weight: 500 !important;
+    }
+  }
+  
+  .alert-button-group {
+    background: white !important;
+    background-color: white !important;
+  }
+  
+  .alert-button {
+    background: white !important;
+    background-color: white !important;
+    font-weight: 700 !important;
+    
+    &.alert-button-cancel {
+      color: #64748b !important;
+    }
+    
+    &:not(.alert-button-cancel) {
+      color: #10b981 !important;
+      font-weight: 700 !important;
+    }
+  }
+}
+
+// Styles spécifiques pour la modal de paiement (rétrocompatibilité)
+.payment-modal.alert-wrapper,
+ion-alert.payment-modal {
+  --background: white !important;
+  --color: #000000 !important;
+  background: white !important;
+  color: #000000 !important;
+}
+
+/**
+ * Styles pour les modales de mise à jour
+ * -----------------------------------------------------
+ */
+
+// Styles pour la notification de mise à jour
+.update-notification-modal {
+  --width: 90%;
+  --max-width: 480px;
+  --border-radius: 20px;
+  --backdrop-opacity: 0.7;
+  
+  .alert-wrapper {
+    background: white !important;
+    border-radius: 20px;
+    border: 3px solid #F5FF78;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+  
+  .alert-head {
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%) !important;
+    padding: 24px 24px 20px 24px;
+    text-align: center;
+    
+    .alert-title {
+      color: #000000 !important;
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  }
+  
+  .alert-message {
+    padding: 20px 24px 24px 24px;
+    background: white !important;
+    
+    .update-message {
+      text-align: center;
+      color: #000000;
+      
+      p {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.5;
+        
+        strong {
+          font-weight: 800;
+        }
+      }
+      
+      .version-info {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 20px 0;
+        
+        p {
+          margin: 0 0 8px 0;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          strong {
+            color: #10b981;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+          }
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+      
+      .update-note {
+        font-size: 14px;
+        color: #64748b;
+        font-weight: 500;
+        line-height: 1.5;
+        margin-top: 16px;
+      }
+    }
+  }
+  
+  .alert-button-group {
+    background: white !important;
+    padding: 0;
+    border-top: 2px solid #f1f5f9;
+    
+    .alert-button {
+      height: 56px;
+      font-weight: 700;
+      font-size: 16px;
+      
+      &.alert-button-cancel {
+        color: #64748b !important;
+        border-right: 1px solid #f1f5f9;
+        
+        &:hover {
+          background: #f8fafc !important;
+        }
+      }
+      
+      &.alert-button-confirm {
+        color: #10b981 !important;
+        position: relative;
+        
+        &:hover {
+          background: #f0fdf4 !important;
+        }
+        
+        &::before {
+          content: '🚀';
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
+
+// Styles pour la modal de chargement de mise à jour
+.update-loading-modal {
+  --width: 320px;
+  --border-radius: 16px;
+  
+  .alert-wrapper {
+    background: white !important;
+    border-radius: 16px;
+    border: 2px solid #F5FF78;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .alert-head {
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%) !important;
+    padding: 20px;
+    text-align: center;
+    
+    .alert-title {
+      color: #000000 !important;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+  
+  .alert-message {
+    padding: 20px;
+    text-align: center;
+    background: white !important;
+    color: #64748b !important;
+    font-weight: 600;
+    
+    &::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid #F5FF78;
+      border-top: 3px solid transparent;
+      border-radius: 50%;
+      animation: updateSpinner 1s linear infinite;
+      margin: 0 auto 16px auto;
+    }
+  }
+}
+
+@keyframes updateSpinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Animation d'apparition pour les modales de mise à jour
+@keyframes updateModalAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.update-notification-modal .alert-wrapper,
+.update-loading-modal .alert-wrapper {
+  animation: updateModalAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

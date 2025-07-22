@@ -1,0 +1,173 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Livraison - BeleyaShop</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="delivery-order-content">
+  
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+    <p>Chargement de la commande...</p>
+  </div>
+
+  <!-- Erreur -->
+  <div class="error-container" *ngIf="error && !isLoading">
+    <ion-icon name="alert-circle" color="danger"></ion-icon>
+    <h2>Erreur</h2>
+    <p>{{ error }}</p>
+    <ion-button fill="outline" color="primary" (click)="router.navigate(['/'])">
+      Retour à l'accueil
+    </ion-button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="order-content" *ngIf="order && !isLoading && !error">
+    
+    <!-- Header commande -->
+    <div class="order-header">
+      <div class="header-card">
+        <div class="order-title">
+          <ion-icon name="receipt" color="primary"></ion-icon>
+          <div>
+            <h1>{{ order.order_number }}</h1>
+            <p>Commande confirmée</p>
+          </div>
+        </div>
+        <ion-badge [color]="order.status === 'delivered' ? 'success' : 'primary'">
+          {{ order.status === 'delivered' ? 'Livrée' : 'À livrer' }}
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- Informations commande -->
+    <ion-card class="order-info-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="information-circle"></ion-icon>
+          Détails de la commande
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <ion-icon name="calendar"></ion-icon>
+            <div>
+              <span class="label">Date</span>
+              <span class="value">{{ formatDate(order.created_at!) }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <ion-icon name="cash"></ion-icon>
+            <div>
+              <span class="label">Montant</span>
+              <span class="value">{{ formatPrice(order.total_amount) }}</span>
+            </div>
+          </div>
+          <div class="info-item" *ngIf="order.customer_phone">
+            <ion-icon name="call"></ion-icon>
+            <div>
+              <span class="label">Téléphone</span>
+              <span class="value">{{ order.customer_phone }}</span>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Articles commandés -->
+    <ion-card class="order-items-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list"></ion-icon>
+          Articles commandés ({{ orderItems.length }})
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="items-list">
+          <div class="item-row" *ngFor="let item of orderItems">
+            <div class="item-info">
+              <span class="item-name">{{ item.product_name }}</span>
+              <span class="item-quantity">x{{ item.quantity }}</span>
+            </div>
+            <span class="item-price">{{ formatPrice(item.subtotal) }}</span>
+          </div>
+        </div>
+        <div class="total-row">
+          <strong>Total : {{ formatPrice(order.total_amount) }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Localisation -->
+    <ion-card class="location-card" *ngIf="order.customer_location_lat && order.customer_location_lng">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="location"></ion-icon>
+          Localisation client
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="location-info">
+          <p>Précision : {{ order.customer_location_accuracy }}m</p>
+          <ion-button fill="outline" color="primary" (click)="openGoogleMaps()">
+            <ion-icon name="map" slot="start"></ion-icon>
+            Ouvrir dans Maps
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Code de livraison -->
+    <ion-card class="delivery-code-card" *ngIf="order.status !== 'delivered'">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="shield-checkmark" color="success"></ion-icon>
+          Validation livraison
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="code-section">
+          <p class="code-instruction">
+            Demandez le code de livraison au client et saisissez-le ci-dessous :
+          </p>
+          
+          <ion-item class="code-input">
+            <ion-label position="stacked">Code de livraison (4 chiffres)</ion-label>
+            <ion-input
+              type="text"
+              [(ngModel)]="deliveryCode"
+              placeholder="0000"
+              maxlength="4"
+              inputmode="numeric"
+              pattern="[0-9]*">
+            </ion-input>
+          </ion-item>
+
+          <ion-button 
+            expand="block" 
+            color="success"
+            [disabled]="!deliveryCode || deliveryCode.length !== 4"
+            (click)="validateDelivery()"
+            class="validate-btn">
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            Valider la livraison
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Commande déjà livrée -->
+    <ion-card class="delivered-card" *ngIf="order.status === 'delivered'">
+      <ion-card-content>
+        <div class="delivered-status">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <h2>Commande livrée</h2>
+          <p>Cette commande a déjà été marquée comme livrée.</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

@@ -1,0 +1,322 @@
+<ion-content class="delivery-personnel-content">
+
+  <!-- Header avec titre -->
+  <div class="personnel-header">
+    <div class="header-content">
+      
+      <!-- Titre -->
+      <div class="header-title">
+        <div class="title-row">
+          <div class="title-content">
+            <h1>
+              <ion-icon name="bicycle"></ion-icon>
+              Gestion des Livreurs
+            </h1>
+            <p>{{ deliveryPersonnels.length }} livreur{{ deliveryPersonnels.length !== 1 ? 's' : '' }} enregistré{{ deliveryPersonnels.length !== 1 ? 's' : '' }}</p>
+          </div>
+          <ion-button 
+            fill="solid" 
+            color="success"
+            size="default"
+            (click)="addNewDeliveryPerson()"
+            class="add-delivery-btn">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Ajouter un livreur
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Statistiques globales -->
+      <div class="stats-grid">
+        <div class="stat-card total-personnel">
+          <div class="stat-icon">
+            <ion-icon name="people"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ deliveryPersonnels.length }}</span>
+            <span class="stat-label">Livreurs actifs</span>
+          </div>
+        </div>
+
+        <div class="stat-card total-deliveries">
+          <div class="stat-icon">
+            <ion-icon name="checkmark-done-circle"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTotalDeliveries() }}</span>
+            <span class="stat-label">Livraisons totales</span>
+          </div>
+        </div>
+
+        <div class="stat-card total-payments">
+          <div class="stat-icon">
+            <ion-icon name="cash"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ formatPrice(getTotalPaid()) }}</span>
+            <span class="stat-label">Total payé</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshData($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Tirer pour actualiser"
+      refreshing-spinner="crescent"
+      refreshing-text="Actualisation...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Liste des livreurs -->
+  <div class="personnel-list" *ngIf="!isLoading">
+    
+    <!-- Message si aucun livreur -->
+    <div class="empty-state" *ngIf="deliveryPersonnels.length === 0">
+      <ion-icon name="bicycle-outline"></ion-icon>
+      <h3>Aucun livreur trouvé</h3>
+      <p>Les livreurs apparaîtront ici une fois qu'ils auront effectué des livraisons.</p>
+    </div>
+
+    <!-- Cartes des livreurs -->
+    <div class="personnel-grid" *ngIf="deliveryPersonnels.length > 0">
+      
+      <ion-card class="personnel-card" *ngFor="let personnel of deliveryPersonnels">
+        
+        <!-- Header du livreur -->
+        <div class="personnel-header-card">
+          <div class="personnel-info">
+            <div class="personnel-avatar">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <div class="personnel-details">
+              <h3 class="personnel-name">{{ personnel.name }}</h3>
+              <p class="personnel-phone">{{ formatPhone(personnel.phone) }}</p>
+              <div class="personnel-stats">
+                <span class="delivery-count">
+                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  {{ personnel.totalDeliveries }} livraison{{ personnel.totalDeliveries !== 1 ? 's' : '' }}
+                </span>
+                <span class="unpaid-count" *ngIf="getUnpaidOrdersCount(personnel) > 0">
+                  <ion-icon name="alert-circle" color="warning"></ion-icon>
+                  {{ getUnpaidOrdersCount(personnel) }} non payé{{ getUnpaidOrdersCount(personnel) !== 1 ? 'es' : 'e' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="personnel-actions">
+            <ion-button 
+              fill="clear" 
+              (click)="togglePersonnelExpansion(personnel.id); $event.stopPropagation()"
+              class="expand-btn">
+              <ion-icon 
+                [name]="expandedPersonnelId === personnel.id ? 'chevron-up' : 'chevron-down'"
+                slot="icon-only">
+              </ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              color="danger"
+              (click)="deleteDeliveryPerson(personnel); $event.stopPropagation()"
+              class="delete-btn">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Contenu étendu - Onglets -->
+        <ion-card-content class="personnel-content" *ngIf="expandedPersonnelId === personnel.id">
+          
+          <!-- Onglets de navigation -->
+          <div class="tabs-container">
+            <ion-segment [(ngModel)]="selectedTab" (ionChange)="onTabChange($event)">
+              <ion-segment-button value="deliveries">
+                <ion-label>Commandes livrées</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="payments">
+                <ion-label>Historique Paiement</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </div>
+
+          <!-- Tab Commandes livrées -->
+          <div class="delivered-orders-section" *ngIf="selectedTab === 'deliveries'">
+            <h4 class="section-title">
+              <ion-icon name="list" color="primary"></ion-icon>
+              Commandes livrées
+            </h4>
+
+            <!-- Liste des commandes livrées -->
+            <div class="orders-list" *ngIf="personnel.deliveredOrders.length > 0">
+              <div class="order-item" 
+                   *ngFor="let order of personnel.deliveredOrders"
+                   [class.paid-order]="isOrderPaid(order)">
+                
+                <div class="order-summary">
+                  <div class="order-header">
+                    <span class="order-number">{{ order.order_number || 'Commande #' + order.id }}</span>
+                    <span class="order-amount">{{ formatPrice(order.total_amount) }}</span>
+                  </div>
+
+                  <!-- Code de livraison -->
+                  <div class="delivery-code-row" *ngIf="order.delivery_code">
+                    <ion-icon name="shield-checkmark" color="success"></ion-icon>
+                    <span class="code-label">Code validé:</span>
+                    <span class="delivery-code">{{ order.delivery_code }}</span>
+                  </div>
+                  
+                  <div class="order-details">
+                    <div class="detail-row">
+                      <ion-icon name="time" color="medium"></ion-icon>
+                      <span>Livrée le {{ formatDate(order.delivered_at!) }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="order.customer_phone">
+                      <ion-icon name="call" color="medium"></ion-icon>
+                      <span>{{ order.customer_phone }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="order.customer_location_lat && order.customer_location_lng">
+                      <ion-icon name="location" color="medium"></ion-icon>
+                      <span>Géolocalisation client</span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        (click)="openGoogleMaps(order.customer_location_lat!, order.customer_location_lng!)"
+                        class="maps-btn">
+                        <ion-icon name="map" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    </div>
+                  </div>
+
+                  <!-- Actions de paiement -->
+                  <div class="payment-actions">
+                    <ion-button 
+                      fill="solid" 
+                      size="small"
+                      color="success"
+                      (click)="payOrder(order, personnel.id)"
+                      [disabled]="isOrderPaid(order)"
+                      class="pay-btn">
+                      <ion-icon name="cash" slot="start"></ion-icon>
+                      {{ isOrderPaid(order) ? 'Payé' : 'Payer' }}
+                    </ion-button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Message si aucune commande -->
+            <div class="no-orders" *ngIf="personnel.deliveredOrders.length === 0">
+              <ion-icon name="document-outline" color="medium"></ion-icon>
+              <p>Aucune commande livrée pour le moment</p>
+            </div>
+
+          </div>
+
+          <!-- Tab Historique Paiement -->
+          <div class="payment-history-section" *ngIf="selectedTab === 'payments'">
+            <h4 class="section-title">
+              <ion-icon name="cash" color="success"></ion-icon>
+              Historique des paiements
+            </h4>
+
+            <!-- Liste des paiements -->
+            <div class="payments-list" *ngIf="personnel.paidOrders.length > 0">
+              <div class="payment-item" *ngFor="let payment of personnel.paidOrders">
+                
+                <div class="payment-summary">
+                  <div class="payment-header">
+                    <span class="order-number">{{ payment.order.order_number || 'Commande #' + payment.order.id }}</span>
+                    <span class="paid-amount">{{ formatPrice(payment.paidAmount) }}</span>
+                  </div>
+
+                  <!-- Code de livraison -->
+                  <div class="delivery-code-row" *ngIf="payment.order.delivery_code">
+                    <ion-icon name="shield-checkmark" color="success"></ion-icon>
+                    <span class="code-label">Code validé:</span>
+                    <span class="delivery-code">{{ payment.order.delivery_code }}</span>
+                  </div>
+                  
+                  <div class="payment-details">
+                    <div class="detail-row">
+                      <ion-icon name="time" color="success"></ion-icon>
+                      <span>Payé le {{ formatDate(payment.paidAt) }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                      <ion-icon name="checkmark-done" color="success"></ion-icon>
+                      <span>Livré le {{ formatDate(payment.order.delivered_at!) }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="payment.order.customer_phone">
+                      <ion-icon name="call" color="medium"></ion-icon>
+                      <span>{{ payment.order.customer_phone }}</span>
+                    </div>
+                    
+                    <div class="detail-row" *ngIf="payment.order.customer_location_lat && payment.order.customer_location_lng">
+                      <ion-icon name="location" color="medium"></ion-icon>
+                      <span>Géolocalisation client</span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        (click)="openGoogleMaps(payment.order.customer_location_lat!, payment.order.customer_location_lng!)"
+                        class="maps-btn">
+                        <ion-icon name="map" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    </div>
+
+                    <div class="detail-row">
+                      <ion-icon name="person" color="primary"></ion-icon>
+                      <span>Payé par {{ payment.paidBy }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Actions de partage et statut -->
+                  <div class="payment-actions">
+                    <div class="payment-status">
+                      <ion-badge color="success">
+                        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+                        Payé
+                      </ion-badge>
+                    </div>
+                    <ion-button 
+                      fill="outline" 
+                      size="small"
+                      (click)="shareInvoice(payment, personnel.name)"
+                      class="share-invoice-btn">
+                      <ion-icon name="share" slot="start"></ion-icon>
+                      Partager facture
+                    </ion-button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Message si aucun paiement -->
+            <div class="no-payments" *ngIf="personnel.paidOrders.length === 0">
+              <ion-icon name="cash-outline" color="medium"></ion-icon>
+              <p>Aucun paiement effectué pour le moment</p>
+            </div>
+
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+    <p>Chargement des livreurs...</p>
+  </div>
+
+</ion-content>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <title>BeleyaShop - Cosmétiques à Conakry</title>
+  <meta name="description" content="Boutique en ligne de produits cosmétiques avec livraison rapide à Conakry. Commandez via WhatsApp." />
+
+  <base href="/" />
+
+  <meta name="color-scheme" content="light dark" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icon/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/logo.png" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://beleya-shop.vercel.app/" />
+  <meta property="og:title" content="BeleyaShop - Cosmétiques à Conakry" />
+  <meta property="og:description" content="🛍️ Boutique en ligne de produits cosmétiques avec livraison rapide à Conakry. Commandez facilement via WhatsApp !" />
+  <meta property="og:image" content="https://beleya-shop.vercel.app/assets/logo.png" />
+  <meta property="og:image:secure_url" content="https://beleya-shop.vercel.app/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="BeleyaShop - Logo de la boutique de cosmétiques" />
+  <meta property="og:site_name" content="BeleyaShop" />
+  <meta property="og:locale" content="fr_FR" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@BeleyaShop" />
+  <meta name="twitter:creator" content="@BeleyaShop" />
+  <meta name="twitter:url" content="https://beleya-shop.vercel.app/" />
+  <meta name="twitter:title" content="BeleyaShop - Cosmétiques à Conakry" />
+  <meta name="twitter:description" content="🛍️ Boutique en ligne de produits cosmétiques avec livraison rapide à Conakry. Commandez facilement via WhatsApp !" />
+  <meta name="twitter:image" content="https://beleya-shop.vercel.app/assets/logo.png" />
+  <meta name="twitter:image:alt" content="BeleyaShop - Logo de la boutique de cosmétiques" />
+  
+  <!-- WhatsApp specific meta tags -->
+  <meta property="og:image:alt" content="BeleyaShop - Boutique de cosmétiques en ligne à Conakry" />
+  
+  <!-- Additional social media optimization -->
+  <meta name="author" content="BeleyaShop" />
+  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="cosmétiques, beauté, Conakry, Guinée, livraison, WhatsApp, maquillage, soins" />
+
+  <!-- PWA Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="BeleyaShop" />
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#F5FF78" />
+  <meta name="msapplication-navbutton-color" content="#F5FF78" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#F5FF78" />
+  
+  <!-- Google Maps API -->
+</head>
+
+<body>
+  <app-root></app-root>
+  
+  <!-- Load Google Maps API dynamically -->
+  <script>
+    // This will be called when needed by the delivery component
+    window.loadGoogleMapsAPI = function() {
+      if (window.googleMapsLoaded) return Promise.resolve();
+      
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBGDz5BJkcTLY3x_96x8xuTxa7Gxd7BN6M';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+          window.googleMapsLoaded = true;
+          console.log('Google Maps API loaded successfully');
+          resolve();
+        };
+        
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    };
+  </script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+  
+  <!-- PWA Install Banner Script -->
+  <script>
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Show install banner
+      const installBanner = document.createElement('div');
+      installBanner.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; background: #3880ff; color: white; padding: 12px; text-align: center; z-index: 10000; font-family: Arial, sans-serif;">
+          <span>📱 Installez BeleyaShop sur votre écran d'accueil</span>
+          <button onclick="installApp()" style="margin-left: 10px; background: white; color: #3880ff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Installer</button>
+          <button onclick="dismissBanner()" style="margin-left: 5px; background: transparent; color: white; border: 1px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Plus tard</button>
+        </div>
+      `;
+      document.body.appendChild(installBanner);
+      
+      window.installApp = () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          deferredPrompt = null;
+          document.body.removeChild(installBanner);
+        });
+      };
+      
+      window.dismissBanner = () => {
+        document.body.removeChild(installBanner);
+      };
+    });
+  </script>
+</body>
+
+</html>

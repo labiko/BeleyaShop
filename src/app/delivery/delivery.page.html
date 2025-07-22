@@ -1,0 +1,74 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/cart"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Informations de livraison</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="delivery-container">
+    <div class="order-summary">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Résumé de commande</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="summary-item" *ngFor="let item of cartItems">
+            <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+            <span>{{ formatPrice(item.product.price * item.quantity) }}</span>
+          </div>
+          <div class="total-row">
+            <strong>Total: {{ formatPrice(getTotalPrice()) }}</strong>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        size="large" 
+        color="success"
+        [disabled]="gettingLocation"
+        (click)="sendWhatsAppOrder()">
+        <ion-icon name="logo-whatsapp" slot="start" *ngIf="!gettingLocation"></ion-icon>
+        <ion-spinner name="crescent" *ngIf="gettingLocation"></ion-spinner>
+        {{ gettingLocation ? 'Préparation en cours...' : 'Envoyer commande via WhatsApp' }}
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium"
+        [disabled]="gettingLocation"
+        (click)="goBack()">
+        Retour au panier
+      </ion-button>
+    </div>
+
+    <!-- Barre de progression pour géolocalisation -->
+    <div class="location-progress-overlay" *ngIf="gettingLocation">
+      <ion-card class="progress-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="location" color="primary"></ion-icon>
+            Recherche de votre position
+          </ion-card-title>
+          <ion-card-subtitle>
+            Recherche de la meilleure précision possible...
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-progress-bar [value]="locationProgress / 100" color="primary"></ion-progress-bar>
+          <p class="progress-text">{{ locationProgress }}% - {{ getProgressMessage() }}</p>
+          <div class="best-accuracy" *ngIf="bestAccuracy">
+            <p><strong>Meilleure précision trouvée :</strong> {{ bestAccuracy }}m</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

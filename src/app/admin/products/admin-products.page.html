@@ -1,0 +1,171 @@
+<ion-content class="admin-products-content">
+
+  <!-- Header avec recherche et filtres -->
+  <div class="products-header">
+    <div class="header-content">
+      
+      <!-- Titre et statistiques -->
+      <div class="header-title">
+        <h1>
+          <ion-icon name="cube"></ion-icon>
+          Gestion des Produits
+        </h1>
+        <p>{{ products.length }} produit{{ products.length !== 1 ? 's' : '' }} au total</p>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="search-container">
+        <ion-searchbar
+          [(ngModel)]="searchTerm"
+          (ionInput)="onSearchChange()"
+          placeholder="Rechercher par nom ou description..."
+          show-clear-button="focus"
+          debounce="300">
+        </ion-searchbar>
+      </div>
+
+      <!-- Filtres -->
+      <div class="filters-container">
+        <ion-segment 
+          [(ngModel)]="selectedCategory" 
+          (ionChange)="onCategoryChange()"
+          class="category-segment"
+          scrollable>
+          <ion-segment-button value="all">
+            <ion-label>Tous</ion-label>
+          </ion-segment-button>
+          <ion-segment-button *ngFor="let category of categories" [value]="category.name">
+            <ion-label>{{ category.name }}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <!-- Bouton d'ajout -->
+      <div class="add-button-container">
+        <ion-button 
+          expand="block" 
+          (click)="addProduct()"
+          class="add-product-btn">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Ajouter un produit
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshProducts($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Tirer pour actualiser"
+      refreshing-spinner="crescent"
+      refreshing-text="Actualisation...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Liste des produits -->
+  <div class="products-list" *ngIf="!isLoading">
+    
+    <!-- Message si aucun produit -->
+    <div class="empty-state" *ngIf="filteredProducts.length === 0 && !isLoading">
+      <ion-icon name="cube-outline"></ion-icon>
+      <h3>Aucun produit trouvé</h3>
+      <p *ngIf="searchTerm || selectedCategory !== 'all'">
+        Essayez de modifier vos critères de recherche ou de filtrage.
+      </p>
+      <p *ngIf="!searchTerm && selectedCategory === 'all'">
+        Commencez par ajouter votre premier produit.
+      </p>
+      <ion-button fill="outline" (click)="addProduct()" *ngIf="!searchTerm && selectedCategory === 'all'">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Ajouter un produit
+      </ion-button>
+    </div>
+
+    <!-- Cartes des produits -->
+    <div class="products-grid" *ngIf="filteredProducts.length > 0">
+      <ion-card class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProductId">
+        
+        <!-- Image du produit -->
+        <div class="product-image">
+          <img [src]="product.image" [alt]="product.name" (error)="onImageError($event)" />
+          
+          <!-- Badge de statut stock -->
+          <ion-badge 
+            [color]="getStockStatus(product).color" 
+            class="stock-badge">
+            <ion-icon [name]="getStockStatus(product).icon"></ion-icon>
+            {{ getStockStatus(product).text }}
+          </ion-badge>
+          
+          <!-- Badge livraison 3J -->
+          <div class="delivery-badge" *ngIf="product.three_day_delivery_eligible">
+            <ion-icon name="rocket"></ion-icon>
+            <span>Livraison 3J</span>
+          </div>
+        </div>
+
+        <!-- Contenu de la carte -->
+        <ion-card-content class="product-content">
+          
+          <!-- Header avec nom et catégorie -->
+          <div class="product-header">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <ion-chip [color]="getCategoryColor(product.category)" class="category-chip">
+              <ion-icon [name]="getCategoryIcon(product.category)"></ion-icon>
+              <ion-label>{{ product.category | titlecase }}</ion-label>
+            </ion-chip>
+          </div>
+
+          <!-- Description -->
+          <p class="product-description">{{ product.description }}</p>
+
+          <!-- Prix et stock -->
+          <div class="product-details">
+            <div class="price">
+              <span class="price-label">Prix :</span>
+              <span class="price-value">{{ formatPrice(product.price) }}</span>
+            </div>
+            <div class="stock">
+              <span class="stock-label">Stock :</span>
+              <span class="stock-value" [class]="'stock-' + getStockStatus(product).color">
+                {{ product.stock_quantity }} unités
+              </span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="product-actions">
+            <ion-button 
+              fill="outline" 
+              size="small" 
+              (click)="editProduct(product)"
+              class="edit-btn">
+              <ion-icon name="create" slot="start"></ion-icon>
+              Modifier
+            </ion-button>
+            
+            <ion-button 
+              fill="outline" 
+              color="danger" 
+              size="small" 
+              (click)="deleteProduct(product)"
+              class="delete-btn">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Supprimer
+            </ion-button>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+    <p>Chargement des produits...</p>
+  </div>
+
+</ion-content>

@@ -1,0 +1,672 @@
+// Mobile WhatsApp Button
+.mobile-whatsapp-button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10000;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+  
+  .modern-whatsapp-btn {
+    position: relative;
+    background: linear-gradient(135deg, #25d366 0%, #20c157 50%, #1eb850 100%) !important;
+    border-radius: 16px;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(37, 211, 102, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &.disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    .btn-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 18px 24px;
+      gap: 16px;
+      z-index: 2;
+      
+      .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        
+        ion-icon {
+          font-size: 20px;
+          color: white !important;
+        }
+        
+        ion-spinner {
+          --color: white !important;
+          width: 20px;
+          height: 20px;
+        }
+      }
+      
+      .btn-text {
+        flex: 1;
+        text-align: left;
+        
+        .main-text {
+          color: white !important;
+          font-size: 16px;
+          font-weight: 700;
+          margin-bottom: 2px;
+          letter-spacing: -0.2px;
+        }
+        
+        .sub-text {
+          color: rgba(255, 255, 255, 0.9) !important;
+          font-size: 13px;
+          font-weight: 500;
+          opacity: 0.9;
+        }
+      }
+      
+      .btn-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+        
+        ion-icon {
+          font-size: 16px;
+          color: white !important;
+        }
+      }
+    }
+    
+    .btn-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 50%, 
+        rgba(0, 0, 0, 0.05) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    &:hover .btn-arrow {
+      transform: translateX(2px);
+    }
+  }
+}
+
+// Desktop FAB
+.whatsapp-fab {
+  ion-fab-button {
+    position: relative;
+    --background: #25d366 !important;
+    --color: white !important;
+    --box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    
+    &[disabled] {
+      --opacity: 0.4;
+      --box-shadow: none;
+    }
+    
+    .cart-counter {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--ion-color-danger);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      border: 2px solid white;
+      z-index: 10;
+    }
+  }
+  
+  .fab-label {
+    position: absolute;
+    right: 70px;
+    bottom: 50%;
+    transform: translateY(50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    animation: slideInLabel 0.3s ease forwards;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-left-color: rgba(0, 0, 0, 0.8);
+    }
+  }
+}
+
+@keyframes slideInLabel {
+  from {
+    opacity: 0;
+    transform: translateY(50%) translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(50%) translateX(0);
+  }
+}
+
+// Responsive Design - Ajustements pour la page catalog
+@media (max-width: 768px) {
+  .mobile-whatsapp-button {
+    display: block;
+    bottom: 125px !important; // Au-dessus des tabs par défaut
+    padding: 16px 16px 0 16px !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  ion-content {
+    --padding-bottom: 210px; // Plus d'espace pour les pages avec tabs
+  }
+}
+
+// Style spécifique quand on est sur la page catalog mobile
+@media (max-width: 768px) {
+  :host(.on-catalog-page) .mobile-whatsapp-button {
+    bottom: 10px !important; // Remonter légèrement pour éviter d'être coupé
+    padding: 16px !important;
+    padding-bottom: 20px !important; // Plus de padding en bas
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-whatsapp-button {
+    display: block; // Montrer aussi sur desktop
+    bottom: 80px !important; // Position plus basse sur desktop pour ne pas gêner
+    max-width: 600px; // Limiter la largeur sur grand écran
+    left: 50%; // Centrer horizontalement
+    transform: translateX(-50%); // Centrer horizontalement
+    padding: 16px !important;
+  }
+  
+  .desktop-only {
+    display: none; // Masquer le FAB classique sur desktop
+  }
+}
+
+// Overlay moderne pour la barre de progression de géolocalisation
+.modern-progress-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+  
+  .progress-container {
+    width: 90%;
+    max-width: 420px;
+    margin: 0 auto;
+    
+    .progress-card {
+      background: rgba(245, 255, 120, 0.95);
+      backdrop-filter: blur(30px);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      
+      .progress-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+        
+        .location-icon {
+          position: relative;
+          
+          .icon-pulse {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #000000, #333333);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            
+            &::before {
+              content: '';
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              background: inherit;
+              border-radius: inherit;
+              animation: pulse 2s infinite;
+              opacity: 0.7;
+            }
+            
+            ion-icon {
+              font-size: 24px;
+              color: #F5FF78 !important;
+              z-index: 1;
+            }
+          }
+        }
+        
+        .progress-title {
+          flex: 1;
+          
+          h3 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000 !important;
+            letter-spacing: -0.3px;
+          }
+          
+          p {
+            margin: 0;
+            font-size: 14px;
+            color: #000000 !important;
+            font-weight: 500;
+          }
+        }
+      }
+      
+      .progress-content {
+        text-align: center;
+        
+        .circular-progress {
+          position: relative;
+          display: inline-block;
+          margin-bottom: 24px;
+          
+          .progress-ring {
+            transform: rotate(-90deg);
+            
+            .progress-ring-circle-bg {
+              opacity: 0.1;
+              stroke: #000000;
+            }
+            
+            .progress-ring-circle {
+              transition: stroke-dashoffset 0.3s ease;
+              stroke-linecap: round;
+              stroke: #000000;
+            }
+          }
+          
+          .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            .percentage {
+              font-size: 24px;
+              font-weight: 800;
+              color: #000000 !important;
+              letter-spacing: -1px;
+            }
+          }
+        }
+        
+        .progress-details {
+          .progress-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            color: #000000 !important;
+            font-weight: 600;
+            font-size: 14px;
+            
+            ion-icon {
+              font-size: 16px;
+              animation: pulse 1.5s infinite;
+              color: #000000 !important;
+            }
+          }
+          
+          .accuracy-info {
+            margin-bottom: 20px;
+            
+            .accuracy-badge {
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              background: rgba(0, 0, 0, 0.1);
+              border: 1px solid rgba(0, 0, 0, 0.3);
+              border-radius: 20px;
+              padding: 6px 12px;
+              color: #000000 !important;
+              font-size: 13px;
+              font-weight: 600;
+              
+              ion-icon {
+                font-size: 14px;
+                color: #000000 !important;
+              }
+            }
+          }
+          
+          .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            
+            .step {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 8px;
+              
+              .step-indicator {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+                position: relative;
+                
+                &::before {
+                  content: '';
+                  position: absolute;
+                  top: 50%;
+                  left: 100%;
+                  width: calc(100% + 8px);
+                  height: 2px;
+                  background: rgba(0, 0, 0, 0.2);
+                  transform: translateY(-50%);
+                  transition: background 0.3s ease;
+                }
+                
+                &:last-child::before {
+                  display: none;
+                }
+              }
+              
+              span {
+                font-size: 11px;
+                color: #000000 !important;
+                font-weight: 600;
+                text-align: center;
+                transition: color 0.3s ease;
+              }
+              
+              &.active {
+                .step-indicator {
+                  background: #000000;
+                  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
+                }
+                
+                span {
+                  color: #000000 !important;
+                }
+              }
+              
+              &.completed {
+                .step-indicator {
+                  background: #000000;
+                  
+                  &::before {
+                    background: #000000;
+                  }
+                }
+                
+                span {
+                  color: #000000 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
+}
+
+// Styles pour l'alerte de confirmation
+:global(.custom-alert) {
+  --background: rgba(255, 255, 255, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 20px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    
+    .alert-button {
+      height: 50px;
+      font-weight: 600;
+      
+      &.alert-button-cancel {
+        color: #6b7280;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      
+      &.alert-button-confirm {
+        color: #059669;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Styles pour les alertes de popup bloqué
+:global(.popup-blocked-alert) {
+  --background: rgba(245, 255, 120, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 2px solid #000000;
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000000 !important;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 16px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000000 !important;
+    font-weight: 600;
+  }
+  
+  .alert-input-group {
+    padding: 0 20px 20px 20px;
+    
+    .alert-input {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #000000;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #000000 !important;
+      resize: none;
+    }
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 2px solid #000000;
+    display: flex;
+    
+    .alert-button {
+      flex: 1;
+      height: 50px;
+      font-weight: 700;
+      color: #000000 !important;
+      border-right: 1px solid #000000;
+      
+      &:last-child {
+        border-right: none;
+      }
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Styles pour les instructions de popup
+:global(.popup-instructions-alert) {
+  --background: rgba(245, 255, 120, 0.95);
+  --backdrop-filter: blur(20px);
+  --border-radius: 16px;
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  .alert-wrapper {
+    backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: 2px solid #000000;
+    max-width: 400px;
+  }
+  
+  .alert-head {
+    padding: 20px 20px 16px 20px;
+    background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+    
+    .alert-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000000 !important;
+    }
+  }
+  
+  .alert-message {
+    padding: 0 20px 20px 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #000000 !important;
+    font-weight: 500;
+    white-space: pre-line;
+  }
+  
+  .alert-button-group {
+    padding: 0;
+    border-top: 2px solid #000000;
+    
+    .alert-button {
+      height: 50px;
+      font-weight: 700;
+      color: #000000 !important;
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}

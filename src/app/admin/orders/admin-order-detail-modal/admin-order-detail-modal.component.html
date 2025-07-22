@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>{{ order.order_number || 'Commande #' + order.id }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="close()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  
+  <!-- Header avec statut -->
+  <div class="order-header">
+    <div class="status-section">
+      <ion-badge [color]="getStatusColor(order.status)" class="status-badge">
+        <ion-icon [name]="getStatusIcon(order.status)"></ion-icon>
+        {{ getStatusText(order.status) }}
+      </ion-badge>
+      <div class="order-dates">
+        <p><strong>Créée le :</strong> {{ formatDate(order.created_at!) }}</p>
+        <p *ngIf="order.confirmed_at"><strong>Confirmée le :</strong> {{ formatDate(order.confirmed_at) }}</p>
+        <p *ngIf="order.confirmed_by"><strong>Confirmée par :</strong> {{ order.confirmed_by }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informations client -->
+  <div class="section" *ngIf="order.customer_phone">
+    <h3>
+      <ion-icon name="person"></ion-icon>
+      Informations Client
+    </h3>
+    <div class="info-card">
+      <div class="info-row">
+        <ion-icon name="call"></ion-icon>
+        <span class="label">Téléphone :</span>
+        <span class="value">{{ order.customer_phone }}</span>
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="openWhatsApp()"
+          class="action-btn">
+          <ion-icon name="logo-whatsapp" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Localisation -->
+  <div class="section" *ngIf="order.customer_location_lat && order.customer_location_lng">
+    <h3>
+      <ion-icon name="location"></ion-icon>
+      Localisation
+    </h3>
+    <div class="info-card">
+      <div class="info-row">
+        <ion-icon name="navigate"></ion-icon>
+        <span class="label">Coordonnées GPS :</span>
+        <span class="value">{{ order.customer_location_lat?.toFixed(6) }}, {{ order.customer_location_lng?.toFixed(6) }}</span>
+      </div>
+      <div class="info-row">
+        <ion-icon name="radio"></ion-icon>
+        <span class="label">Précision :</span>
+        <span class="value">{{ order.customer_location_accuracy }}m</span>
+      </div>
+      <div class="map-actions">
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          (click)="openGoogleMaps()"
+          class="maps-btn">
+          <ion-icon name="map" slot="start"></ion-icon>
+          Ouvrir dans Google Maps
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Articles commandés -->
+  <div class="section">
+    <h3>
+      <ion-icon name="basket"></ion-icon>
+      Articles Commandés
+      <span class="items-count">({{ orderItems.length }})</span>
+    </h3>
+    
+    <div class="items-loading" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Chargement des articles...</p>
+    </div>
+
+    <div class="items-list" *ngIf="!isLoading">
+      <div class="item-card" *ngFor="let item of orderItems">
+        <div class="item-info">
+          <h4 class="item-name">{{ item.product_name }}</h4>
+          <div class="item-details">
+            <span class="item-price">{{ formatPrice(item.product_price) }} × {{ item.quantity }}</span>
+            <span class="item-subtotal">= {{ formatPrice(item.subtotal) }}</span>
+          </div>
+        </div>
+        <div class="item-quantity">
+          <ion-badge color="primary">{{ item.quantity }}</ion-badge>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="total-section">
+        <div class="total-row">
+          <span class="total-label">Total de la commande :</span>
+          <span class="total-amount">{{ formatPrice(order.total_amount) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message WhatsApp -->
+  <div class="section" *ngIf="order.whatsapp_message">
+    <h3>
+      <ion-icon name="logo-whatsapp"></ion-icon>
+      Message WhatsApp
+    </h3>
+    <div class="message-card">
+      <div class="message-content">
+        <pre>{{ order.whatsapp_message }}</pre>
+      </div>
+      <div class="message-actions">
+        <ion-button 
+          fill="outline" 
+          size="small" 
+          (click)="copyWhatsAppMessage()"
+          class="copy-btn">
+          <ion-icon name="copy" slot="start"></ion-icon>
+          Copier le message
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

@@ -1,0 +1,102 @@
+<!-- PWA Install Button -->
+<ion-fab 
+  vertical="top" 
+  horizontal="end" 
+  slot="fixed" 
+  *ngIf="showInstallButton"
+  class="pwa-install-fab">
+  
+  <ion-fab-button 
+    color="primary" 
+    size="small"
+    (click)="installApp()"
+    [disabled]="isInstalling">
+    
+    <ion-icon 
+      name="download" 
+      *ngIf="!isInstalling">
+    </ion-icon>
+    
+    <ion-spinner 
+      name="crescent" 
+      *ngIf="isInstalling">
+    </ion-spinner>
+  </ion-fab-button>
+  
+  <!-- Label tooltip -->
+  <div class="install-tooltip" *ngIf="!isInstalling">
+    <span>Installer l'app</span>
+    <div class="tooltip-arrow"></div>
+  </div>
+</ion-fab>
+
+<!-- Alternative install banner for better UX -->
+<div class="install-banner" *ngIf="showInstallButton">
+  <div class="banner-content">
+    <div class="banner-icon">
+      <img src="assets/logo.png" alt="BeleyaShop" class="banner-logo">
+    </div>
+    <div class="banner-text">
+      <h3>Installer BeleyaShop</h3>
+      <p>Accès rapide depuis votre écran d'accueil</p>
+    </div>
+    <div class="banner-actions">
+      <ion-button 
+        fill="solid" 
+        color="primary" 
+        size="small"
+        (click)="installApp()"
+        [disabled]="isInstalling">
+        
+        <ion-icon 
+          name="download" 
+          slot="start" 
+          *ngIf="!isInstalling">
+        </ion-icon>
+        
+        <ion-spinner 
+          name="crescent" 
+          slot="start" 
+          *ngIf="isInstalling">
+        </ion-spinner>
+        
+        {{ isInstalling ? 'Installation...' : 'Installer' }}
+      </ion-button>
+      
+      <ion-button 
+        fill="clear" 
+        color="medium" 
+        size="small"
+        (click)="showInstallButton = false">
+        Plus tard
+      </ion-button>
+    </div>
+  </div>
+</div>
+
+<!-- iOS Installation Instructions -->
+<div class="ios-install-banner" *ngIf="showIOSInstructions && !showInstallButton">
+  <div class="banner-content">
+    <div class="banner-icon">
+      <ion-icon name="information-circle" color="primary"></ion-icon>
+    </div>
+    <div class="banner-text">
+      <h3>Installer sur iOS</h3>
+      <p>{{ installInstructions }}</p>
+      <div class="ios-steps">
+        <ion-icon name="share-outline"></ion-icon>
+        <span>→</span>
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </div>
+    </div>
+    <div class="banner-actions">
+      <ion-button 
+        fill="clear" 
+        color="medium" 
+        size="small"
+        (click)="showIOSInstructions = false">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</div>

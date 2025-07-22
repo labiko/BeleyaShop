@@ -1,0 +1,232 @@
+// Toolbar admin
+.admin-toolbar {
+  --background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+  --color: #000000;
+  --border-color: #000000;
+  --min-height: 56px;
+  border-bottom: 2px solid #000000;
+
+  .admin-title {
+    .title-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .header-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 2px solid #000000;
+      }
+
+      .title-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .main-title {
+          font-size: 18px;
+          font-weight: 800;
+          color: #000000;
+          letter-spacing: -0.3px;
+          line-height: 1;
+        }
+
+        .sub-title {
+          font-size: 12px;
+          font-weight: 600;
+          color: #374151;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .version-info {
+          font-size: 10px;
+          font-weight: 700;
+          color: #6b7280;
+          background: rgba(255, 255, 255, 0.8);
+          padding: 2px 6px;
+          border-radius: 4px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          margin-top: 2px;
+          display: inline-block;
+          letter-spacing: 0.3px;
+        }
+      }
+    }
+  }
+
+  ion-buttons {
+    ion-button {
+      --color: #000000;
+      --background: rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+      margin-left: 4px;
+
+      &:hover {
+        --background: rgba(0, 0, 0, 0.2);
+      }
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+// Tab bar admin
+.admin-tab-bar {
+  --background: rgba(255, 255, 255, 0.95);
+  --border: 2px solid #000000;
+  backdrop-filter: blur(20px);
+  border-top: 2px solid #000000;
+
+  .admin-tab {
+    --color: #64748b;
+    --color-selected: #000000;
+    --background-focused: rgba(245, 255, 120, 0.2);
+    
+    ion-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    ion-label {
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    ion-badge {
+      position: absolute;
+      top: 8px;
+      right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+    }
+
+    // État sélectionné
+    &.tab-selected {
+      --color: #000000;
+      background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
+      border-radius: 12px 12px 0 0;
+      margin: 0 4px;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #000000;
+        border-radius: 2px 2px 0 0;
+      }
+
+      ion-icon,
+      ion-label {
+        color: #000000 !important;
+      }
+    }
+
+    // État hover
+    &:not(.tab-selected):hover {
+      --color: #000000;
+      background: rgba(245, 255, 120, 0.1);
+      border-radius: 12px 12px 0 0;
+      margin: 0 4px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .admin-toolbar {
+    .admin-title .title-content {
+      gap: 8px;
+
+      .header-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .title-text {
+        .main-title {
+          font-size: 16px;
+        }
+
+        .sub-title {
+          font-size: 10px;
+        }
+      }
+    }
+
+    ion-buttons ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+
+      ion-icon {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .admin-tab-bar .admin-tab {
+    ion-icon {
+      font-size: 20px;
+    }
+
+    ion-label {
+      font-size: 11px;
+    }
+
+    ion-badge {
+      top: 6px;
+      right: 15px;
+      font-size: 9px;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+    }
+  }
+}
+
+// Animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-toolbar,
+.admin-tab-bar {
+  animation: slideIn 0.3s ease-out;
+}
+
+// Badge styles spécifiques
+ion-badge {
+  &[color="primary"] {
+    --background: #3b82f6;
+    --color: white;
+  }
+
+  &[color="warning"] {
+    --background: #f59e0b;
+    --color: white;
+  }
+
+  &[color="danger"] {
+    --background: #ef4444;
+    --color: white;
+  }
+}

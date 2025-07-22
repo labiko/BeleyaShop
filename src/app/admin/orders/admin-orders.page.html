@@ -1,0 +1,275 @@
+<ion-content class="admin-orders-content">
+
+  <!-- Header avec statistiques -->
+  <div class="orders-header">
+    <div class="header-content">
+      
+      <!-- Titre -->
+      <div class="header-title">
+        <h1>
+          <ion-icon name="receipt"></ion-icon>
+          Gestion des Commandes
+        </h1>
+        <p>{{ orders.length }} commande{{ orders.length !== 1 ? 's' : '' }} au total</p>
+        
+      </div>
+
+      <!-- Statistiques -->
+      <div class="stats-grid">
+        <div class="stat-card pending">
+          <div class="stat-icon">
+            <ion-icon name="time"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.pending }}</span>
+            <span class="stat-label">En attente</span>
+          </div>
+        </div>
+
+        <div class="stat-card confirmed">
+          <div class="stat-icon">
+            <ion-icon name="checkmark-circle"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.confirmed }}</span>
+            <span class="stat-label">Confirmées</span>
+          </div>
+        </div>
+
+        <div class="stat-card delivered">
+          <div class="stat-icon">
+            <ion-icon name="checkmark-done-circle"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.delivered }}</span>
+            <span class="stat-label">Livrées</span>
+          </div>
+        </div>
+
+        <div class="stat-card revenue">
+          <div class="stat-icon">
+            <ion-icon name="cash"></ion-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ formatPrice(stats.totalRevenue) }}</span>
+            <span class="stat-label">Chiffre d'affaires</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="search-container">
+        <ion-searchbar
+          [(ngModel)]="searchTerm"
+          (ionInput)="onSearchChange()"
+          placeholder="Rechercher par numéro, téléphone..."
+          show-clear-button="focus"
+          debounce="300">
+        </ion-searchbar>
+      </div>
+
+      <!-- Filtres par statut -->
+      <div class="filters-container">
+        <ion-segment 
+          [(ngModel)]="selectedStatus" 
+          (ionChange)="onStatusChange()"
+          class="status-segment">
+          <ion-segment-button value="all">
+            <ion-label>Toutes</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="pending">
+            <ion-label>En attente</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="confirmed">
+            <ion-label>Confirmées</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="delivered">
+            <ion-label>Livrées</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="cancelled">
+            <ion-label>Annulées</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshOrders($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Tirer pour actualiser"
+      refreshing-spinner="crescent"
+      refreshing-text="Actualisation...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Liste des commandes -->
+  <div class="orders-list" *ngIf="!isLoading">
+    
+    <!-- Message si aucune commande -->
+    <div class="empty-state" *ngIf="filteredOrders.length === 0 && !isLoading">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <h3>Aucune commande trouvée</h3>
+      <p *ngIf="searchTerm || selectedStatus !== 'all'">
+        Essayez de modifier vos critères de recherche ou de filtrage.
+      </p>
+      <p *ngIf="!searchTerm && selectedStatus === 'all'">
+        Les commandes apparaîtront ici une fois que les clients auront passé des commandes.
+      </p>
+    </div>
+
+    <!-- Cartes des commandes -->
+    <div class="orders-grid" *ngIf="filteredOrders.length > 0">
+      <ion-card class="order-card" *ngFor="let order of filteredOrders">
+        
+        <!-- Header de la commande -->
+        <div class="order-header">
+          <div class="order-info">
+            <h3 class="order-number">{{ order.order_number || 'Commande #' + order.id }}</h3>
+            <p class="order-date">{{ formatDate(order.created_at!) }}</p>
+          </div>
+          
+          <ion-badge [color]="getStatusColor(order.status)" class="status-badge">
+            <ion-icon [name]="getStatusIcon(order.status)"></ion-icon>
+            {{ getStatusText(order.status) }}
+          </ion-badge>
+        </div>
+
+        <!-- Contenu de la commande -->
+        <ion-card-content class="order-content">
+          
+          <!-- Informations client -->
+          <div class="customer-info" *ngIf="order.customer_phone">
+            <div class="info-row">
+              <ion-icon name="call"></ion-icon>
+              <span>{{ order.customer_phone }}</span>
+            </div>
+          </div>
+
+          <!-- Date de livraison pour les commandes livrées -->
+          <div class="delivery-info" *ngIf="order.status === 'delivered' && order.delivered_at">
+            <div class="info-row delivered-row">
+              <ion-icon name="checkmark-done-circle" color="success"></ion-icon>
+              <div class="delivery-details">
+                <span class="delivery-label">Livrée le</span>
+                <span class="delivery-date">{{ formatDate(order.delivered_at) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Localisation -->
+          <div class="location-info" *ngIf="order.customer_location_lat && order.customer_location_lng">
+            <div class="info-row">
+              <ion-icon name="location"></ion-icon>
+              <span>Position GPS ({{ order.customer_location_accuracy }}m de précision)</span>
+              <ion-button 
+                fill="clear" 
+                size="small" 
+                (click)="openGoogleMaps(order.customer_location_lat!, order.customer_location_lng!)"
+                class="maps-btn">
+                <ion-icon name="map" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+
+          <!-- Montant total -->
+          <div class="total-amount">
+            <span class="amount-label">Total :</span>
+            <span class="amount-value">{{ formatPrice(order.total_amount) }}</span>
+          </div>
+
+          <!-- Code de livraison pour les commandes confirmées -->
+          <div class="delivery-code-section" *ngIf="order.status === 'confirmed' && order.delivery_code">
+            <div class="delivery-code-card">
+              <div class="code-header">
+                <ion-icon name="shield-checkmark" color="success"></ion-icon>
+                <span>Code de livraison</span>
+              </div>
+              <div class="delivery-code">{{ order.delivery_code }}</div>
+              <ion-note>Le client doit communiquer ce code au livreur</ion-note>
+            </div>
+          </div>
+
+          <!-- Actions rapides -->
+          <div class="quick-actions" *ngIf="order.status === 'pending'">
+            <ion-button 
+              fill="outline" 
+              color="success" 
+              size="small" 
+              (click)="confirmOrder(order)"
+              class="action-btn">
+              <ion-icon name="checkmark" slot="start"></ion-icon>
+              Confirmer
+            </ion-button>
+            
+            <ion-button 
+              fill="outline" 
+              color="danger" 
+              size="small" 
+              (click)="updateOrderStatus(order, 'cancelled')"
+              class="action-btn">
+              <ion-icon name="close" slot="start"></ion-icon>
+              Annuler
+            </ion-button>
+          </div>
+
+          <!-- Actions pour commandes confirmées -->
+          <div class="confirmed-actions" *ngIf="order.status === 'confirmed'">
+            <ion-button 
+              fill="outline" 
+              color="primary" 
+              size="small" 
+              (click)="shareOrderWithDelivery(order)"
+              class="action-btn">
+              <ion-icon name="share-social" slot="start"></ion-icon>
+              Partager livreur
+            </ion-button>
+            
+            <ion-button 
+              fill="outline" 
+              color="success" 
+              size="small" 
+              (click)="updateOrderStatus(order, 'delivered')"
+              class="action-btn">
+              <ion-icon name="checkmark-done" slot="start"></ion-icon>
+              Marquer livré
+            </ion-button>
+          </div>
+
+          <!-- Actions principales -->
+          <div class="main-actions">
+            <ion-button 
+              fill="outline" 
+              size="small" 
+              (click)="viewOrderDetails(order)"
+              class="detail-btn">
+              <ion-icon name="eye" slot="start"></ion-icon>
+              Voir détails
+            </ion-button>
+            
+            <ion-button 
+              fill="outline" 
+              color="danger" 
+              size="small" 
+              (click)="deleteOrder(order)"
+              [disabled]="order.status === 'delivered'"
+              class="delete-btn">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Supprimer
+            </ion-button>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+    <p>Chargement des commandes...</p>
+  </div>
+
+</ion-content>

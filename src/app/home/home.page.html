@@ -1,0 +1,75 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-title color="dark">BeleyaShop</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="welcome-section">
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="BeleyaShop Logo" class="main-logo">
+      <h1>BeleyaShop</h1>
+      <p class="subtitle">
+        Produits cosmétiques livrés en 24h à Conakry
+        <span class="version-badge">v{{ appVersion }}</span>
+      </p>
+    </div>
+
+    <div class="features">
+      <ion-card class="feature-card">
+        <ion-card-content>
+          <div class="feature-item">
+            <ion-icon name="flash"></ion-icon>
+            <h3>Livraison rapide</h3>
+            <p>En 24h à Conakry</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="feature-card">
+        <ion-card-content>
+          <div class="feature-item">
+            <ion-icon name="shield-checkmark"></ion-icon>
+            <h3>Produits authentiques</h3>
+            <p>Garantie d'origine</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="feature-card">
+        <ion-card-content>
+          <div class="feature-item">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+            <h3>Commande via WhatsApp</h3>
+            <p>Simple et rapide</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="cta-section">
+      <ion-button expand="block" size="large" color="primary" (click)="goToCatalog()">
+        <ion-icon name="grid" slot="start"></ion-icon>
+        Voir le catalogue
+      </ion-button>
+    </div>
+
+    <div class="categories-preview">
+      <h2>Nos catégories</h2>
+      <div class="category-grid">
+        <div class="category-item" (click)="goToCategory('cremes')">
+          <ion-icon name="water"></ion-icon>
+          <h3>Crèmes</h3>
+        </div>
+        <div class="category-item" (click)="goToCategory('gels')">
+          <ion-icon name="bubble"></ion-icon>
+          <h3>Gels douche</h3>
+        </div>
+        <div class="category-item" (click)="goToCategory('parfums')">
+          <ion-icon name="flower"></ion-icon>
+          <h3>Parfums</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
