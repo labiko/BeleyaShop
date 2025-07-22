@@ -106,8 +106,8 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
 
   async showLocationConfirmation() {
     const alert = await this.alertController.create({
-      header: '📍 Partage de position',
-      message: 'Pour traiter votre commande :\n\n• Nous allons localiser votre position\n• Votre position sera partagée avec le vendeur\n• Cela permet une livraison plus précise\n\nLa recherche prendra environ 30 secondes pour obtenir la meilleure précision.',
+      header: 'Partage de position',
+      message: 'Pour traiter votre commande :\n\n- Nous allons localiser votre position\n- Votre position sera partagée avec le vendeur\n- Cela permet une livraison plus précise\n\nLa recherche prendra environ 30 secondes pour obtenir la meilleure précision.',
       buttons: [
         {
           text: 'Annuler',
@@ -323,7 +323,7 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     
     // Ajouter le numéro de commande en premier
     if (orderResult.orderNumber) {
-      message += `📋 Numéro de commande : ${orderResult.orderNumber}\n\n`;
+      message += `Numero de commande : ${orderResult.orderNumber}\n\n`;
     }
 
     // Note: Le code de livraison sera généré lors de la confirmation par l'admin
@@ -338,13 +338,13 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
     // Ajouter la localisation si disponible
     if (this.currentLocation) {
       const googleMapsUrl = `https://maps.google.com/?q=${this.currentLocation.latitude},${this.currentLocation.longitude}`;
-      message += `📍 Ma localisation : ${googleMapsUrl}\n`;
-      message += `Précision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
+      message += `Ma localisation : ${googleMapsUrl}\n`;
+      message += `Precision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
     } else {
-      message += `📍 Localisation : Non disponible\n\n`;
+      message += `Localisation : Non disponible\n\n`;
     }
     
-    message += `🤖 Commande envoyée via BeleyaShop`;
+    message += `Commande envoyee via BeleyaShop`;
 
     console.log('📝 Message WhatsApp final avec numéro:', message);
 
@@ -372,8 +372,8 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
 
   private async showPopupBlockedAlert(whatsappUrl: string) {
     const alert = await this.alertController.create({
-      header: '🚫 Popup bloqué',
-      message: `Votre navigateur bloque l'ouverture de WhatsApp.\n\n• Autorisez les popups pour ce site\n• Ou copiez le lien ci-dessous pour ouvrir WhatsApp manuellement`,
+      header: 'Popup bloqué',
+      message: `Votre navigateur bloque l'ouverture de WhatsApp.\n\n- Autorisez les popups pour ce site\n- Ou copiez le lien ci-dessous pour ouvrir WhatsApp manuellement`,
       inputs: [
         {
           name: 'whatsappLink',

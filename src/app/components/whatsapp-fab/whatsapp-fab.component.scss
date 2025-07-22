@@ -214,8 +214,9 @@
 // Style spécifique quand on est sur la page catalog mobile
 @media (max-width: 768px) {
   :host(.on-catalog-page) .mobile-whatsapp-button {
-    bottom: 0px !important; // En bas de l'écran car pas de tabs sur catalog
+    bottom: 10px !important; // Remonter légèrement pour éviter d'être coupé
     padding: 16px !important;
+    padding-bottom: 20px !important; // Plus de padding en bas
   }
 }
 
