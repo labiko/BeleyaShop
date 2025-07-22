@@ -98,6 +98,12 @@
             <ion-icon [name]="getStockStatus(product).icon"></ion-icon>
             {{ getStockStatus(product).text }}
           </ion-badge>
+          
+          <!-- Badge livraison 3J -->
+          <div class="delivery-badge" *ngIf="product.three_day_delivery_eligible">
+            <ion-icon name="rocket"></ion-icon>
+            <span>Livraison 3J</span>
+          </div>
         </div>
 
         <!-- Contenu de la carte -->

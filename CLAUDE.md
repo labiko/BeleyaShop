@@ -85,6 +85,12 @@ git push origin dev
 - Intégration WhatsApp pour les commandes
 - Géolocalisation pour la livraison
 
+### Intégration WhatsApp - IMPORTANT
+- **TOUJOURS éviter les emojis** dans les messages WhatsApp pour éviter les problèmes d'encodage (caractères �)
+- Utiliser du texte simple sans accents : "Numero de commande" au lieu de "📋 Numéro de commande"  
+- Remplacer "📍" par "Ma localisation", "🤖" par "Envoye depuis", etc.
+- Les emojis causent des problèmes d'encodage URL avec `encodeURIComponent()`
+
 ## Système de versioning automatique
 
 ### Configuration

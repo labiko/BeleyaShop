@@ -414,21 +414,19 @@ ion-toast {
   --z-index: 10000;
   z-index: 10000 !important;
   
-  // Centrage du toast - Ajusté pour éviter d'être caché
+  // Centrage du toast - Toujours centré
   &.toast-center {
     --position: fixed;
     --start: 50%;
     --top: 50%;
     transform: translate(-50%, -50%);
     
-    // Sur mobile, s'assurer que le toast est visible et large
+    // Sur mobile, maintenir le centrage mais ajuster la largeur
     @media (max-width: 768px) {
-      --start: 5%;
-      --top: 20%;
       --width: 90%;
       --max-width: 90%;
       --min-width: 90%;
-      transform: translateY(0);
+      // Garder le centrage avec transform: translate(-50%, -50%)
     }
   }
   
@@ -498,6 +496,70 @@ ion-toast {
     .toast-icon {
       color: white;
     }
+  }
+  
+// Toast personnalisé pour les mises à jour - Version simplifiée
+ion-toast.custom-update-toast {
+  --position: fixed;
+  --start: 50%;
+  --top: 50%;
+  --transform: translate(-50%, -50%);
+  --width: 90%;
+  --max-width: 400px;
+  --border-radius: 16px;
+  --background: linear-gradient(135deg, #10b981, #059669);
+  --color: white;
+  --box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  z-index: 10000;
+  
+  .toast-wrapper {
+    border: 2px solid #F5FF78;
+    border-radius: 16px;
+  }
+  
+  .toast-container {
+    padding: 18px 16px;
+    text-align: center;
+  }
+  
+  .toast-message {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    width: 100%;
+    display: block;
+  }
+  
+  .toast-button-group {
+    display: flex;
+    justify-content: center;
+    
+    .toast-button {
+      width: 100%;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 20px;
+      background: #F5FF78;
+      color: #000;
+      border: 2px solid #F5FF78;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+}
+
+// Animation pour le toast de mise à jour
+@keyframes updateToastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -100px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 

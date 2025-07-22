@@ -130,6 +130,22 @@ export class ProductService {
     );
   }
 
+  // Méthode pour forcer le rafraîchissement (invalide le cache)
+  forceRefreshProducts(): Observable<Product[]> {
+    console.log('🔄 Forçage du rafraîchissement des produits...');
+    return from(this.supabaseService.getProducts()).pipe(
+      map(products => {
+        const mappedProducts = products.map(this.mapSupabaseToProduct);
+        console.log('🔄 Produits rafraîchis:', mappedProducts.length);
+        return mappedProducts;
+      }),
+      catchError(error => {
+        console.error('Erreur lors du rafraîchissement forcé:', error);
+        return of([]);
+      })
+    );
+  }
+
   // Méthode pour l'admin - récupère TOUS les produits (y compris en rupture)
   getAllProductsForAdmin(): Observable<Product[]> {
     return from(this.supabaseService.getAllProductsForAdmin()).pipe(

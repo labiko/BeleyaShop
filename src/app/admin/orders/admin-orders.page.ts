@@ -401,20 +401,20 @@ Cette action est irréversible.`,
     // URL de consultation de la commande pour le livreur
     const orderUrl = `${window.location.origin}/delivery/order/${order.order_number}`;
     
-    let message = `🚚 Nouvelle livraison à effectuer\n\n`;
-    message += `📋 Commande: ${order.order_number}\n`;
-    message += `💰 Montant: ${this.formatPrice(order.total_amount)}\n\n`;
+    let message = `Nouvelle livraison a effectuer\n\n`;
+    message += `Commande: ${order.order_number}\n`;
+    message += `Montant: ${this.formatPrice(order.total_amount)}\n\n`;
     
     if (order.customer_location_lat && order.customer_location_lng) {
       const googleMapsUrl = `https://maps.google.com/?q=${order.customer_location_lat},${order.customer_location_lng}&mode=driving`;
-      message += `📍 Localisation client: ${googleMapsUrl}\n\n`;
+      message += `Localisation client: ${googleMapsUrl}\n\n`;
     }
     
-    message += `📱 Lien de gestion:\n${orderUrl}\n\n`;
-    message += `⚠️ Instructions:\n`;
+    message += `Lien de gestion:\n${orderUrl}\n\n`;
+    message += `Instructions:\n`;
     message += `• Demandez le code de validation au client\n`;
     message += `• Cliquez sur le lien pour marquer comme livré\n\n`;
-    message += `🤖 Envoyé depuis BeleyaShop Admin`;
+    message += `Envoye depuis BeleyaShop Admin`;
 
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);

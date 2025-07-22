@@ -233,9 +233,9 @@ export class DeliveryPage implements OnInit, OnDestroy {
     
     let message = `Bonjour, je veux commander :\n\n`;
     
-    // Ajouter le numéro de commande
+    // Ajouter le numéro de commande (sans emoji pour éviter les problèmes d'encodage)
     if (this.createdOrderNumber) {
-      message += `📋 Numéro de commande : ${this.createdOrderNumber}\n\n`;
+      message += `Numero de commande : ${this.createdOrderNumber}\n\n`;
       console.log('✅ Numéro de commande ajouté au message WhatsApp');
     } else {
       console.warn('⚠️ Aucun numéro de commande disponible pour WhatsApp');
@@ -248,16 +248,16 @@ export class DeliveryPage implements OnInit, OnDestroy {
     
     message += `\nTotal : ${this.formatPrice(this.getTotalPrice())}\n\n`;
     
-    // Ajouter la localisation si disponible
+    // Ajouter la localisation si disponible (sans emoji pour éviter les problèmes d'encodage)
     if (this.currentLocation) {
       const googleMapsUrl = `https://maps.google.com/?q=${this.currentLocation.latitude},${this.currentLocation.longitude}`;
-      message += `📍 Ma localisation : ${googleMapsUrl}\n`;
-      message += `Précision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
+      message += `Ma localisation : ${googleMapsUrl}\n`;
+      message += `Precision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
     } else {
-      message += `📍 Localisation : Non disponible\n\n`;
+      message += `Localisation : Non disponible\n\n`;
     }
     
-    message += `🤖 Commande envoyée via BeleyaShop`;
+    message += `Commande envoyee via BeleyaShop`;
 
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);

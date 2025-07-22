@@ -134,9 +134,26 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   loadProducts() {
     this.productsSubscription = this.productService.getAllProducts().subscribe(products => {
+      this.processProducts(products);
+    });
+  }
+
+  // Méthode pour forcer le rechargement des produits
+  forceReloadProducts() {
+    console.log('🔄 Rechargement forcé des produits...');
+    if (this.productsSubscription) {
+      this.productsSubscription.unsubscribe();
+    }
+    
+    this.productsSubscription = this.productService.forceRefreshProducts().subscribe(products => {
+      this.processProducts(products);
+    });
+  }
+
+  // Traitement commun des produits
+  private processProducts(products: Product[]) {
       this.products = products;
       this.filterProductsByCategory();
-    });
   }
 
   // Auto-refresh system
@@ -157,16 +174,16 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   // Pull-to-refresh functionality
   async handleRefresh(event: any) {
-    console.log('Manual refresh triggered');
+    console.log('🔄 Manual refresh triggered - Force reload');
     
     try {
-      await new Promise(resolve => {
-        this.loadProducts();
-        // Simuler un délai pour montrer le refresh
-        setTimeout(resolve, 1000);
-      });
+      // Utiliser le rechargement forcé au lieu du loadProducts normal
+      this.forceReloadProducts();
       
-      //await this.toastService.showSuccess('Catalogue mis à jour !', 2000);
+      // Attendre un peu pour que les données se chargent
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      await this.toastService.showSuccess('Catalogue mis à jour !', 2000);
       
     } catch (error) {
       console.error('Error during refresh:', error);
@@ -374,15 +391,15 @@ export class CatalogPage implements OnInit, OnDestroy {
     
     message += `\nTotal : ${this.formatPrice(this.cartTotal)}\n\n`;
     
-    // Ajouter l'adresse
-    message += `📍 Adresse de livraison :\n${this.customerAddress}\n\n`;
+    // Ajouter l'adresse (sans emoji pour éviter les problèmes d'encodage)
+    message += `Adresse de livraison :\n${this.customerAddress}\n\n`;
     
-    // Ajouter les coordonnées
+    // Ajouter les coordonnées (sans emoji pour éviter les problèmes d'encodage)
     const googleMapsUrl = `https://maps.google.com/?q=${this.currentLocation.latitude},${this.currentLocation.longitude}`;
-    message += `📱 Position GPS : ${googleMapsUrl}\n`;
-    message += `🎯 Précision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
+    message += `Ma localisation : ${googleMapsUrl}\n`;
+    message += `Precision : ${Math.round(this.currentLocation.accuracy)}m\n\n`;
     
-    message += `🤖 Commande envoyée via BeleyaShop`;
+    message += `Commande envoyee via BeleyaShop`;
 
     // Encoder le message pour WhatsApp
     const encodedMessage = encodeURIComponent(message);
@@ -443,6 +460,7 @@ export class CatalogPage implements OnInit, OnDestroy {
     await this.updateDetectionService.manualCheckForUpdates();
   }
 
+
   // PWA Methods
   private checkPwaInstallability() {
     this.pwaService.isInstallable$.subscribe(isInstallable => {
@@ -499,5 +517,6 @@ export class CatalogPage implements OnInit, OnDestroy {
       await this.toastService.showError('Installation annulée ou échouée', 3000);
     }
   }
+
 
 }

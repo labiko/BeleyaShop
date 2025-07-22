@@ -5,6 +5,15 @@
       BeleyaShop - Catalogue
     </ion-title>
     <ion-buttons slot="end">
+      <!-- Bouton Rafraîchir -->
+      <ion-button 
+        fill="clear"
+        color="dark"
+        (click)="forceReloadProducts()"
+        title="Rafraîchir le catalogue">
+        <ion-icon name="refresh" slot="icon-only"></ion-icon>
+      </ion-button>
+      
       <!-- Bouton Mise à jour -->
       <ion-button 
         *ngIf="updateAvailable"
@@ -25,6 +34,7 @@
         <ion-icon name="download" slot="start"></ion-icon>
         Installer
       </ion-button>
+      
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -76,6 +86,7 @@
         <ion-card-content>
           <h3 class="product-name">{{ product.name }}</h3>
           <p class="product-description">{{ product.description }}</p>
+          
           
           <div class="product-actions">
             <div class="quantity-controls" *ngIf="getProductQuantityInCart(product.id) > 0">

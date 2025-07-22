@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, interval, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
@@ -16,14 +16,28 @@ export class UpdateDetectionService {
   private currentVersion: VersionInfo | null = null;
   private updateAvailable = new BehaviorSubject<boolean>(false);
   private newVersionInfo = new BehaviorSubject<VersionInfo | null>(null);
+  private isInitialized = false;
+  private intervalSubscription?: any;
   
   public updateAvailable$ = this.updateAvailable.asObservable();
   public newVersionInfo$ = this.newVersionInfo.asObservable();
 
-  constructor(private alertController: AlertController) {}
+  constructor(
+    private alertController: AlertController,
+    private toastController: ToastController
+  ) {}
 
   // Méthode d'initialisation manuelle pour les pages spécifiques
   public async initializeOnPage(): Promise<void> {
+    // Éviter les multiples initialisations
+    if (this.isInitialized) {
+      console.log('🔄 Service déjà initialisé, ignoré');
+      return;
+    }
+    
+    console.log('🔄 Initialisation du service de mise à jour...');
+    this.isInitialized = true;
+    
     // Charger la version actuelle
     await this.loadCurrentVersion();
     
@@ -45,8 +59,13 @@ export class UpdateDetectionService {
   }
 
   private startPeriodicCheck(): void {
+    // Nettoyer l'ancien interval s'il existe
+    if (this.intervalSubscription) {
+      this.intervalSubscription.unsubscribe();
+    }
+    
     // Vérifier toutes les 5 minutes
-    interval(5 * 60 * 1000)
+    this.intervalSubscription = interval(5 * 60 * 1000)
       .pipe(
         switchMap(() => this.checkForUpdates()),
         catchError((error) => {
@@ -85,7 +104,7 @@ export class UpdateDetectionService {
         console.log('🎉 Nouvelle version détectée!', remoteVersion.version);
         this.newVersionInfo.next(remoteVersion);
         this.updateAvailable.next(true);
-        await this.showUpdateNotification(remoteVersion);
+        await this.showUpdateToast(remoteVersion);
         return true;
       } else {
         console.log('✅ Application à jour');
@@ -102,58 +121,52 @@ export class UpdateDetectionService {
     const remote = remoteVersion.split('.').map(num => parseInt(num, 10));
     const current = currentVersion.split('.').map(num => parseInt(num, 10));
     
+    console.log('🔢 Comparaison détaillée:', {
+      remoteVersion,
+      currentVersion,
+      remoteParsed: remote,
+      currentParsed: current
+    });
+    
     for (let i = 0; i < Math.max(remote.length, current.length); i++) {
       const r = remote[i] || 0;
       const c = current[i] || 0;
       
-      if (r > c) return true;
-      if (r < c) return false;
+      console.log(`  - Segment ${i}: remote=${r}, current=${c}`);
+      
+      if (r > c) {
+        console.log(`  ➡️ ${r} > ${c} = Nouvelle version détectée!`);
+        return true;
+      }
+      if (r < c) {
+        console.log(`  ⬅️ ${r} < ${c} = Version actuelle plus récente`);
+        return false;
+      }
     }
     
+    console.log('  🟰 Versions identiques');
     return false;
   }
 
-  private async showUpdateNotification(newVersion: VersionInfo): Promise<void> {
-    const alert = await this.alertController.create({
-      cssClass: 'update-notification-modal',
-      header: '🚀 Mise à jour disponible',
-      message: `
-        <div class="update-message">
-          <p><strong>Une nouvelle version est disponible !</strong></p>
-          <div class="version-info">
-            <p>📱 Version actuelle: <strong>v${this.currentVersion?.version}</strong></p>
-            <p>🆕 Nouvelle version: <strong>v${newVersion.version}</strong></p>
-          </div>
-          <p class="update-note">
-            Cliquez sur "Mettre à jour" pour appliquer la nouvelle version.
-            L'application se rechargera automatiquement.
-          </p>
-        </div>
-      `,
+  private async showUpdateToast(newVersion: VersionInfo): Promise<void> {
+    const toast = await this.toastController.create({
+      message: `Nouvelle version ${newVersion.version} disponible - Cliquez pour mettre à jour`,
+      duration: 0, // Toast persistant
+      position: 'middle',
+      cssClass: 'custom-update-toast',
       buttons: [
         {
-          text: 'Plus tard',
-          role: 'cancel',
-          cssClass: 'alert-button-cancel',
-          handler: () => {
-            console.log('🕒 Mise à jour reportée');
-            // Remettre la notification dans 30 minutes
-            setTimeout(() => this.showUpdateNotification(newVersion), 30 * 60 * 1000);
-          }
-        },
-        {
-          text: 'Mettre à jour',
-          cssClass: 'alert-button-confirm',
+          text: 'METTRE À JOUR',
+          role: 'action',
           handler: () => {
             console.log('🔄 Application de la mise à jour...');
             this.applyUpdate();
           }
         }
-      ],
-      backdropDismiss: false
+      ]
     });
 
-    await alert.present();
+    await toast.present();
   }
 
   private async applyUpdate(): Promise<void> {
@@ -237,5 +250,19 @@ export class UpdateDetectionService {
   // Forcer une vérification immédiate
   public async forceCheckForUpdates(): Promise<void> {
     await this.checkForUpdates();
+  }
+
+  // Méthode de test pour simuler une mise à jour (debug uniquement)
+  public async simulateUpdate(): Promise<void> {
+    console.log('🧪 Simulation d\'une mise à jour...');
+    const mockVersion: VersionInfo = {
+      version: '0.0.99',
+      buildDate: new Date().toISOString(),
+      buildId: 'test-build'
+    };
+    
+    this.newVersionInfo.next(mockVersion);
+    this.updateAvailable.next(true);
+    await this.showUpdateToast(mockVersion);
   }
 }

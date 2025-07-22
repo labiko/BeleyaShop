@@ -177,7 +177,7 @@
     .delivery-badge {
       position: absolute;
       bottom: 12px;
-      right: 12px;
+      right: 12px; /* Déplacer à droite pour éviter conflit avec stock-badge */
       background: #F5FF78;
       color: #000000;
       padding: 6px 12px;
@@ -188,7 +188,7 @@
       align-items: center;
       gap: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 2;
+      z-index: 3;
       border: 2px solid #000000;
       
       ion-icon {

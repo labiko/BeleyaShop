@@ -163,7 +163,8 @@ export class AdminProductModalComponent implements OnInit {
       stock_quantity: Number(this.formData.stock_quantity),
       category: this.formData.category,
       image: this.formData.image.trim() || this.getDefaultImage(),
-      in_stock: this.formData.in_stock && this.formData.stock_quantity > 0
+      in_stock: this.formData.in_stock && this.formData.stock_quantity > 0,
+      three_day_delivery_eligible: this.formData.three_day_delivery_eligible
     };
 
     await this.supabaseService.createProduct(productData);
@@ -179,7 +180,8 @@ export class AdminProductModalComponent implements OnInit {
       stock_quantity: Number(this.formData.stock_quantity),
       category: this.formData.category,
       image: this.formData.image.trim() || this.getDefaultImage(),
-      in_stock: this.formData.in_stock && this.formData.stock_quantity > 0
+      in_stock: this.formData.in_stock && this.formData.stock_quantity > 0,
+      three_day_delivery_eligible: this.formData.three_day_delivery_eligible
     };
 
     await this.supabaseService.updateProduct(this.product.id, updates);
