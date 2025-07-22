@@ -1,19 +1,20 @@
 // Home Content avec thème lime yellow et noir
 .home-content {
   --background: #F5FF78;
+  --padding-bottom: 100px !important; // Espace pour les tabs sur desktop ET mobile
+  
+  // Sur mobile, ajouter plus de padding pour les tabs flottants
+  @media (max-width: 768px) {
+    --padding-bottom: 150px !important; // Plus d'espace sur mobile
+  }
 }
 
 .welcome-section {
   padding: 20px;
-  padding-bottom: 100px; // Espace pour les tabs sur mobile
+  padding-bottom: 20px; // Padding normal, le ion-content gère l'espace pour les tabs
   text-align: center;
   background: linear-gradient(135deg, #F5FF78 0%, #f6ff86 100%);
   min-height: 100vh;
-  
-  // Sur desktop, moins de padding car tabs en bas fixe
-  @media (min-width: 769px) {
-    padding-bottom: 80px;
-  }
 }
 
 .logo-container {
@@ -127,6 +128,14 @@
 
 .categories-preview {
   margin-top: 30px;
+  margin-bottom: 50px; // Marge pour éviter que les tabs cachent les catégories sur PC
+  padding-bottom: 30px; // Padding supplémentaire
+  
+  // Sur mobile encore plus d'espace
+  @media (max-width: 768px) {
+    margin-bottom: 80px !important;
+    padding-bottom: 40px !important;
+  }
   
   h2 {
     text-align: center;
@@ -187,12 +196,7 @@
   }
 }
 
-// Sur mobile, ajouter plus d'espace en bas pour les tabs flottants
-@media (max-width: 768px) {
-  .categories-preview {
-    padding-bottom: 50px; // Espace supplémentaire pour les tabs mobiles remontés
-  }
-}
+// Supprimé car ion-content gère maintenant le padding
 
 @media (max-width: 576px) {
   .category-grid {
