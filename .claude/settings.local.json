@@ -35,7 +35,10 @@
       "Bash(node:*)",
       "Bash(npm run version:bump:*)",
       "Bash(grep:*)",
-      "Bash(npm version:*)"
+      "Bash(npm version:*)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:beleya-shop.vercel.app)"
     ],
     "deny": []
   }
