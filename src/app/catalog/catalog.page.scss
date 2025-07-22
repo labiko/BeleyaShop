@@ -391,12 +391,14 @@
 }
 
 // Cacher les tabs sur mobile uniquement pour la page catalog
-.catalog-page {
-  @media (max-width: 768px) {
-    ion-tab-bar {
-      display: none !important;
-      visibility: hidden !important;
-    }
+@media (max-width: 768px) {
+  .catalog-page ~ ion-tab-bar,
+  .catalog-page + ion-tab-bar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    z-index: -1 !important;
   }
 }
 

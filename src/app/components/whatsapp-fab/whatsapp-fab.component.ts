@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject, HostBinding } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, AlertController } from '@ionic/angular';
@@ -16,6 +17,8 @@ import { CartItem } from '../../models/product';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class WhatsappFabComponent implements OnInit, OnDestroy {
+  @HostBinding('class.on-catalog-page') onCatalogPage = false;
+  
   private cartService = inject(CartService);
   private orderService = inject(OrderService);
   private router = inject(Router);
@@ -36,6 +39,7 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
   Math = Math;
   
   private cartSubscription: Subscription = new Subscription();
+  private routerSubscription: Subscription = new Subscription();
   private readonly VENDOR_PHONE = '33620951645';
   private progressInterval?: any;
   private watchId?: number;
@@ -47,10 +51,25 @@ export class WhatsappFabComponent implements OnInit, OnDestroy {
       this.cartItemCount = this.cartService.getCartItemCount();
       this.cartItems = cartItems;
     });
+    
+    // Vérifier la route initiale
+    this.checkRoute(this.router.url);
+    
+    // Écouter les changements de route
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.checkRoute(event.url);
+    });
+  }
+  
+  private checkRoute(url: string) {
+    this.onCatalogPage = url.includes('/tabs/catalog');
   }
 
   ngOnDestroy() {
     this.cartSubscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
     this.cleanupGeolocation();
   }
 

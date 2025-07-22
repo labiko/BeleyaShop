@@ -60,3 +60,14 @@ ion-tab-button.tab-selected {
     font-weight: 700;
   }
 }
+
+// Cacher les tabs sur mobile pour la page catalog
+@media (max-width: 768px) {
+  :host-context(.hide-tabs-mobile) ion-tab-bar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    z-index: -1 !important;
+  }
+}

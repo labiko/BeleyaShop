@@ -421,8 +421,31 @@ export class CatalogPage implements OnInit, OnDestroy {
   }
 
   async installPwa() {
+    // Log pour debug
+    console.log('PWA Install attempt:', {
+      isPwaInstallable: this.pwaService.isPwaInstallable(),
+      canInstall: this.pwaService.canInstall(),
+      isStandalone: this.pwaService.isStandalone()
+    });
+    
+    // Vérifier si c'est iOS Safari
+    const isIOS = this.pwaService.isIOSDevice();
+    if (isIOS) {
+      const instructions = this.pwaService.getInstallInstructions();
+      await this.toastService.showInfo(instructions, 5000);
+      return;
+    }
+    
+    // Si pas installable mais sur mobile, donner des instructions
+    if (!this.pwaService.isPwaInstallable() && (this.pwaService.isAndroidDevice() || isIOS)) {
+      const instructions = this.pwaService.getInstallInstructions();
+      await this.toastService.showInfo(instructions, 5000);
+      return;
+    }
+    
+    // Si vraiment pas installable
     if (!this.pwaService.isPwaInstallable()) {
-      await this.toastService.showWarning('Installation non disponible pour ce navigateur', 3000);
+      await this.toastService.showWarning('Installation non disponible. Essayez avec Chrome ou Edge.', 4000);
       return;
     }
 
