@@ -283,11 +283,13 @@ ion-tab-button {
 }
 
 // Règles spécifiques pour mobiles - détection par type d'appareil
+// Exclure la page catalog pour permettre de cacher les tabs uniquement sur cette page
 @media screen and (max-width: 768px), 
        screen and (max-device-width: 768px),
        screen and (-webkit-min-device-pixel-ratio: 1) {
   
-  ion-tab-bar {
+  // Affichage des tabs seulement sur les pages non-catalog (admin, etc.)
+  ion-tab-bar:not(.catalog-page ion-tab-bar) {
     position: fixed !important;
     bottom: 30px !important; // Remonter de 30px au-dessus du bas pour éviter la barre de navigation mobile
     left: 10px !important;
@@ -300,6 +302,8 @@ ion-tab-button {
     border: 2px solid #000000 !important; // Bordure complète au lieu de juste le haut
     border-radius: 25px !important; // Coins arrondis pour un look moderne
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3) !important;
+    display: flex !important;
+    visibility: visible !important;
   }
 
   ion-tab-button {

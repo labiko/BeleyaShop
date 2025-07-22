@@ -194,21 +194,33 @@
   }
 }
 
-// Responsive Design
+// Responsive Design - Ajustements pour la page catalog
 @media (max-width: 768px) {
+  // Sur la page catalog, le bouton WhatsApp prend la place des tabs
+  .catalog-page .mobile-whatsapp-button {
+    display: block;
+    bottom: 0px !important; // En bas de l'écran car pas de tabs sur catalog
+    padding: 16px !important;
+  }
+  
+  // Sur les autres pages (admin), garder le bouton au-dessus des tabs
   .mobile-whatsapp-button {
     display: block;
-    bottom: 125px !important; // Positionner au-dessus des tabs remontés (30px + 55px hauteur + 40px marge)
-    padding: 16px 16px 0 16px !important; // Enlever le padding bottom
+    bottom: 125px !important; // Au-dessus des tabs pour les autres pages
+    padding: 16px 16px 0 16px !important;
   }
   
   .desktop-only {
     display: none !important;
   }
   
-  // Add bottom padding to content to avoid overlap with fixed button
+  // Padding différent selon la page
+  .catalog-page ion-content {
+    --padding-bottom: 100px; // Moins d'espace car pas de tabs
+  }
+  
   ion-content {
-    --padding-bottom: 210px; // Plus d'espace pour le bouton + tabs remontés
+    --padding-bottom: 210px; // Plus d'espace pour les autres pages avec tabs
   }
 }
 

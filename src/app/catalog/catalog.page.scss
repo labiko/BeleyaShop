@@ -16,7 +16,7 @@
 
 .catalog-container {
   padding: 0;
-  padding-bottom: 210px; // Espace pour le bouton WhatsApp + tabs mobile remontés
+  padding-bottom: 80px; // Espace réduit car pas de tabs sur mobile
 }
 
 .filters-section {
@@ -386,6 +386,16 @@
     
     ion-card-content {
       padding: 12px;
+    }
+  }
+}
+
+// Cacher les tabs sur mobile uniquement pour la page catalog
+.catalog-page {
+  @media (max-width: 768px) {
+    ion-tab-bar {
+      display: none !important;
+      visibility: hidden !important;
     }
   }
 }
