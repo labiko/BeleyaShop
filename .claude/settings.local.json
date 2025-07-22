@@ -38,7 +38,8 @@
       "Bash(npm version:*)",
       "Bash(git pull:*)",
       "WebFetch(domain:vercel.com)",
-      "WebFetch(domain:beleya-shop.vercel.app)"
+      "WebFetch(domain:beleya-shop.vercel.app)",
+      "Bash(git submodule:*)"
     ],
     "deny": []
   }
