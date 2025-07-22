@@ -5,6 +5,17 @@
       BeleyaShop - Catalogue
     </ion-title>
     <ion-buttons slot="end">
+      <!-- Bouton Mise à jour -->
+      <ion-button 
+        *ngIf="updateAvailable"
+        fill="solid"
+        color="success"
+        (click)="checkForUpdates()"
+        class="update-button">
+        <ion-icon name="cloud-download" slot="start"></ion-icon>
+        v{{ newVersionInfo?.version }}
+      </ion-button>
+      
       <ion-button 
         *ngIf="showInstallButton"
         fill="outline"

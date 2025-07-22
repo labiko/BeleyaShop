@@ -120,6 +120,16 @@ npm run build:prod       # Build production avec auto-increment
 
 ## Nouvelles fonctionnalités ajoutées
 
+### Système de détection de mise à jour PWA
+- **Service de mise à jour**: `UpdateDetectionService` pour la détection automatique des nouvelles versions
+- **Vérification périodique**: Contrôle toutes les 5 minutes de nouvelles versions déployées sur Vercel
+- **Notifications utilisateur**: Modales stylées avec informations de version et bouton de mise à jour
+- **Nettoyage automatique**: Suppression des Service Workers et vidage du cache navigateur
+- **Indicateur visuel**: Composant flottant `UpdateIndicatorComponent` pour signaler les mises à jour
+- **Interface admin**: Bouton de vérification manuelle dans l'interface d'administration
+- **Documentation**: Guide complet dans `docs/update-system.md`
+- **Styles cohérents**: Modales avec thème BeleyaShop (#F5FF78, animations)
+
 ### Optimisation des images
 - **Service de redimensionnement**: `ImageResizeService`
 - Redimensionnement automatique lors de l'upload de produits

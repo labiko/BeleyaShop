@@ -15,6 +15,26 @@
       </ion-title>
 
       <ion-buttons slot="end">
+        <!-- Bouton mise à jour (visible si mise à jour disponible) -->
+        <ion-button 
+          *ngIf="updateAvailable"
+          fill="solid" 
+          color="success" 
+          (click)="checkForUpdates()" 
+          title="Nouvelle version disponible: v{{ newVersionInfo?.version }}">
+          <ion-icon name="cloud-download" slot="start"></ion-icon>
+          v{{ newVersionInfo?.version }}
+        </ion-button>
+        
+        <!-- Bouton vérifier mises à jour (visible si pas de mise à jour) -->
+        <ion-button 
+          *ngIf="!updateAvailable"
+          fill="clear" 
+          (click)="checkForUpdates()" 
+          title="Vérifier les mises à jour">
+          <ion-icon name="cloud-download" slot="icon-only"></ion-icon>
+        </ion-button>
+        
         <!-- Bouton rafraîchir -->
         <ion-button fill="clear" (click)="refreshData()">
           <ion-icon name="refresh" slot="icon-only"></ion-icon>

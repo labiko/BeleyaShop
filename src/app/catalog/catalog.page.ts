@@ -12,6 +12,7 @@ import { WhatsappFabComponent } from '../components/whatsapp-fab/whatsapp-fab.co
 import { ImageFallbackDirective } from '../directives/image-fallback.directive';
 import { VersionService } from '../services/version.service';
 import { PwaService } from '../services/pwa.service';
+import { UpdateDetectionService, VersionInfo } from '../services/update-detection.service';
 
 @Component({
   selector: 'app-catalog',
@@ -29,6 +30,7 @@ export class CatalogPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private versionService = inject(VersionService);
   private pwaService = inject(PwaService);
+  private updateDetectionService = inject(UpdateDetectionService);
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
@@ -48,9 +50,15 @@ export class CatalogPage implements OnInit, OnDestroy {
   // PWA
   showInstallButton: boolean = false;
   
+  // Update detection
+  updateAvailable: boolean = false;
+  newVersionInfo: VersionInfo | null = null;
+  
   private cartSubscription?: Subscription;
   private routeSubscription?: Subscription;
   private productsSubscription?: Subscription;
+  private updateAvailableSubscription?: Subscription;
+  private newVersionSubscription?: Subscription;
   private progressInterval?: any;
   private watchId?: number;
   private locationTimeout?: any;
@@ -69,6 +77,7 @@ export class CatalogPage implements OnInit, OnDestroy {
     this.subscribeToCart();
     this.startAutoRefresh();
     this.checkPwaInstallability();
+    this.initializeUpdateDetection();
   }
 
   loadCategories() {
@@ -93,6 +102,12 @@ export class CatalogPage implements OnInit, OnDestroy {
     }
     if (this.productsSubscription) {
       this.productsSubscription.unsubscribe();
+    }
+    if (this.updateAvailableSubscription) {
+      this.updateAvailableSubscription.unsubscribe();
+    }
+    if (this.newVersionSubscription) {
+      this.newVersionSubscription.unsubscribe();
     }
     
     // Nettoyer la géolocalisation et auto-refresh
@@ -399,6 +414,33 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   private async showOrderSentToast() {
     await this.toastService.showSuccess('Commande envoyée via WhatsApp ! Votre panier a été vidé.', 3000);
+  }
+
+  // Update Detection Methods
+  private initializeUpdateDetection() {
+    console.log('🔄 Initialisation du système de mise à jour côté client...');
+    
+    // Initialiser le service de détection
+    this.updateDetectionService.initializeOnPage();
+    
+    // S'abonner aux notifications de mise à jour
+    this.updateAvailableSubscription = this.updateDetectionService.updateAvailable$.subscribe(
+      (available) => {
+        this.updateAvailable = available;
+        console.log('📱 Client - Mise à jour disponible:', available);
+      }
+    );
+
+    this.newVersionSubscription = this.updateDetectionService.newVersionInfo$.subscribe(
+      (versionInfo) => {
+        this.newVersionInfo = versionInfo;
+        console.log('📦 Client - Nouvelle version:', versionInfo);
+      }
+    );
+  }
+
+  async checkForUpdates() {
+    await this.updateDetectionService.manualCheckForUpdates();
   }
 
   // PWA Methods

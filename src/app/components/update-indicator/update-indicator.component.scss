@@ -1,0 +1,56 @@
+.update-indicator {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+  
+  .update-chip {
+    --background: linear-gradient(135deg, #10b981, #059669);
+    --color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    
+    &:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+    }
+    
+    .update-icon {
+      font-size: 16px;
+      margin-right: 4px;
+      animation: bounce 2s infinite;
+    }
+    
+    ion-label {
+      font-weight: 600;
+      font-size: 12px;
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .update-indicator {
+    top: 8px;
+    right: 8px;
+    
+    .update-chip {
+      ion-label {
+        font-size: 11px;
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthAdminService, AdminUser } from '../../services/auth-admin.service';
 import { VersionService } from '../../services/version.service';
+import { UpdateDetectionService, VersionInfo } from '../../services/update-detection.service';
 
 @Component({
   selector: 'app-admin-tabs',
@@ -19,10 +20,17 @@ export class AdminTabsPage implements OnInit, OnDestroy {
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
   private versionService = inject(VersionService);
+  private updateDetectionService = inject(UpdateDetectionService);
 
   currentUser: AdminUser | null = null;
   private userSubscription?: Subscription;
+  private updateAvailableSubscription?: Subscription;
+  private newVersionSubscription?: Subscription;
   appVersion = this.versionService.getVersion();
+  
+  // Update detection
+  updateAvailable: boolean = false;
+  newVersionInfo: VersionInfo | null = null;
 
   ngOnInit() {
     // S'abonner aux changements d'état d'authentification
@@ -32,6 +40,9 @@ export class AdminTabsPage implements OnInit, OnDestroy {
       // Si l'utilisateur n'est pas authentifié, rediriger vers login
       if (!user || !user.isAuthenticated) {
         this.router.navigate(['/admin/login']);
+      } else {
+        // Initialiser le système de mise à jour seulement si authentifié
+        this.initializeUpdateDetection();
       }
     });
   }
@@ -39,6 +50,12 @@ export class AdminTabsPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.updateAvailableSubscription) {
+      this.updateAvailableSubscription.unsubscribe();
+    }
+    if (this.newVersionSubscription) {
+      this.newVersionSubscription.unsubscribe();
     }
   }
 
@@ -92,5 +109,41 @@ export class AdminTabsPage implements OnInit, OnDestroy {
     
     // Émettre un événement pour indiquer aux composants enfants de se rafraîchir
     window.dispatchEvent(new CustomEvent('admin-refresh'));
+  }
+
+  // Update Detection Methods
+  private initializeUpdateDetection() {
+    console.log('🔄 Initialisation du système de mise à jour côté admin...');
+    
+    // Initialiser le service de détection
+    this.updateDetectionService.initializeOnPage();
+    
+    // S'abonner aux notifications de mise à jour
+    this.updateAvailableSubscription = this.updateDetectionService.updateAvailable$.subscribe(
+      (available) => {
+        this.updateAvailable = available;
+        console.log('🛠️ Admin - Mise à jour disponible:', available);
+      }
+    );
+
+    this.newVersionSubscription = this.updateDetectionService.newVersionInfo$.subscribe(
+      (versionInfo) => {
+        this.newVersionInfo = versionInfo;
+        console.log('📦 Admin - Nouvelle version:', versionInfo);
+      }
+    );
+  }
+
+  // Méthode pour vérifier manuellement les mises à jour
+  async checkForUpdates() {
+    const toast = await this.toastController.create({
+      message: '🔍 Vérification des mises à jour...',
+      duration: 1500,
+      position: 'top',
+      color: 'primary'
+    });
+    await toast.present();
+    
+    await this.updateDetectionService.manualCheckForUpdates();
   }
 }
